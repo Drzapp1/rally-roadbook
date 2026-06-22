@@ -1,0 +1,106 @@
+[
+ {
+  "id": "adriatic",
+  "name": "Adriatic Enduro"
+ },
+ {
+  "id": "adriaticenduro",
+  "name": "Adriatic Enduro"
+ },
+ {
+  "id": "almeria",
+  "name": "Almeria - Tabernas Desert"
+ },
+ {
+  "id": "alps",
+  "name": "Alps - Ubaye"
+ },
+ {
+  "id": "atacama",
+  "name": "Atacama Desert"
+ },
+ {
+  "id": "baja",
+  "name": "Baja California"
+ },
+ {
+  "id": "bryce",
+  "name": "Bryce Canyon"
+ },
+ {
+  "id": "chamonix",
+  "name": "Mont Blanc - Chamonix"
+ },
+ {
+  "id": "death_valley",
+  "name": "Death Valley"
+ },
+ {
+  "id": "dolomites",
+  "name": "Dolomites"
+ },
+ {
+  "id": "dubai",
+  "name": "Dubai Desert"
+ },
+ {
+  "id": "empty_quarter",
+  "name": "Empty Quarter - Rub al Khali"
+ },
+ {
+  "id": "fagradalsfjall",
+  "name": "Iceland Volcano"
+ },
+ {
+  "id": "gobi",
+  "name": "Gobi Desert"
+ },
+ {
+  "id": "grand_canyon",
+  "name": "Grand Canyon Rim"
+ },
+ {
+  "id": "grand_erg",
+  "name": "Sahara - Grand Erg"
+ },
+ {
+  "id": "iceland",
+  "name": "Iceland Highlands"
+ },
+ {
+  "id": "mojave",
+  "name": "Mojave Desert"
+ },
+ {
+  "id": "monument_valley",
+  "name": "Monument Valley"
+ },
+ {
+  "id": "namib",
+  "name": "Namib - Sossusvlei"
+ },
+ {
+  "id": "patagonia",
+  "name": "Patagonia - Torres"
+ },
+ {
+  "id": "pyrenees",
+  "name": "Pyrenees"
+ },
+ {
+  "id": "rockies",
+  "name": "Colorado Rockies"
+ },
+ {
+  "id": "stage01",
+  "name": "Stage 1 - Erg Chebbi Crossing"
+ },
+ {
+  "id": "wadi_rum",
+  "name": "Wadi Rum"
+ },
+ {
+  "id": "zion",
+  "name": "Zion Canyon"
+ }
+]
