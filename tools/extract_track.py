@@ -44,6 +44,19 @@ def box_blur(a):
           + p[1:-1,:-2]+p[1:-1,1:-1]+p[1:-1,2:]
           + p[2:,:-2]+p[2:,1:-1]+p[2:,2:]) / 9.0
 
+def deartifact(ds):
+    """Some heightmaps (the 'mxb-rally' deserts) carry a high-frequency dither
+    that makes every cell a micro-cliff. Measure that dither and blur away just
+    enough to kill it -- heavy for dithered maps, near-nothing for clean ones,
+    so real mountains/canyons keep their detail."""
+    v = np.sort(ds[(ds > ds.min()) & (ds < ds.max())].ravel())
+    span = float(v[int(len(v)*0.995)] - v[int(len(v)*0.005)]) if len(v) > 20 else float(ds.max()-ds.min())
+    hf = float(np.mean(np.abs(ds - box_blur(ds)))) / max(1.0, span) * 1000.0
+    passes = int(np.clip(round((hf - 2.5) * 0.9), 0, 14))
+    for _ in range(passes):
+        ds = box_blur(ds)
+    return box_blur(ds)
+
 def process_heightmap(a):
     h, w = a.shape
     if min(w, h) >= N and max(w, h) <= 6000:           # mask-aware block downsample
@@ -60,7 +73,7 @@ def process_heightmap(a):
         ds = np.where((s > 0) & (s < 65535), s, np.nan)
         if ds.shape != (N, N):
             ds = np.asarray(Image.fromarray(np.nan_to_num(ds, nan=float(np.nanmedian(ds))), 'F').resize((N, N), Image.LANCZOS))
-    return box_blur(inpaint_nan(ds))
+    return deartifact(inpaint_nan(ds))
 
 def read_tga(path):
     d = open(path, 'rb').read()
