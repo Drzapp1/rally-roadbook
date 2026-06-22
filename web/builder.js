@@ -61,7 +61,7 @@ function genRoadbook(world, name){
   }
   out.forEach((b,k)=>{ b.index=k; b.distPartialM = k? Math.round((b.distTotalKm-out[k-1].distTotalKm)*1000):0; });
   return {schemaVersion:1,trackName:nm,meta:{trackName:nm,totalDistanceKm:total/1000},totalDistanceKm:total/1000,
-          boxes:out, route:world.map(p=>[p[0],0,p[1],0])};
+          boxes:out, route:world.map((p,i)=>[p[0],p[1],cum[i]||0,0])};
 }
 
 // ---------------------------------------------------------------------------

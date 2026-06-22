@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rally Roadbook — 3D Map</title>
+<style>
+  :root{ --bg:#0d0f14; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; font-size:14px; display:flex; flex-direction:column; overflow:hidden; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  .sp{ flex:1; }
+  .toolbar{ display:flex; align-items:center; gap:16px; padding:9px 18px; background:#171a20; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .toolbar label{ color:var(--dim); font-size:12px; display:flex; align-items:center; gap:7px; }
+  select,input{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:6px 9px; font-size:13px; }
+  #stat{ color:var(--dim); font-size:13px; } #stat b{ color:var(--ink); }
+  #view{ flex:1; min-height:520px; position:relative; }
+  #view canvas{ display:block; }
+  .legend{ position:absolute; right:14px; bottom:12px; background:rgba(20,23,30,.82); border:1px solid var(--line); border-radius:8px; padding:8px 11px; font-size:11px; color:var(--dim); line-height:1.7; }
+  .legend i{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · 3D MAP</h1>
+  <nav><a href="index.html">Explore</a><a href="map3d.html" class="on">3D map</a><a href="builder.html">Build a route</a></nav>
+  <div class="sp"></div>
+  <div id="stat">Loading…</div>
+</header>
+<div class="toolbar">
+  <label>Map <select id="pick" style="min-width:240px"></select></label>
+  <label>Height exaggeration <input id="exag" type="range" min="1" max="40" value="14" style="width:130px"> <span id="exagOut">14×</span></label>
+  <label><input id="drops" type="checkbox" checked style="width:auto"> elevation drops</label>
+</div>
+<div id="view">
+  <div class="legend">
+    <i style="background:#1f9d4e"></i>start &nbsp; <i style="background:#cd2620"></i>finish / danger &nbsp; <i style="background:#e0902a"></i>caution &nbsp; <i style="background:#ffb028"></i>hairpin<br>
+    track colour = altitude (low → high)
+  </div>
+</div>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module" src="map3d.js"></script>
+</body>
+</html>
