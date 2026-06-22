@@ -240,5 +240,15 @@ mentor matching.
 
 ---
 
+## Build log — waves shipped
+
+- **Wave 1 · Mobile roadbook PWA** *(H2 · Mobile)* — installable, offline
+  `rally.html`: a touch roadbook reader with the imported tulips + signs, a
+  library picker and a service worker (offline app shell + runtime cache). Live
+  as **📱 Mobile** in the site nav. *Next:* live position scroll via a plugin
+  telemetry shim.
+
+---
+
 *Living document. Horizons gate on shipping, not dates: every horizon is a
 usable product, and each one is ~2–3× the last.*
