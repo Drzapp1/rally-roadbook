@@ -100,6 +100,12 @@ function build(){
   tg.setIndex(idx); tg.computeVertexNormals();
   group.add(new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ map:tex.map, normalMap:tex.normal, normalScale:new THREE.Vector2(0.8,0.8), roughness:1, metalness:0 })));
 
+  // large base ground plane so a floor always fills the view out to the horizon
+  const fmap=tex.map.clone(), fnrm=tex.normal.clone();
+  [fmap,fnrm].forEach(t=>{ t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(120,120); t.needsUpdate=true; });
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(6000,6000), new THREE.MeshStandardMaterial({ map:fmap, normalMap:fnrm, roughness:1, metalness:0 }));
+  floor.rotation.x=-Math.PI/2; floor.position.y=-0.4; group.add(floor);
+
   // route draped over the terrain
   const off=Math.max(1.2, relief*vS*0.012);
   const v3=p=>new THREE.Vector3((p[0]-cx)*hS, (p[3]-miny)*vS+off, (p[1]-cz)*hS);
