@@ -10,6 +10,14 @@
 #include "primitives.h"
 
 namespace render {
+
+// Turn-tulip image catalog (external linkage — DrawInit registers the matching
+// rb_tulip_<code>.tga in THIS order, right after the device models).
+const char* const kTulipCodes[kTulipCount] = {
+	"straight","slightL","slightR","left","right","sharpL","sharpR",
+	"hairpinL","hairpinR","forkL","forkR","cross","start","finish",
+};
+
 namespace {
 
 constexpr float kPi = 3.14159265358979323846f;
@@ -120,22 +128,6 @@ void drawArrow(DrawCache& dc, float cx, float cy, float size, float relDeg, unsi
 
 // Draw sprite `sp` as a square of visual half-size s centred at (cx,cy),
 // rotated so the sprite's top (its "up") faces screen direction (dirX,dirY).
-// stock tulip catalog + turn classification — clean shapes mapped per turn,
-// not the raw recorded path (x:0..1 L->R, y:0..1 where 1=top; entry first).
-static std::vector<geo::Vec2> stockTulip(const std::string& code)
-{
-	if (code == "start")    return { {.5f,.10f},{.5f,.84f} };
-	if (code == "slightL")  return { {.5f,.08f},{.5f,.52f},{.30f,.88f} };
-	if (code == "slightR")  return { {.5f,.08f},{.5f,.52f},{.70f,.88f} };
-	if (code == "left")     return { {.5f,.08f},{.5f,.56f},{.14f,.56f} };
-	if (code == "right")    return { {.5f,.08f},{.5f,.56f},{.86f,.56f} };
-	if (code == "sharpL")   return { {.5f,.08f},{.5f,.60f},{.26f,.36f} };
-	if (code == "sharpR")   return { {.5f,.08f},{.5f,.60f},{.74f,.36f} };
-	if (code == "hairpinL") return { {.5f,.08f},{.5f,.70f},{.30f,.80f},{.30f,.34f} };
-	if (code == "hairpinR") return { {.5f,.08f},{.5f,.70f},{.70f,.80f},{.70f,.34f} };
-	if (code == "finish")   return { {.5f,.08f},{.5f,.80f} };
-	return { {.5f,.08f},{.5f,.92f} }; // straight
-}
 static float tulipBend(const std::vector<model::TulipPoint>& p)
 {
 	if (p.size() < 2) return 90.0f;
@@ -163,24 +155,26 @@ static std::string tulipCode(const model::Box& b)
 	return "straight";
 }
 
+static int tulipSpriteIndex(const std::string& code)
+{
+	for (int t = 0; t < kTulipCount; ++t)
+		if (code == kTulipCodes[t]) return model::picto::kCount + 25 + t;
+	return model::picto::kCount + 25; // "straight"
+}
+
 void drawTulip(DrawCache& dc, const model::Box& b, float cx, float cy, float halfH,
                unsigned long lineColor, unsigned long inkColor)
 {
 	(void)inkColor;
 	const float halfW = halfH * kAspect;
-	const float halo = kLine * 2.6f, core = kLine * 2.1f;
 	auto SX = [&](float px) { return cx + (px - 0.5f) * 2.0f * halfW; };
 	auto SY = [&](float py) { return cy + (0.5f - py) * 2.0f * halfH; };
 
-	// classify into a clean stock tulip instead of drawing the raw recorded path
-	const std::string code = tulipCode(b);
-	const std::vector<geo::Vec2> pts = stockTulip(code);
-
-	// route highlight (cyan) under the dark line — the real-roadbook look
-	for (size_t i = 1; i < pts.size(); ++i)
-		dc.line(SX(pts[i - 1].x), SY(pts[i - 1].y), SX(pts[i].x), SY(pts[i].y), halo, g_style.routeHi);
-	for (size_t i = 1; i < pts.size(); ++i)
-		dc.line(SX(pts[i - 1].x), SY(pts[i - 1].y), SX(pts[i].x), SY(pts[i].y), core, lineColor);
+	// imported, pre-rendered tulip image (classified per turn) — replaces the old
+	// hand-drawn quad path with a real roadbook tulip look.
+	int sp = tulipSpriteIndex(tulipCode(b));
+	if (sp > 0)
+		dc.sprite(cx - halfW, cy - halfH, 2.0f * halfW, 2.0f * halfH, 0xFFFFFFFFu, sp);
 
 	// junction crossing stub (faint) through the tulip centre
 	if (b.crossDeg > -900.0f)
@@ -189,47 +183,11 @@ void drawTulip(DrawCache& dc, const model::Box& b, float cx, float cy, float hal
 		float dxc = std::sin(ar), dyc = std::cos(ar), L = 0.40f;
 		dc.line(SX(0.5f - dxc * L), SY(0.5f - dyc * L), SX(0.5f + dxc * L), SY(0.5f + dyc * L), kLine * 1.3f, withA(lineColor, 80));
 	}
-
 	// un-taken junction branches (faint spokes from the centre; multi-ride union)
 	for (float bd : b.branchDeg)
 	{
 		float br = bd * kD2R;
 		dc.line(SX(0.5f), SY(0.5f), SX(0.5f + std::sin(br) * 0.40f), SY(0.5f + std::cos(br) * 0.40f), kLine * 1.15f, withA(lineColor, 95));
-	}
-
-	// entry ball (where you come from)
-	float ex = SX(pts[0].x), ey = SY(pts[0].y), d = halfH * 0.14f;
-	const float diam[4][2] = { { ex, ey - d * 1.5f }, { ex + d * 1.5f * kAspect, ey }, { ex, ey + d * 1.5f }, { ex - d * 1.5f * kAspect, ey } };
-	dc.quad(diam, lineColor);
-
-	// end decoration: a clean arrowhead triangle at the exit (or a finish bar)
-	size_t n = pts.size();
-	if (n >= 2)
-	{
-		float ax = SX(pts[n - 1].x), ay = SY(pts[n - 1].y);
-		float bx = SX(pts[n - 2].x), by = SY(pts[n - 2].y);
-		float dx = ax - bx, dy = ay - by, len = std::sqrt(dx * dx + dy * dy);
-		if (len > 1e-5f)
-		{
-			dx /= len; dy /= len;
-			float nx = -dy, ny = dx;
-			if (code == "finish")
-			{
-				float bw = halfW * 0.5f, th = kLine * 2.2f;
-				dc.rect(ax - bw, ay - th, 2.0f * bw, 2.0f * th, lineColor);
-			}
-			else
-			{
-				float s = halfH * 0.36f;
-				const float tri[4][2] = {
-					{ ax + dx * s,        ay + dy * s },
-					{ ax + nx * s * 0.6f, ay + ny * s * 0.6f },
-					{ ax - nx * s * 0.6f, ay - ny * s * 0.6f },
-					{ ax - nx * s * 0.6f, ay - ny * s * 0.6f },
-				};
-				dc.quad(tri, lineColor);
-			}
-		}
 	}
 }
 
@@ -763,7 +721,7 @@ void RoadbookRenderer::draw(DrawCache& dc, int font, const model::Roadbook& rb, 
 		const float bw = 0.42f, bx = 0.5f - bw * 0.5f, by = 0.035f, bh = 0.052f;
 		dc.rect(bx, by, bw, bh, hudBg());
 		box4(dc, bx, by, bw, bh, g_style.hudAccent);
-		dc.text("NO ROADBOOK - ride the route, then F4 > Save roadbook now", 0.5f, by + 0.022f, 0.012f, 1, g_style.hudInk, font);
+		dc.text("NO ROADBOOK - open the menu (F4) to save one", 0.5f, by + 0.022f, 0.012f, 1, g_style.hudInk, font);
 		dc.text("(F8 hides this overlay)", 0.5f, by + 0.041f, 0.0098f, 1, g_style.hudDim, font);
 		return;
 	}

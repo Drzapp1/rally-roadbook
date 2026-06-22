@@ -13,19 +13,18 @@ function sign(code){
   const img = new Image(); img.src = 'signs/'+code+'.png';
   img.onload = ()=>render(); signCache[code]=img; return img;
 }
+const tulipCache = {};
+function tulipImg(code){
+  if(tulipCache[code]!==undefined) return tulipCache[code];
+  const img = new Image(); img.src = 'tulips/'+code+'.png';
+  img.onload = ()=>render(); tulipCache[code]=img; return img;
+}
 function comma(v){ return v.toFixed(2).replace('.',','); }
 function rr(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
 
 function turnAbbrev(b){ if(b.type==='start')return'S'; if(b.type==='finish')return'F'; if(b.type==='straight')return'kpS'; return b.turnDir==='right'?'R':'L'; }
 
-// stock tulip catalog (x:0..1 L->R, y:0..1 where 1=top, 0=bottom; entry first)
-const STOCK={
- start:[[.5,.10],[.5,.84]], straight:[[.5,.08],[.5,.92]],
- slightL:[[.5,.08],[.5,.52],[.30,.88]], slightR:[[.5,.08],[.5,.52],[.70,.88]],
- left:[[.5,.08],[.5,.56],[.14,.56]], right:[[.5,.08],[.5,.56],[.86,.56]],
- sharpL:[[.5,.08],[.5,.60],[.26,.36]], sharpR:[[.5,.08],[.5,.60],[.74,.36]],
- hairpinL:[[.5,.08],[.5,.70],[.30,.80],[.30,.34]], hairpinR:[[.5,.08],[.5,.70],[.70,.80],[.70,.34]],
- finish:[[.5,.08],[.5,.80]]};
+// turn tulips are now imported image assets (web/tulips/<code>.png); classify only.
 function tulipBend(pts){ if(!pts||pts.length<2)return 90; const a=pts[0],b=pts[1],c=pts[pts.length-2],d=pts[pts.length-1];
  const v1=[b[0]-a[0],b[1]-a[1]],v2=[d[0]-c[0],d[1]-c[1]],m1=Math.hypot(v1[0],v1[1])||1,m2=Math.hypot(v2[0],v2[1])||1;
  return Math.acos(Math.max(-1,Math.min(1,(v1[0]*v2[0]+v1[1]*v2[1])/(m1*m2))))*180/Math.PI; }
@@ -35,22 +34,16 @@ function tulipCode(b){ const t=b.type, R=(b.turnDir==='right');
  return 'straight'; }
 function drawTulip(c, b, zx, zy, cw, ch){
   const code=tulipCode(b);
-  const pts=STOCK[code]||(b.tulip&&b.tulip.points)||[]; if(pts.length<2) return;
-  const m=10, uw=cw-2*m, uh=ch-2*m;
-  const SX=p=>zx+m+p[0]*uw, SY=p=>zy+m+(1-p[1])*uh;
-  c.lineCap='round'; c.lineJoin='round';
-  c.strokeStyle=CYAN; c.lineWidth=9; c.beginPath(); c.moveTo(SX(pts[0]),SY(pts[0])); for(let i=1;i<pts.length;i++)c.lineTo(SX(pts[i]),SY(pts[i])); c.stroke();
-  c.strokeStyle=INK; c.lineWidth=5; c.beginPath(); c.moveTo(SX(pts[0]),SY(pts[0])); for(let i=1;i<pts.length;i++)c.lineTo(SX(pts[i]),SY(pts[i])); c.stroke();
-  const e=pts[0]; c.fillStyle=INK; c.beginPath(); c.arc(SX(e),SY(e),5,0,7); c.fill();
-  if(code==='start'){ c.strokeStyle=INK; c.lineWidth=2.5; c.beginPath(); c.arc(SX(e),SY(e),10,0,7); c.stroke(); }
-  const a=pts[pts.length-1];
-  if(code==='finish'){ const fx=SX(a),fy=SY(a); for(let k=-2;k<3;k++){ c.fillStyle=(k&1)?INK:'#9a9a9a'; c.fillRect(fx+k*7-3,fy-7,8,9);} }
-  else { const p=pts[pts.length-2], ax=SX(a),ay=SY(a),dx=ax-SX(p),dy=ay-SY(p),L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,px=-uy,py=ux,s=13;
-    c.fillStyle=INK; c.beginPath(); c.moveTo(ax+ux*s,ay+uy*s); c.lineTo(ax+px*s*0.62,ay+py*s*0.62); c.lineTo(ax-px*s*0.62,ay-py*s*0.62); c.closePath(); c.fill(); }
-  if(typeof b.crossDeg==='number' && b.crossDeg>-900){ const r=b.crossDeg*Math.PI/180, cx=zx+cw/2, cy=zy+ch/2, dxc=Math.sin(r),dyc=-Math.cos(r),Ln=uw*0.4;
-    c.strokeStyle='rgba(24,18,15,.35)'; c.lineWidth=3; c.beginPath(); c.moveTo(cx-dxc*Ln,cy-dyc*Ln); c.lineTo(cx+dxc*Ln,cy+dyc*Ln); c.stroke(); }
-  (b.branchDeg||[]).forEach(bd=>{ const r=bd*Math.PI/180, cx=zx+cw/2, cy=zy+ch/2, Ln=uw*0.42;
-    c.strokeStyle='rgba(40,30,24,.45)'; c.lineWidth=3; c.setLineDash([5,3]); c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+Math.sin(r)*Ln,cy-Math.cos(r)*Ln); c.stroke(); c.setLineDash([]); });
+  const img=tulipImg(code);
+  const s=Math.min(cw,ch)-6, tx=zx+(cw-s)/2, ty=zy+(ch-s)/2;
+  if(img&&img.complete&&img.naturalWidth) c.drawImage(img, tx, ty, s, s);
+  // junction crossing + un-taken branches drawn over the imported tulip image
+  const cx=zx+cw/2, cy=zy+ch/2, uw=cw-20;
+  c.lineCap='round';
+  if(typeof b.crossDeg==='number' && b.crossDeg>-900){ const r=b.crossDeg*Math.PI/180, dxc=Math.sin(r),dyc=-Math.cos(r),Ln=uw*0.4;
+    c.strokeStyle='rgba(24,18,15,.30)'; c.lineWidth=3; c.beginPath(); c.moveTo(cx-dxc*Ln,cy-dyc*Ln); c.lineTo(cx+dxc*Ln,cy+dyc*Ln); c.stroke(); }
+  (b.branchDeg||[]).forEach(bd=>{ const r=bd*Math.PI/180, Ln=uw*0.42;
+    c.strokeStyle='rgba(40,30,24,.4)'; c.lineWidth=3; c.setLineDash([5,3]); c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+Math.sin(r)*Ln,cy-Math.cos(r)*Ln); c.stroke(); c.setLineDash([]); });
 }
 
 // co-driver feature word for a box's pictograms (mirrors the plugin's signClip)

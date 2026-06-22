@@ -16,16 +16,8 @@ import sys, os, json, subprocess, base64, math, glob
 ROOT = r'D:\BikesRoadbook'
 EXE  = os.path.join(ROOT, r'build\Debug\RoadbookTests.exe')
 SIGNS = os.path.join(ROOT, r'tools\iconpack\png_tulip')
+TULIPS = os.path.join(ROOT, r'web\tulips')   # imported turn-tulip images (per class)
 
-# stock tulip catalog (x:0..1 L->R, y:0..1 where 1=top; entry first) — clean shapes
-# mapped per turn class instead of drawing the raw recorded path.
-TULIP_STOCK = {
- 'start': [(.5,.10),(.5,.84)], 'straight': [(.5,.08),(.5,.92)],
- 'slightL': [(.5,.08),(.5,.52),(.30,.88)], 'slightR': [(.5,.08),(.5,.52),(.70,.88)],
- 'left': [(.5,.08),(.5,.56),(.14,.56)], 'right': [(.5,.08),(.5,.56),(.86,.56)],
- 'sharpL': [(.5,.08),(.5,.60),(.26,.36)], 'sharpR': [(.5,.08),(.5,.60),(.74,.36)],
- 'hairpinL': [(.5,.08),(.5,.70),(.30,.80),(.30,.34)], 'hairpinR': [(.5,.08),(.5,.70),(.70,.80),(.70,.34)],
- 'finish': [(.5,.08),(.5,.80)]}
 def _tulip_bend(pts):
     if not pts or len(pts) < 2: return 90.0
     a, b, c, d = pts[0], pts[1], pts[-2], pts[-1]
@@ -130,6 +122,11 @@ def _b64(code):
     if not os.path.exists(p): return None
     return 'data:image/png;base64,' + base64.b64encode(open(p, 'rb').read()).decode()
 
+def _tulip_b64(code):
+    p = os.path.join(TULIPS, code + '.png')
+    if not os.path.exists(p): return None
+    return 'data:image/png;base64,' + base64.b64encode(open(p, 'rb').read()).decode()
+
 FRENCH = False
 def _abbr(b):
     t = b.get('type')
@@ -147,21 +144,10 @@ def _case_svg(b, idx, x, y, w, h):
     s.append(f'<rect x="{x+5}" y="{y+h-30}" width="{lw*0.62:.0f}" height="22" fill="none" stroke="{LINE}"/><text x="{x+9}" y="{y+h-14}" font-family="monospace" font-size="12" fill="{INK}">{part}</text>')
     s.append(f'<text x="{z1-16}" y="{y+h-12}" font-family="monospace" font-size="11" fill="{INK}" text-anchor="middle">{idx}</text>')
     code = tulip_code(b)
-    pts = TULIP_STOCK.get(code) or b.get('tulip', {}).get('points', [])
-    if len(pts) >= 2:
-        m = 10; uw, uh = cw-2*m, h-2*m
-        P = [(z1+m+p[0]*uw, y+m+(1-p[1])*uh) for p in pts]
-        ps = ' '.join(f'{a:.1f},{c:.1f}' for a, c in P)
-        s.append(f'<polyline points="{ps}" fill="none" stroke="{CYAN}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>')
-        s.append(f'<polyline points="{ps}" fill="none" stroke="{INK}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
-        s.append(f'<circle cx="{P[0][0]:.1f}" cy="{P[0][1]:.1f}" r="3.5" fill="{INK}"/>')
-        ax, ay = P[-1]
-        if code == 'finish':
-            for k in range(-2, 3):
-                s.append(f'<rect x="{ax+k*7-3:.1f}" y="{ay-7:.1f}" width="7" height="9" fill="{INK if k % 2 else "#9a9a9a"}"/>')
-        else:
-            bx, by = P[-2]; dx, dy = ax-bx, ay-by; L = math.hypot(dx, dy) or 1; ux, uy = dx/L, dy/L; px, py = -uy, ux; sz = 10
-            s.append(f'<polygon points="{ax+ux*sz:.1f},{ay+uy*sz:.1f} {ax+px*sz*0.6:.1f},{ay+py*sz*0.6:.1f} {ax-px*sz*0.6:.1f},{ay-py*sz*0.6:.1f}" fill="{INK}"/>')
+    td = _tulip_b64(code)               # imported tulip image (not hand-drawn)
+    if td:
+        ts = min(cw, h) - 14
+        s.append(f'<image href="{td}" x="{z1+(cw-ts)/2:.1f}" y="{y+(h-ts)/2:.1f}" width="{ts:.1f}" height="{ts:.1f}"/>')
     for bd in b.get('branchDeg', []):   # un-taken junction branches (faint dashed spokes)
         r = math.radians(bd); cx = z1 + cw / 2; cy = y + h * 0.5
         ex = cx + math.sin(r) * cw * 0.42; ey = cy - math.cos(r) * cw * 0.42

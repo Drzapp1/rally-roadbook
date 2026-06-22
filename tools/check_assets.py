@@ -63,6 +63,16 @@ def main():
     for i in range(n_models):
         need(P('data', 'icons', f'rb_device{i}.tga'), 'device sprite')
 
+    # turn tulips — parsed from the renderer (kTulipCodes = single source of truth)
+    rt = open(P('src','plugin','render','roadbook_renderer.cpp'), encoding='utf-8', errors='replace').read()
+    tm = re.search(r'kTulipCodes\[kTulipCount\]\s*=\s*\{(.*?)\}', rt, re.S)
+    tcodes = re.findall(r'"([^"]+)"', tm.group(1)) if tm else []
+    if not tcodes: problems.append("tulips: could not parse kTulipCodes from roadbook_renderer.cpp")
+    print(f"turn tulips declared: {len(tcodes)}")
+    for c in tcodes:
+        need(P('data', 'icons', f'rb_tulip_{c}.tga'), 'tulip TGA (in-game)')
+        need(P('web', 'tulips', f'{c}.png'),          'tulip PNG (web)')
+
     # voice clips
     vd = voice_dir()
     if not vd:
@@ -82,7 +92,7 @@ def main():
         for p in problems: print("  -", p)
         return 1
     print(f"PASS: all referenced assets present "
-          f"({len(codes)} signs x2, {n_models} devices, {len(COMPOSER_CLIPS)} clips, 2 fonts).")
+          f"({len(codes)} signs x2, {len(tcodes)} tulips x2, {n_models} devices, {len(COMPOSER_CLIPS)} clips, 2 fonts).")
     return 0
 
 if __name__ == '__main__':

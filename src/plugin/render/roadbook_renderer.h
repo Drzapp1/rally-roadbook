@@ -56,4 +56,10 @@ public:
 // Restart the rally-computer power-on animation (call on session / roadbook load).
 void triggerDeviceBoot();
 
+// Turn-tulip image catalog. The renderer blits rb_tulip_<code>.tga (imported
+// art, classified per turn) instead of drawing the path; DrawInit registers the
+// sprites in THIS order, right after the device models.
+constexpr int kTulipCount = 14;
+extern const char* const kTulipCodes[kTulipCount];
+
 } // namespace render

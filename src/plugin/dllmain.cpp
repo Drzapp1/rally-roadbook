@@ -960,7 +960,10 @@ void RunInit(void* /*_pData*/, int /*_iDataSize*/)
 	try { rblog::line("RunInit"); resetRide(); render::triggerDeviceBoot(); } GUARD_CATCH("RunInit")
 }
 
-void RunDeinit() { try { rblog::line("RunDeinit"); App& a = App::get(); if (a.roadbook.boxes.size() < 2) generateRoadbook(); a.rec.stop(); } GUARD_CATCH("RunDeinit") }
+// NB: never auto-generate/save the roadbook here. Recording auto-starts (RunStart)
+// and the ride trace is kept, but the roadbook is only ever saved from the F4 menu
+// ("Save roadbook now") — never on leaving the session / pressing ESC.
+void RunDeinit() { try { rblog::line("RunDeinit"); App::get().rec.stop(); } GUARD_CATCH("RunDeinit") }
 
 void RunStart()
 {
@@ -1056,11 +1059,20 @@ int DrawInit(int* _piNumSprites, char** _pszSpriteName, int* _piNumFonts, char**
 			spriteBuf += "Roadbook_data\\icons\\rb_arrow.tga";
 			spriteBuf += '\0';
 			++spriteCount;
-			// rally-computer device models (indices kCount+2 .. kCount+21).
+			// rally-computer device models (indices kCount+2 .. kCount+24).
 			for (int mdl = 0; mdl < 23; ++mdl)
 			{
 				spriteBuf += "Roadbook_data\\icons\\rb_device";
 				spriteBuf += std::to_string(mdl);
+				spriteBuf += ".tga";
+				spriteBuf += '\0';
+				++spriteCount;
+			}
+			// imported turn tulips (indices kCount+25 .. kCount+25+kTulipCount-1)
+			for (int t = 0; t < render::kTulipCount; ++t)
+			{
+				spriteBuf += "Roadbook_data\\icons\\rb_tulip_";
+				spriteBuf += render::kTulipCodes[t];
 				spriteBuf += ".tga";
 				spriteBuf += '\0';
 				++spriteCount;
@@ -1217,12 +1229,8 @@ void Draw(int _iState, int* _piNumQuads, void** _ppQuad, int* _piNumString, void
 
 			if (a.roadbook.boxes.size() >= 2)
 				a.renderer.draw(a.draw, font, a.roadbook, a.nav);
-			else
-			{
-				a.draw.rect(0.35f, 0.45f, 0.32f, 0.06f, col::panel);
-				a.draw.text("Ride a lap, then pause (ESC) to build the roadbook",
-				            0.36f, 0.487f, 0.016f, 0, col::white, font);
-			}
+			// else: no roadbook yet — recording runs automatically and silently;
+			// the rider saves it whenever they like from the F4 menu (never ESC).
 		}
 
 		if (a.menu.open)
