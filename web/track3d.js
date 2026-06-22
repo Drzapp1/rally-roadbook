@@ -27,14 +27,43 @@ function onResize(){ const h=host(); if(!h||!ok)return; camera.aspect=(h.clientW
 function animate(){ if(!ok)return; requestAnimationFrame(animate); const dt=Math.min(0.05,clock.getDelta()); if(mode==='fly'&&fly) fly.update(dt); else orbit.update(); renderer.render(scene,camera); }
 function clear(){ for(let i=group.children.length-1;i>=0;i--){ const o=group.children[i]; o.geometry&&o.geometry.dispose(); group.remove(o); } }
 
+// Robust vertical range: PiBoSo heightmaps peg "outside the terrain" cells at
+// exactly 0 or 65535 (no-data sentinels). Normalizing by raw min/max turns those
+// blocks into towering walls / pits. Ignore the pegged extremes and scale by the
+// real terrain's 0.5..99.5 percentile, then clamp — kills the random cliffs while
+// keeping genuine relief (real canyon walls aren't at the encoding's exact max).
+function robustRange(heights){
+  const valid=[];
+  for(let k=0;k<heights.length;k++){ const v=heights[k]; if(v>0 && v<65535) valid.push(v); }
+  if(valid.length < heights.length*0.2){ let lo=Infinity,hi=-Infinity; for(let k=0;k<heights.length;k++){ const v=heights[k]; if(v<lo)lo=v; if(v>hi)hi=v; } return {lo,hi}; }
+  valid.sort((a,b)=>a-b);
+  return { lo: valid[Math.floor(valid.length*0.005)], hi: valid[Math.floor(valid.length*0.995)] };
+}
+
+// Adaptive vertical scale: the heightmaps carry no real metres, so a fixed
+// scale over-exaggerates steep terrain into walls. Size the vertical so the
+// terrain's *typical* slope lands near ~16deg, then clamp — flat tracks gain
+// relief, extreme bimodal desert (Dubai, Empty Quarter) flattens toward sane.
+function autoVScale(heights, lo, hi){
+  const N=Math.round(Math.sqrt(heights.length)), cell=W/(N-1), range=Math.max(1,hi-lo);
+  const nrm=k=>Math.min(1,Math.max(0,(heights[k]-lo)/range));
+  let sum=0, cnt=0;
+  for(let j=1;j<N-1;j++)for(let i=1;i<N-1;i++){ const k=j*N+i;
+    const gx=(nrm(k+1)-nrm(k-1))*0.5, gy=(nrm(k+N)-nrm(k-N))*0.5;
+    sum+=Math.hypot(gx,gy); cnt++; }
+  const rough=Math.max(1e-4, sum/Math.max(1,cnt));
+  const vs=Math.tan(16*Math.PI/180)*cell/rough;
+  return Math.min(W*0.18, Math.max(W*0.035, vs));
+}
+
 function buildTerrain(){
   if(!ok||!CUR) return; clear();
-  const { meta, heights, tex } = CUR; const N=meta.size;
-  let mn=Infinity, mx=-Infinity; for(let k=0;k<heights.length;k++){ const v=heights[k]; if(v<mn)mn=v; if(v>mx)mx=v; }
-  const range=Math.max(1,mx-mn), vScale=W*0.20*EXAG;
+  const { meta, heights, tex, lo, hi, autoVS } = CUR; const N=meta.size;
+  const range=Math.max(1,hi-lo), vScale=autoVS*EXAG;
   const verts=new Float32Array(N*N*3), uvs=new Float32Array(N*N*2);
   for(let j=0;j<N;j++)for(let i=0;i<N;i++){ const k=j*N+i;
-    verts[k*3]=(i/(N-1)-0.5)*W; verts[k*3+1]=(heights[k]-mn)/range*vScale; verts[k*3+2]=(j/(N-1)-0.5)*W;
+    const t=Math.min(1,Math.max(0,(heights[k]-lo)/range));
+    verts[k*3]=(i/(N-1)-0.5)*W; verts[k*3+1]=t*vScale; verts[k*3+2]=(j/(N-1)-0.5)*W;
     uvs[k*2]=i/(N-1); uvs[k*2+1]=1-j/(N-1); }
   const idx=[]; for(let j=0;j<N-1;j++)for(let i=0;i<N-1;i++){ const a=j*N+i,b=a+1,c=a+N,d=c+1; idx.push(a,c,b,b,c,d); }
   const g=new THREE.BufferGeometry();
@@ -54,7 +83,7 @@ function load(id, name){
     fetch(base+'meta.json').then(r=>r.json()),
     fetch(base+'height.bin').then(r=>r.arrayBuffer()).then(b=>new Uint16Array(b)),
     new Promise((res,rej)=>new THREE.TextureLoader().load(base+'aerial.jpg', res, undefined, rej))
-  ]).then(([meta,heights,tex])=>{ CUR={meta,heights,tex}; buildTerrain(); })
+  ]).then(([meta,heights,tex])=>{ const r=robustRange(heights); CUR={meta,heights,tex,...r,autoVS:autoVScale(heights,r.lo,r.hi)}; buildTerrain(); })
     .catch(()=>{ document.getElementById('stat').textContent='Could not load '+(name||id)+' (run from a web server).'; });
 }
 
