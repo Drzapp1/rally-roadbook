@@ -27,10 +27,40 @@ function onResize(){ const h=host(); if(!h||!ok)return; camera.aspect=(h.clientW
 function animate(){ if(!ok)return; requestAnimationFrame(animate); const dt=Math.min(0.05, clock.getDelta()); if(mode==='fly'&&fly) fly.update(dt); else orbit.update(); renderer.render(scene,camera); }
 function clear(){ for(let i=group.children.length-1;i>=0;i--){ const o=group.children[i]; o.geometry&&o.geometry.dispose(); if(o.material){ Array.isArray(o.material)?o.material.forEach(m=>m.dispose()):o.material.dispose(); } group.remove(o); } }
 
-// hypsometric terrain ramp: sand -> earth -> pale rock
-function tRamp(t){ t=Math.max(0,Math.min(1,t));
-  const a=new THREE.Color(0xb7a06b), b=new THREE.Color(0x877247), c=new THREE.Color(0xd9cfb6);
-  return t<0.6 ? a.lerp(b, t/0.6) : b.lerp(c, (t-0.6)/0.4); }
+// procedural ground texture (colour + normal map) chosen by the stage's surface
+const TEXCACHE = {};
+function themeOf(rb){ let s=0,r=0;
+  (rb.boxes||[]).forEach(b=>(b.pictograms||[]).forEach(p=>{
+    if(['sand','dune','dunes','sandpit','camelgrass','chott'].includes(p)) s++;
+    if(['rocks','rocky','cliff','mountain','collapse'].includes(p)) r++; }));
+  return (s>r && s>0) ? 'sand' : (r>0 ? 'rock' : 'earth'); }
+function makeGround(theme){
+  if(TEXCACHE[theme]) return TEXCACHE[theme];
+  const S=256, P=8;
+  const pal = ({ sand:{lo:[150,124,84],mid:[196,170,122],hi:[220,200,158],grain:22},
+                 rock:{lo:[74,67,58],mid:[134,122,107],hi:[178,168,152],grain:30},
+                 earth:{lo:[88,71,46],mid:[150,124,84],hi:[186,162,112],grain:24} })[theme];
+  const h=(a,b)=>{ a=((a%P)+P)%P; b=((b%P)+P)%P; let n=(Math.imul(a,374761393)+Math.imul(b,668265263))|0; n=Math.imul(n^(n>>>13),1274126177); return ((n^(n>>>16))>>>0)/4294967295; };
+  const vn=(x,y)=>{ const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf);
+    const a=h(xi,yi),b=h(xi+1,yi),c=h(xi,yi+1),d=h(xi+1,yi+1); return (a*(1-u)+b*u)*(1-v)+(c*(1-u)+d*u)*v; };
+  const fbm=(x,y)=>{ let s=0,amp=.5,f=1; for(let o=0;o<5;o++){ s+=amp*vn(x*f,y*f); amp*=.5; f*=2; } return s; };
+  const lerp=(A,B,k)=>A+(B-A)*k;
+  const mapCv=document.createElement('canvas'); mapCv.width=mapCv.height=S; const mc=mapCv.getContext('2d'); const mi=mc.createImageData(S,S);
+  const hgt=new Float32Array(S*S);
+  for(let j=0;j<S;j++)for(let i=0;i<S;i++){ const x=i/S*P, y=j/S*P, t=fbm(x,y), g=fbm(x*4+9,y*4+3); hgt[j*S+i]=t;
+    let r,gg,bb; if(t<.5){ const k=t*2; r=lerp(pal.lo[0],pal.mid[0],k); gg=lerp(pal.lo[1],pal.mid[1],k); bb=lerp(pal.lo[2],pal.mid[2],k); }
+    else { const k=(t-.5)*2; r=lerp(pal.mid[0],pal.hi[0],k); gg=lerp(pal.mid[1],pal.hi[1],k); bb=lerp(pal.mid[2],pal.hi[2],k); }
+    const gr=(g-.5)*pal.grain, o=(j*S+i)*4; mi.data[o]=r+gr; mi.data[o+1]=gg+gr; mi.data[o+2]=bb+gr; mi.data[o+3]=255; }
+  mc.putImageData(mi,0,0);
+  const nrmCv=document.createElement('canvas'); nrmCv.width=nrmCv.height=S; const nc=nrmCv.getContext('2d'); const ni=nc.createImageData(S,S);
+  for(let j=0;j<S;j++)for(let i=0;i<S;i++){ const l=hgt[j*S+((i-1+S)%S)],rr=hgt[j*S+((i+1)%S)],u=hgt[((j-1+S)%S)*S+i],dn=hgt[((j+1)%S)*S+i];
+    let nx=(l-rr)*2.5, ny=(u-dn)*2.5, nz=1; const il=1/Math.hypot(nx,ny,nz); nx*=il;ny*=il;nz*=il; const o=(j*S+i)*4;
+    ni.data[o]=(nx*.5+.5)*255; ni.data[o+1]=(ny*.5+.5)*255; ni.data[o+2]=(nz*.5+.5)*255; ni.data[o+3]=255; }
+  nc.putImageData(ni,0,0);
+  const mt=new THREE.CanvasTexture(mapCv), nt=new THREE.CanvasTexture(nrmCv);
+  [mt,nt].forEach(t=>{ t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; });
+  return (TEXCACHE[theme]={ map:mt, normal:nt });
+}
 
 // build (or reuse) a smoothed heightfield from the elevations sampled along the route
 function heightfield(R){
@@ -57,16 +87,18 @@ function build(){
   const { N,x0,x1,z0,z1,minx,maxx,minz,maxz,miny,maxy,H } = hf;
   const cx=(minx+maxx)/2, cz=(minz+maxz)/2, ext=Math.max(maxx-minx,maxz-minz)||1, hS=340/ext, vS=hS*EXAG, relief=Math.max(0.001,maxy-miny);
 
-  // terrain mesh
-  const verts=[],cols=[],idx=[];
+  // terrain mesh with a real ground texture (tiled) + normal map
+  const REP = Math.max(8, Math.min(36, ext/150));
+  const tex = makeGround(themeOf(RB));
+  const verts=[],uvs=[],idx=[];
   for(let j=0;j<N;j++)for(let i=0;i<N;i++){ const wx=x0+(x1-x0)*i/(N-1), wz=z0+(z1-z0)*j/(N-1), e=H[j*N+i];
-    verts.push((wx-cx)*hS, (e-miny)*vS, (wz-cz)*hS); const c=tRamp((e-miny)/relief); cols.push(c.r,c.g,c.b); }
+    verts.push((wx-cx)*hS, (e-miny)*vS, (wz-cz)*hS); uvs.push(i/(N-1)*REP, j/(N-1)*REP); }
   for(let j=0;j<N-1;j++)for(let i=0;i<N-1;i++){ const a=j*N+i,b=a+1,c2=a+N,d=c2+1; idx.push(a,c2,b, b,c2,d); }
   const tg=new THREE.BufferGeometry();
   tg.setAttribute('position', new THREE.Float32BufferAttribute(verts,3));
-  tg.setAttribute('color', new THREE.Float32BufferAttribute(cols,3));
+  tg.setAttribute('uv', new THREE.Float32BufferAttribute(uvs,2));
   tg.setIndex(idx); tg.computeVertexNormals();
-  group.add(new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.97, metalness:0 })));
+  group.add(new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ map:tex.map, normalMap:tex.normal, normalScale:new THREE.Vector2(0.8,0.8), roughness:1, metalness:0 })));
 
   // route draped over the terrain
   const off=Math.max(1.2, relief*vS*0.012);
