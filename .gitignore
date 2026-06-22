@@ -31,6 +31,17 @@ node_modules/
 # Scratch previews
 /sheet_preview.png
 
+# Large device-reference photos (used to model the device shapes; not shipped).
+# The material textures make_device.py bakes in ARE kept (tools/iconpack/textures).
+/tools/iconpack/photos/*.jpg
+/tools/iconpack/photos/*.jpeg
+/tools/iconpack/photos/*.png
+# unused material textures (kept locally as options; not baked into any device)
+/tools/iconpack/textures/dark_matte_leather.jpg
+/tools/iconpack/textures/black_matte_plastic_surface.jpg
+/tools/iconpack/textures/knurled_metal_examples.jpg
+/tools/iconpack/textures/dl_KnurlingExamples.jpg
+
 # Unrelated sibling project (large)
 /GameMap/
 

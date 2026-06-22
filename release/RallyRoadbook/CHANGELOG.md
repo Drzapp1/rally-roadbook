@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.1.0 — imported tulips, photo-real devices, menu-only recording
+
+### Roadbook tulips
+- The turn tulips are now **imported image assets** — a crisp catalog of real
+  roadbook-style tulips (white-cased cyan "piste" route, entry ball, solid
+  arrowhead), classified per turn — replacing the old in-renderer line drawing.
+  Used identically **in-game** (TGA sprites), on the **web viewer**, and in
+  **printed sheets**. 14 classes: straight, slight/sharp L+R, 90&deg; L+R,
+  hairpin L+R, fork L+R, crossroads, start, finish.
+
+### Rally computer — photo-real device skins
+- All **23 device skins** are now rendered from **real Creative-Commons material
+  photos** (carbon-fibre weave, brushed aluminium, knurled metal — attributed in
+  `NOTICE.md`), modulated to each model's colour, with top-down lighting, edge
+  bevels and a recessed screen for real depth. Roadbook-holder models keep their
+  knurled wind-knobs. Same device layout — no in-game behaviour change.
+
+### Recording
+- Removed the on-screen "drive the path / press ESC" prompt. Recording still
+  **auto-starts** when a session begins; the roadbook is now saved **only** from
+  the F4 menu (*Save roadbook now*) — leaving the session / pressing ESC never
+  saves or overwrites.
+
 ## v1.0.0 — public release
 
 The first public-ready release. Everything from the staged build, plus a large

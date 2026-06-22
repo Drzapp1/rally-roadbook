@@ -16,10 +16,15 @@ provided alongside this package to satisfy the GPL's source-availability term.
 | Component | Source | Licence |
 |-----------|--------|---------|
 | Roadbook signs + tulip arrow | tulip (drid) | GPL v2.0-or-later |
+| Turn tulips (`rb_tulip_*`) | this project | GPL v2.0-or-later |
+| Device material textures (carbon / brushed / knurled) | Wikimedia Commons (Acheolg, Twigg, Andrezadnik, McKechnie) | CC BY-SA 2.5 / 3.0 / 4.0 |
 | A few abbreviation glyphs | "Rally Symbols" font (dafont, free) | free for use |
 | Fonts (Roboto Mono) | Google Fonts | Apache-2.0 |
 | JSON (nlohmann/json) | nlohmann | MIT |
 | Plugin source, device chrome, web/CLI companions | this project | GPL v2.0-or-later |
+
+> The device skins (`rb_device*.tga`) bake in **CC BY-SA** photo textures, so
+> those skins are share-alike (see `Roadbook_data/NOTICE.md` for attribution).
 
 ## Note on the plugin's own code
 

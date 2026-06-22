@@ -40,7 +40,8 @@ foreach ($t in @("rbtool.py","make_scenarios.py","make_real_stages.py","make_voi
 # 2b) content gate: every bundled roadbook must pass `rbtool validate` (no malformed
 #     schema, non-monotonic distance, out-of-range CAP, coincident boxes, NaN, etc.)
 $books = Get-ChildItem -Recurse -Filter *.json -ErrorAction SilentlyContinue `
-  (Join-Path $rel "web\roadbooks"), (Join-Path $rel "content\scenarios"), (Join-Path $rel "example-roadbooks")
+  (Join-Path $rel "web\roadbooks"), (Join-Path $rel "content\scenarios"), (Join-Path $rel "example-roadbooks") `
+  | Where-Object { $_.Name -ne 'manifest.json' }   # library index, not a roadbook
 $badBooks = @()
 foreach ($b in $books) {
   & python (Join-Path $root "tools\rbtool.py") validate $b.FullName | Out-Null
