@@ -1,0 +1,80 @@
+[
+ {
+  "name": "Desert Loop",
+  "file": "roadbook_stage_desert_loop.json",
+  "km": 3.04,
+  "boxes": 16,
+  "signs": [
+   "bump",
+   "bumpy",
+   "dip"
+  ]
+ },
+ {
+  "name": "Mountain Pass",
+  "file": "roadbook_stage_mountain_pass.json",
+  "km": 1.95,
+  "boxes": 11,
+  "signs": [
+   "bumpy"
+  ]
+ },
+ {
+  "name": "Coastal Sprint",
+  "file": "roadbook_stage_coastal_sprint.json",
+  "km": 3.76,
+  "boxes": 14,
+  "signs": []
+ },
+ {
+  "name": "Canyon Run",
+  "file": "roadbook_stage_canyon_run.json",
+  "km": 1.75,
+  "boxes": 11,
+  "signs": [
+   "bumpy",
+   "dip"
+  ]
+ },
+ {
+  "name": "River Delta",
+  "file": "roadbook_stage_river_delta.json",
+  "km": 1.91,
+  "boxes": 11,
+  "signs": [
+   "bumpy",
+   "dip"
+  ]
+ },
+ {
+  "name": "High Plateau",
+  "file": "roadbook_stage_high_plateau.json",
+  "km": 4.08,
+  "boxes": 16,
+  "signs": [
+   "bump",
+   "bumpy",
+   "dip"
+  ]
+ },
+ {
+  "name": "Forest Track",
+  "file": "roadbook_stage_forest_track.json",
+  "km": 0.9,
+  "boxes": 7,
+  "signs": [
+   "bumpy"
+  ]
+ },
+ {
+  "name": "Big Dunes",
+  "file": "roadbook_stage_big_dunes.json",
+  "km": 1.9,
+  "boxes": 9,
+  "signs": [
+   "bump",
+   "bumpy",
+   "dip"
+  ]
+ }
+]

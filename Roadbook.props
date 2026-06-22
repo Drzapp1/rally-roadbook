@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared user macros. Override MXBPath on the command line
+     (/p:MXBPath="...") or by editing this file if your install differs. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <MXBPath Condition="'$(MXBPath)'==''">C:\Program Files (x86)\Steam\steamapps\common\MX Bikes</MXBPath>
+    <MXBPluginsPath>$(MXBPath)\plugins</MXBPluginsPath>
+  </PropertyGroup>
+</Project>

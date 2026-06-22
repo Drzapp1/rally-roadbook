@@ -1,0 +1,67 @@
+{
+  "caution": {
+    "path": "lorc/hazard-sign.svg",
+    "author": "lorc",
+    "name": "hazard-sign"
+  },
+  "crest": {
+    "path": "lorc/mountains.svg",
+    "author": "lorc",
+    "name": "mountains"
+  },
+  "dip": {
+    "path": "lorc/valley.svg",
+    "author": "lorc",
+    "name": "valley"
+  },
+  "bump": {
+    "path": "delapouite/hills.svg",
+    "author": "delapouite",
+    "name": "hills"
+  },
+  "hole": {
+    "path": "delapouite/hole.svg",
+    "author": "delapouite",
+    "name": "hole"
+  },
+  "rocks": {
+    "path": "delapouite/stone-pile.svg",
+    "author": "delapouite",
+    "name": "stone-pile"
+  },
+  "ruts": {
+    "path": "delapouite/tire-tracks.svg",
+    "author": "delapouite",
+    "name": "tire-tracks"
+  },
+  "water": {
+    "path": "sbed/water-drop.svg",
+    "author": "sbed",
+    "name": "water-drop"
+  },
+  "jump": {
+    "path": "delapouite/jump-across.svg",
+    "author": "delapouite",
+    "name": "jump-across"
+  },
+  "narrow": {
+    "path": "delapouite/road.svg",
+    "author": "delapouite",
+    "name": "road"
+  },
+  "fork": {
+    "path": "delapouite/split-arrows.svg",
+    "author": "delapouite",
+    "name": "split-arrows"
+  },
+  "gate": {
+    "path": "delapouite/gate.svg",
+    "author": "delapouite",
+    "name": "gate"
+  },
+  "arrow": {
+    "path": "delapouite/plain-arrow.svg",
+    "author": "delapouite",
+    "name": "plain-arrow"
+  }
+}

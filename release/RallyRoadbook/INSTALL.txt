@@ -1,0 +1,6 @@
+MX Bikes Rally Roadbook - install
+1. Copy 'Roadbook.dlo' + the 'Roadbook_data' folder into your MX Bikes plugins folder.
+2. Launch MX Bikes; open the in-game menu with F4.
+3. (optional) Copy files from example-roadbooks\ into your Roadbook\import\ folder, then F4 -> Roadbooks -> import.
+Convert a real GPX route: python tools\gpx_to_roadbook.py <file.gpx>
+Coexists with MaxHUD / mxbmrp3. See README.md.

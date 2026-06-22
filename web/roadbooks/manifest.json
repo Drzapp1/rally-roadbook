@@ -1,0 +1,254 @@
+[
+ {
+  "id": "rally_baja_sanfelipe",
+  "file": "roadbooks/roadbook_rally_baja_sanfelipe.json",
+  "name": "Baja 500 — San Felipe (MX)",
+  "group": "Real rally stages",
+  "km": 6.72,
+  "boxes": 34,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "rally_empty_quarter",
+  "file": "roadbooks/roadbook_rally_empty_quarter.json",
+  "name": "Dakar — Empty Quarter (SA)",
+  "group": "Real rally stages",
+  "km": 10.36,
+  "boxes": 54,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "rally_erzberg",
+  "file": "roadbooks/roadbook_rally_erzberg.json",
+  "name": "Erzbergrodeo Prologue (AT)",
+  "group": "Real rally stages",
+  "km": 2.05,
+  "boxes": 12,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "rally_finke",
+  "file": "roadbooks/roadbook_rally_finke.json",
+  "name": "Finke Desert Race (AU)",
+  "group": "Real rally stages",
+  "km": 4.7,
+  "boxes": 22,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "rally_hellas_crete",
+  "file": "roadbooks/roadbook_rally_hellas_crete.json",
+  "name": "Hellas Rally — Crete (GR)",
+  "group": "Real rally stages",
+  "km": 3.15,
+  "boxes": 16,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "rally_merzouga",
+  "file": "roadbooks/roadbook_rally_merzouga.json",
+  "name": "Merzouga — Erg Chebbi (MA)",
+  "group": "Real rally stages",
+  "km": 7,
+  "boxes": 39,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "almeria",
+  "file": "roadbooks/roadbook_almeria.json",
+  "name": "almeria",
+  "group": "Tracks",
+  "km": 7.38,
+  "boxes": 36,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "alps",
+  "file": "roadbooks/roadbook_alps.json",
+  "name": "alps",
+  "group": "Tracks",
+  "km": 0.87,
+  "boxes": 9,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "union_demo",
+  "file": "roadbooks/roadbook_union_demo.json",
+  "name": "Dune junctions (3-ride union)",
+  "group": "Tracks",
+  "km": 5.94,
+  "boxes": 72,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "KBOLTZ_DUNED_II",
+  "file": "roadbooks/roadbook_KBOLTZ_DUNED_II.json",
+  "name": "KBOLTZ_DUNED_II",
+  "group": "Tracks",
+  "km": 5.94,
+  "boxes": 71,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "MOTOBROS-PUNTA-GORDA",
+  "file": "roadbooks/roadbook_MOTOBROS-PUNTA-GORDA.json",
+  "name": "MOTOBROS-PUNTA-GORDA",
+  "group": "Tracks",
+  "km": 4.49,
+  "boxes": 63,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "stage01",
+  "file": "roadbooks/roadbook_stage01.json",
+  "name": "stage01",
+  "group": "Tracks",
+  "km": 3.23,
+  "boxes": 24,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "stage_big_dunes",
+  "file": "roadbooks/roadbook_stage_big_dunes.json",
+  "name": "Big Dunes",
+  "group": "GPX stages",
+  "km": 1.9,
+  "boxes": 9,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "stage_canyon_run",
+  "file": "roadbooks/roadbook_stage_canyon_run.json",
+  "name": "Canyon Run",
+  "group": "GPX stages",
+  "km": 1.75,
+  "boxes": 11,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "stage_coastal_sprint",
+  "file": "roadbooks/roadbook_stage_coastal_sprint.json",
+  "name": "Coastal Sprint",
+  "group": "GPX stages",
+  "km": 3.76,
+  "boxes": 14,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "stage_desert_loop",
+  "file": "roadbooks/roadbook_stage_desert_loop.json",
+  "name": "Desert Loop",
+  "group": "GPX stages",
+  "km": 3.04,
+  "boxes": 16,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "stage_forest_track",
+  "file": "roadbooks/roadbook_stage_forest_track.json",
+  "name": "Forest Track",
+  "group": "GPX stages",
+  "km": 0.9,
+  "boxes": 7,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "stage_high_plateau",
+  "file": "roadbooks/roadbook_stage_high_plateau.json",
+  "name": "High Plateau",
+  "group": "GPX stages",
+  "km": 4.08,
+  "boxes": 16,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "stage_mountain_pass",
+  "file": "roadbooks/roadbook_stage_mountain_pass.json",
+  "name": "Mountain Pass",
+  "group": "GPX stages",
+  "km": 1.95,
+  "boxes": 11,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "stage_river_delta",
+  "file": "roadbooks/roadbook_stage_river_delta.json",
+  "name": "River Delta",
+  "group": "GPX stages",
+  "km": 1.91,
+  "boxes": 11,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "drill_crest_dip",
+  "file": "roadbooks/roadbook_drill_crest_dip.json",
+  "name": "Practice: crest dip",
+  "group": "Practice drills",
+  "km": 0.44,
+  "boxes": 6,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "drill_esses",
+  "file": "roadbooks/roadbook_drill_esses.json",
+  "name": "Practice: esses",
+  "group": "Practice drills",
+  "km": 0.57,
+  "boxes": 9,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "drill_hairpins",
+  "file": "roadbooks/roadbook_drill_hairpins.json",
+  "name": "Practice: hairpins",
+  "group": "Practice drills",
+  "km": 0.41,
+  "boxes": 7,
+  "difficulty": "Expert"
+ },
+ {
+  "id": "drill_junctions",
+  "file": "roadbooks/roadbook_drill_junctions.json",
+  "name": "Practice: junctions",
+  "group": "Practice drills",
+  "km": 0.68,
+  "boxes": 7,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "drill_long_mixed",
+  "file": "roadbooks/roadbook_drill_long_mixed.json",
+  "name": "Practice: long mixed",
+  "group": "Practice drills",
+  "km": 1.51,
+  "boxes": 11,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "drill_mixed",
+  "file": "roadbooks/roadbook_drill_mixed.json",
+  "name": "Practice: mixed",
+  "group": "Practice drills",
+  "km": 0.6,
+  "boxes": 6,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "drill_slalom",
+  "file": "roadbooks/roadbook_drill_slalom.json",
+  "name": "Practice: slalom",
+  "group": "Practice drills",
+  "km": 0.41,
+  "boxes": 10,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "drill_technical",
+  "file": "roadbooks/roadbook_drill_technical.json",
+  "name": "Practice: technical",
+  "group": "Practice drills",
+  "km": 0.49,
+  "boxes": 6,
+  "difficulty": "Expert"
+ }
+]

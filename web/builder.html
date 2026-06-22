@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rally Roadbook — Route Builder</title>
+<style>
+  :root{ --bg:#14161b; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --paper:#f3f1ea; --cyan:#28b9eb; --pink:#cd2620; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; font-size:14px; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  .sp{ flex:1; }
+  input,button,select{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:7px 11px; font-size:13px; }
+  button{ cursor:pointer; } button:hover{ border-color:var(--accent); }
+  button.acc{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:1180px; margin:0 auto; padding:16px 18px 40px; }
+  .toolbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px; }
+  .toolbar label{ color:var(--dim); font-size:12px; display:flex; align-items:center; gap:7px; }
+  #stat{ color:var(--dim); font-size:13px; } #stat b{ color:var(--ink); }
+  #cv{ width:100%; height:auto; aspect-ratio:3/2; background:#11141a; border:1px solid var(--line); border-radius:10px; cursor:crosshair; display:block; }
+  .hint{ color:var(--dim); font-size:12px; margin:8px 2px 16px; }
+  h2{ font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin:18px 0 8px; }
+  #strip{ display:flex; gap:8px; flex-wrap:wrap; }
+  #strip .cell{ width:86px; height:120px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.35); }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · BUILDER</h1>
+  <nav><a href="index.html">Explore</a><a href="builder.html" class="on">Build a route</a></nav>
+  <div class="sp"></div>
+  <input id="name" placeholder="Route name" value="My route" style="width:190px">
+  <button id="save">Download .json</button>
+  <button id="view" class="acc">Open in viewer ↗</button>
+</header>
+<main>
+  <div class="toolbar">
+    <label>Scale <input id="scale" type="range" min="2" max="30" value="8" style="width:120px"> <span id="scaleOut">8 m/px</span></label>
+    <button id="undo">Undo point</button>
+    <button id="clear">Clear</button>
+    <div class="sp"></div>
+    <div id="stat"></div>
+  </div>
+  <canvas id="cv" width="900" height="600"></canvas>
+  <p class="hint">Click to drop waypoints and draw your route (green = start, red = finish). Drag a point to move it · double-click a point to delete. The roadbook below regenerates live — turns are classified into stock tulips, distances + CAP headings + danger marks are computed automatically. Then <b>Download .json</b> (import in-game via <code>Roadbook\import\</code>) or <b>Open in viewer</b>.</p>
+  <h2>Generated roadbook</h2>
+  <div id="strip"></div>
+</main>
+<script src="builder.js"></script>
+</body>
+</html>
