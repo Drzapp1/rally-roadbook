@@ -1,0 +1,94 @@
+[
+ {
+  "id": 0,
+  "name": "Carbon"
+ },
+ {
+  "id": 1,
+  "name": "Tablet"
+ },
+ {
+  "id": 2,
+  "name": "Classic"
+ },
+ {
+  "id": 3,
+  "name": "Stealth"
+ },
+ {
+  "id": 4,
+  "name": "Desert"
+ },
+ {
+  "id": 5,
+  "name": "Night"
+ },
+ {
+  "id": 6,
+  "name": "Retro"
+ },
+ {
+  "id": 7,
+  "name": "Enduro"
+ },
+ {
+  "id": 8,
+  "name": "Titanium"
+ },
+ {
+  "id": 9,
+  "name": "Forest"
+ },
+ {
+  "id": 10,
+  "name": "Crimson"
+ },
+ {
+  "id": 11,
+  "name": "Ocean"
+ },
+ {
+  "id": 12,
+  "name": "Sandstone"
+ },
+ {
+  "id": 13,
+  "name": "Mono"
+ },
+ {
+  "id": 14,
+  "name": "Gold"
+ },
+ {
+  "id": 15,
+  "name": "Ranger"
+ },
+ {
+  "id": 16,
+  "name": "Ice"
+ },
+ {
+  "id": 17,
+  "name": "Copper"
+ },
+ {
+  "id": 18,
+  "name": "Lime"
+ },
+ {
+  "id": 19,
+  "name": "Navy"
+ },
+ {
+  "id": 20,
+  "name": "RaidNav"
+ },
+ {
+  "id": 21,
+  "name": "Tripmaster"
+ },
+ {
+  "id": 22,
+  "name": "RallyeF2"
+ }
+]

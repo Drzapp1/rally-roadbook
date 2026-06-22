@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rally Roadbook — Rally Computers</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ padding:20px; max-width:1280px; margin:0 auto; }
+  .lead{ color:var(--dim); font-size:14px; margin:0 0 18px; max-width:760px; line-height:1.5; }
+  .lead b{ color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:16px; }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center; transition:transform .12s, border-color .12s; }
+  .card:hover{ transform:translateY(-3px); border-color:var(--accent); }
+  .card img{ width:100%; height:auto; border-radius:7px; display:block; }
+  .card .nm{ margin-top:9px; font-size:13px; font-weight:600; letter-spacing:.3px; }
+  .card .tag{ color:var(--dim); font-size:11px; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · RALLY COMPUTERS</h1>
+  <nav>
+    <a href="index.html">Explore</a><a href="track3d.html">Real terrain</a>
+    <a href="map3d.html">Route 3D</a><a href="devices.html" class="on">Devices</a><a href="builder.html">Build</a>
+  </nav>
+</header>
+<main>
+  <p class="lead">The in-game roadbook can be shown on any of <b>23 rally-computer skins</b>.
+  Each body's finish is rendered from a <b>real Creative-Commons material photo</b>
+  (carbon-fibre weave, brushed aluminium, knurled metal) with lit bevels and a recessed
+  screen. The roadbook-holder models (RaidNav, Tripmaster) carry knurled wind-knobs.
+  Pick one in-game from <b>F4 → Rally computer</b>. (Preview shows a sample roadbook on the screen.)</p>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>Device material textures: Wikimedia Commons (CC BY-SA) — see NOTICE. Tulips + chrome original to this project.</footer>
+<script>
+const TAG = { Tablet:'modern', RallyeF2:'modern', RaidNav:'roadbook holder', Tripmaster:'roadbook holder', Classic:'classic ICO' };
+fetch('devices/manifest.json').then(r=>r.json()).then(list=>{
+  const g=document.getElementById('grid');
+  list.forEach(d=>{
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<img loading="lazy" src="devices/device${d.id}.jpg" alt="${d.name}">`
+      +`<div class="nm">${d.name}</div><div class="tag">${TAG[d.name]||'finish'}</div>`;
+    g.appendChild(c);
+  });
+}).catch(()=>{ document.getElementById('grid').innerHTML='<p style="color:#8b919c">Run tools/iconpack/make_device_web.py to generate device previews.</p>'; });
+</script>
+</body>
+</html>
