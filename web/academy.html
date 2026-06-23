@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1016">
 <title>Rally Roadbook — Academy</title>
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/academy.html">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -100,12 +101,12 @@ function round(){
   $('next').classList.remove('show');
   if(mode==='name'){
     $('q').textContent='What turn is this?';
-    $('prompt').innerHTML=`<img class="prompt-img" src="tulips/${correct}.png" alt="tulip">`;
+    $('prompt').innerHTML=`<img loading="lazy" decoding="async" class="prompt-img" src="tulips/${correct}.png" alt="tulip">`;
     opts.forEach(c=>{ const b=document.createElement('button'); b.className='choice'; b.textContent=TULIPS[c]; b.onclick=()=>answer(b,c); ch.appendChild(b); });
   } else {
     $('q').textContent='Which tulip is this?';
     $('prompt').innerHTML=`<div class="prompt-name">${TULIPS[correct]}</div>`;
-    opts.forEach(c=>{ const b=document.createElement('button'); b.className='choice img'; b.innerHTML=`<img src="tulips/${c}.png" alt="${c}">`; b.onclick=()=>answer(b,c); ch.appendChild(b); });
+    opts.forEach(c=>{ const b=document.createElement('button'); b.className='choice img'; b.innerHTML=`<img loading="lazy" decoding="async" src="tulips/${c}.png" alt="${c}">`; b.onclick=()=>answer(b,c); ch.appendChild(b); });
   }
 }
 function answer(btn, code){

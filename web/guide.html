@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1016">
 <title>Rally Roadbook — Roadbook 101</title>
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/guide.html">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -66,7 +67,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   <div class="panel">
     <div class="box">
       <div class="col l"><div class="tot">12,84</div><div class="part">540</div></div>
-      <div class="col c"><img src="tulips/right.png" alt="tulip"></div>
+      <div class="col c"><img loading="lazy" decoding="async" src="tulips/right.png" alt="tulip"></div>
       <div class="col r"><div class="cap">R</div><div class="deg">CAP 087</div><div class="dl">!</div></div>
     </div>
     <div class="legend">
@@ -114,7 +115,7 @@ const TULIPS=[['straight','straight'],['slightL','slight left'],['slightR','slig
 const SIGNS=[['caution','caution !'],['danger2','danger !!'],['danger3','danger !!!'],['dune','dune'],['dunes','dunes'],['water','water'],['rocks','rocks'],['jump','jump'],['bridge','bridge'],['gate','gate'],['narrow','narrows'],['deadend','dead end']];
 function fill(id, list, dir, cls){ const g=document.getElementById(id);
   list.forEach(([c,n])=>{ const t=document.createElement('div'); t.className='tile'+(cls?' '+cls:'');
-    t.innerHTML=`<img src="${dir}/${c}.png" alt="${n}" onerror="this.parentElement.style.display='none'"><span>${n}</span>`; g.appendChild(t); }); }
+    t.innerHTML=`<img loading="lazy" decoding="async" src="${dir}/${c}.png" alt="${n}" onerror="this.parentElement.style.display='none'"><span>${n}</span>`; g.appendChild(t); }); }
 fill('tulips', TULIPS, 'tulips');
 fill('signs', SIGNS, 'signs', 'sign');
 </script>

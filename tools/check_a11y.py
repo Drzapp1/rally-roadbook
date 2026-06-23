@@ -17,6 +17,7 @@ for f in pages:
     if not re.search(r'<html[^>]*\blang=', s): problems.append(f'{n}: <html> missing lang')
     if '<title>' not in s: problems.append(f'{n}: missing <title>')
     if 'name="viewport"' not in s: problems.append(f'{n}: missing viewport meta')
+    if not re.search(r'<meta\s+name="description"', s): problems.append(f'{n}: missing meta description')
     for t in re.findall(r'<img\b[^>]*>', s):
         if 'alt=' not in t: problems.append(f'{n}: <img> without alt -> {t[:64]}')
 
@@ -25,4 +26,4 @@ if problems:
     print(f'FAIL: {len(problems)} issue(s):')
     for p in problems: print('  -', p)
     sys.exit(1)
-print('PASS: lang + title + viewport + every img alt present.')
+print('PASS: lang + title + viewport + description + every img alt present.')

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1016">
 <title>Rally Roadbook — Stage Generator</title>
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/generate.html">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -105,11 +106,11 @@ function render(){
   const g=document.getElementById('grid'); g.innerHTML='';
   RB.boxes.forEach(b=>{
     const part=b.type==='start'?'0,00':(b.type==='finish'?'END':b.distPartialM+' m');
-    const sg=(b.pictograms||[]).map(c=>`<img src="signs/${c}.png" onerror="this.remove()" alt="${c}">`).join('');
+    const sg=(b.pictograms||[]).map(c=>`<img loading="lazy" decoding="async" src="signs/${c}.png" onerror="this.remove()" alt="${c}">`).join('');
     const dl=b.dangerLevel?`<div class="dl">${'!'.repeat(b.dangerLevel)}</div>`:'';
     const el=document.createElement('div'); el.className='cell';
     el.innerHTML=`<div class="l"><span class="idx">${b.index}</span><div class="tot">${comma(b.distTotalKm)}</div><div class="part">${part}</div></div>`
-      +`<div class="c"><img src="tulips/${tc(b)}.png" alt=""></div>`
+      +`<div class="c"><img loading="lazy" decoding="async" src="tulips/${tc(b)}.png" alt=""></div>`
       +`<div class="r"><div class="cap">${ab(b)}</div><div class="deg">${String(b.capDeg).padStart(3,'0')}</div>${dl}<div class="sg">${sg}</div></div>`;
     g.appendChild(el);
   });

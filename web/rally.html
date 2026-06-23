@@ -9,6 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/rally-192.png">
 <title>Rally Roadbook — Device</title>
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/rally.html">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -76,11 +77,11 @@ function render(rb){
   document.getElementById('km').textContent=km?km.toFixed(2)+' km · '+boxes.length+' boxes':'';
   boxes.forEach((b,i)=>{
     const part=b.type==='start'?'0,00':(b.type==='finish'?'END':String(Math.round(b.distPartialM||0)));
-    const sgs=(b.pictograms||[]).slice(0,3).map(c=>`<img src="signs/${c}.png" alt="${c}" onerror="this.remove()">`).join('');
+    const sgs=(b.pictograms||[]).slice(0,3).map(c=>`<img loading="lazy" decoding="async" src="signs/${c}.png" alt="${c}" onerror="this.remove()">`).join('');
     const dl=b.dangerLevel?`<div class="dl">${'!'.repeat(b.dangerLevel)}</div>`:'';
     const el=document.createElement('div'); el.className='cell';
     el.innerHTML=`<div class="col dist"><div class="tot">${comma(b.distTotalKm)}</div><div class="part">${part}</div></div>`
-      +`<div class="col tul"><span class="idx">${i}</span><img class="t" src="tulips/${code(b)}.png" alt="${code(b)}"><div class="signs">${sgs}</div></div>`
+      +`<div class="col tul"><span class="idx">${i}</span><img loading="lazy" decoding="async" class="t" src="tulips/${code(b)}.png" alt="${code(b)}"><div class="signs">${sgs}</div></div>`
       +`<div class="col cap"><div class="abbr">${abbr(b)}</div><div class="deg">${String(b.capDeg||0).padStart(3,'0')}</div>${dl}</div>`;
     strip.appendChild(el);
   });

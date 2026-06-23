@@ -303,6 +303,9 @@ mentor matching.
 - **Wave 17 · Accessibility** *(Quality)* — a keyboard `:focus-visible` ring and a
   `prefers-reduced-motion` guard on every page, plus `check_a11y.py` (lang + title +
   viewport + img-alt) wired into the deploy gate beside the link check.
+- **Wave 18 · SEO & perf completeness** *(Reach)* — a `rel="canonical"` on every
+  page, meta descriptions filled in where missing, and `loading="lazy"`/`decoding="async"`
+  on remaining images. The page-basics gate now also requires a meta description.
 
 ---
 
