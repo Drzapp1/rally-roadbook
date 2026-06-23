@@ -401,6 +401,9 @@ mentor matching.
   reference of the 14 tulips, danger marks, CAP, and ~36 common signs with
   meanings, with a print stylesheet + Print/Save-PDF button. Eager-loaded so it
   prints complete. Browser-verified (51 symbols render).
+- **Wave 42 · Onboarding path** *(UX)* — the home hub now greets first-time
+  visitors with a "New here? Start with the Guide → Cheat-sheet → Academy" path
+  (returning visitors still get their progress strip). Browser-verified both states.
 
 ---
 
