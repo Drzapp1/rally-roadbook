@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { tulipCode } from './roadbook.js';
 
 let scene, camera, renderer, orbit, fly, group, clock, ok=false, mode='orbit';
-let RB=null, EXAG=14, HF=null;            // HF = cached heightfield for the current map
+let RB=null, EXAG=14, HF=null, noteGroup=null, NOTES_ON=true;   // HF = cached heightfield; noteGroup = roadbook billboards
 const host = () => document.getElementById('view');
 
 function init(){
@@ -79,6 +80,17 @@ function heightfield(R){
   HF={ rb:RB, N, x0,x1,z0,z1, minx,maxx,minz,maxz,miny,maxy, H }; return HF;
 }
 
+function roundRect(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function noteSprite(b){                                   // a floating roadbook-note billboard: tulip + first sign
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d');
+  g.fillStyle = 'rgba(18,22,30,.92)'; roundRect(g, 3, 3, 122, 122, 16); g.fill();
+  g.lineWidth = 5; g.strokeStyle = b.dangerLevel >= 2 ? '#e7574e' : b.dangerLevel ? '#e0902a' : 'rgba(255,176,40,.7)'; roundRect(g, 3, 3, 122, 122, 16); g.stroke();
+  const tex = new THREE.CanvasTexture(cv);
+  const img = new Image(); img.src = 'tulips/' + tulipCode(b) + '.png'; img.onload = () => { g.drawImage(img, 16, 8, 96, 96); tex.needsUpdate = true; };
+  const sg = (b.pictograms || [])[0];
+  if (sg){ const si = new Image(); si.src = 'signs/' + sg + '.png'; si.onload = () => { g.fillStyle = '#0e1218'; g.beginPath(); g.arc(99, 99, 23, 0, 7); g.fill(); g.drawImage(si, 82, 82, 34, 34); tex.needsUpdate = true; }; }
+  return new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+}
 function build(){
   if(!ok) return; clear(); if(!RB) return;
   const R=RB.route||[]; const stat=document.getElementById('stat');
@@ -116,11 +128,19 @@ function build(){
   // waypoint markers by distance
   const cum=R.map(p=>p[2]); const totalM=cum[cum.length-1]||1;
   const atD=dM=>{ for(let i=1;i<R.length;i++) if(cum[i]>=dM) return pts[i]; return pts[pts.length-1]; };
+  noteGroup=new THREE.Group(); noteGroup.visible=NOTES_ON;
+  const SPR=Math.max(18, off*9+14), OFF=SPR*0.95;        // billboard size + height above the route
   (RB.boxes||[]).forEach(b=>{ const p=atD((b.distTotalKm||0)*1000); if(!p)return; let col=0xe9eef6,r=1.6;
     if(b.type==='start'){col=0x1f9d4e;r=3.4;} else if(b.type==='finish'){col=0xcd2620;r=3.4;}
     else if(b.dangerLevel>=2){col=0xcd2620;r=2.5;} else if(b.dangerLevel){col=0xe0902a;r=2.2;} else if(b.type==='hairpin'){col=0xffb028;r=2.3;}
     const m=new THREE.Mesh(new THREE.SphereGeometry(r,14,14), new THREE.MeshStandardMaterial({ color:col, emissive:col, emissiveIntensity:.35, roughness:.4 }));
-    m.position.copy(p); group.add(m); });
+    m.position.copy(p); group.add(m);
+    if(b.type==='turn'||b.type==='hairpin'||b.type==='start'||b.type==='finish'){
+      const sp=noteSprite(b); sp.position.set(p.x, p.y+OFF, p.z); sp.scale.set(SPR,SPR,1); noteGroup.add(sp);
+      const lg=new THREE.BufferGeometry().setFromPoints([p, new THREE.Vector3(p.x, p.y+OFF-SPR*0.5, p.z)]);
+      noteGroup.add(new THREE.Line(lg, new THREE.LineBasicMaterial({ color:0x3ec6ff, transparent:true, opacity:.45 })));
+    } });
+  group.add(noteGroup);
 
   const yc=relief*vS*0.5; orbit.target.set(0,yc,0); camera.position.set(320, 200+yc, 320); orbit.update();
   stat.innerHTML=`<b>${RB.trackName||(RB.meta&&RB.meta.trackName)||'route'}</b> — ${(totalM/1000).toFixed(2)} km · ▲ ${Math.round(maxy-miny)} m relief`;
@@ -154,5 +174,6 @@ fetch('roadbooks/manifest.json').then(r=>r.json()).then(m=>{
 
 document.getElementById('exag').oninput=e=>{ EXAG=+e.target.value; document.getElementById('exagOut').textContent=EXAG+'×'; if(RB) build(); };
 document.getElementById('modeBtn').onclick=()=> setMode(mode==='orbit'?'fly':'orbit');
+document.getElementById('notesBtn').onclick=e=>{ NOTES_ON=!NOTES_ON; e.target.classList.toggle('on',NOTES_ON); if(noteGroup) noteGroup.visible=NOTES_ON; };
 
 init();

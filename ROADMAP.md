@@ -475,6 +475,11 @@ mentor matching.
   terrain" section (make_terrain_stage / make_procedural_stage, terrain-following +
   elevation signs, the 64-roadbook library) to web/README, and updated the root
   README’s companion summary. Confirmed the new signs already render in the viewer.
+- **Wave 58 · 3D roadbook overlay** *(Visualization)* — `map3d.html` now floats the actual
+  roadbook over the draped 3D route: each navigable box (turn/hairpin/start/finish) gets
+  a billboard showing its tulip + first sign (danger-coloured), connected to the route,
+  so a generated stage can be "flown" in 3D with its notes in place. A "Roadbook notes"
+  toggle declutters. Ties the generated terrain + route + roadbook together in one view.
 
 ---
 
