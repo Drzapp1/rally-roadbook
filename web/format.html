@@ -154,7 +154,7 @@ $('val').onclick=run;
 $('clr').onclick=()=>{ $('json').value=''; $('verdict').className=''; $('issues').innerHTML=''; };
 fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
   const sel=$('lib'); list.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=m.name; sel.appendChild(o); });
-  sel.onchange=()=>{ if(!sel.value)return; fetch('roadbooks/'+sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; run(); }); };
+  sel.onchange=()=>{ if(!sel.value)return; fetch(sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; run(); }); };
 }).catch(()=>{});
 </script>
 </body>

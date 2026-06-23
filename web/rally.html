@@ -82,7 +82,7 @@ function render(rb){
   });
   if(!boxes.length) strip.innerHTML='<div id="hint">Empty roadbook.</div>';
 }
-function load(file){ fetch('roadbooks/'+file).then(r=>r.json()).then(render)
+function load(file){ fetch(file).then(r=>r.json()).then(render)
   .catch(()=>{ document.getElementById('strip').innerHTML='<div id="hint">Could not load (run from a web server).</div>'; }); }
 fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
   const pick=document.getElementById('pick');

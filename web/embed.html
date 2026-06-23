@@ -67,8 +67,8 @@ function fromText(){ try { show(JSON.parse($('json').value)); } catch(e){ const 
 $('render').onclick = fromText;
 fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
   const sel=$('lib'); list.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=m.name; sel.appendChild(o); });
-  sel.onchange=()=>{ if(!sel.value)return; fetch('roadbooks/'+sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; fromText(); }); };
-  if(list[0]){ sel.value=list[0].file; fetch('roadbooks/'+list[0].file).then(r=>r.json()).then(show); }
+  sel.onchange=()=>{ if(!sel.value)return; fetch(sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; fromText(); }); };
+  if(list[0]){ sel.value=list[0].file; fetch(list[0].file).then(r=>r.json()).then(show); }
 }).catch(()=>{});
 $('snippet').textContent =
 `<div id="roadbook"></div>
