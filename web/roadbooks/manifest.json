@@ -1,5 +1,85 @@
 [
  {
+  "id": "terrain_adriatic",
+  "file": "roadbooks/roadbook_terrain_adriatic.json",
+  "name": "Adriatic Enduro — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.53,
+  "boxes": 65,
+  "turns": 37,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_almeria",
+  "file": "roadbooks/roadbook_terrain_almeria.json",
+  "name": "Almeria - Tabernas Desert — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.96,
+  "boxes": 112,
+  "turns": 51,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_alps",
+  "file": "roadbooks/roadbook_terrain_alps.json",
+  "name": "Alps - Ubaye — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.05,
+  "boxes": 77,
+  "turns": 40,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_atacama",
+  "file": "roadbooks/roadbook_terrain_atacama.json",
+  "name": "Atacama Desert — terrain stage",
+  "group": "Terrain stages",
+  "km": 12.02,
+  "boxes": 77,
+  "turns": 46,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_bryce",
+  "file": "roadbooks/roadbook_terrain_bryce.json",
+  "name": "Bryce Canyon — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.35,
+  "boxes": 46,
+  "turns": 26,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_death_valley",
+  "file": "roadbooks/roadbook_terrain_death_valley.json",
+  "name": "Death Valley — terrain stage",
+  "group": "Terrain stages",
+  "km": 9.85,
+  "boxes": 54,
+  "turns": 36,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_dolomites",
+  "file": "roadbooks/roadbook_terrain_dolomites.json",
+  "name": "Dolomites — terrain stage",
+  "group": "Terrain stages",
+  "km": 12.01,
+  "boxes": 84,
+  "turns": 42,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_chamonix",
+  "file": "roadbooks/roadbook_terrain_chamonix.json",
+  "name": "Mont Blanc - Chamonix — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.92,
+  "boxes": 73,
+  "turns": 48,
+  "difficulty": "Moderate"
+ },
+ {
   "id": "rally_baja_sanfelipe",
   "file": "roadbooks/roadbook_rally_baja_sanfelipe.json",
   "name": "Baja 500 — San Felipe (MX)",

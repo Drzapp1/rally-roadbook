@@ -16,6 +16,7 @@ function difficulty(rb){
   return s < 2 ? 'Easy' : s < 5 ? 'Moderate' : s < 9 ? 'Hard' : 'Expert';
 }
 function group(id){
+  if (id.startsWith('terrain_')) return 'Terrain stages';
   if (id.startsWith('rally_')) return 'Real rally stages';
   if (id.startsWith('drill_')) return 'Practice drills';
   if (id.startsWith('stage_')) return 'GPX stages';

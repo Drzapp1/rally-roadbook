@@ -421,6 +421,13 @@ mentor matching.
   precaches the library manifest + all 14 tulips (cache bumped to rally-v2) on top
   of the shell, so it lists the library and renders roadbook turns offline from
   first install. Browser-verified: SW installs, 19 assets cached, old cache cleaned.
+- **Wave 48 · Roadbook-from-terrain generator** *(AI/Procedural)* — new
+  `make_terrain_stage.py` drives an open-terrain rally line (straights + corners)
+  across a real heightmap, samples elevation along it, and feeds the trace through
+  the same C++ generator the plugin uses → a validated roadbook with tulip turns
+  + crest/dip/jump/downhill signs from the real elevation. No recorded ride needed.
+  Shipped 8 real-terrain stages (26–51 turns each) + a "Terrain stages" library group.
+  The shared engine for procedural rally-raid (#2) and the real-track library (#4).
 
 ---
 
