@@ -39,6 +39,13 @@
   footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; }
   .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
   .toast{ color:var(--good); font-size:13px; min-height:18px; margin-top:8px; }
+  .statwrap{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:18px 0 4px; }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:8px 14px; min-width:72px; }
+  .stat b{ display:block; font-size:20px; font-family:ui-monospace,monospace; } .stat span{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+  .hist7{ display:flex; gap:6px; justify-content:center; align-items:flex-end; height:46px; margin-top:10px; }
+  .hbar{ width:16px; min-height:4px; background:#23272f; border:1px solid var(--line); border-radius:3px; }
+  .hbar.p{ background:linear-gradient(180deg,var(--accent),#ffd27f); border-color:var(--accent); }
+  .hlbl{ display:flex; gap:6px; justify-content:center; font-size:9px; color:var(--dim); margin-top:3px; }
 </style>
 </head>
 <body>
@@ -53,6 +60,7 @@
     <p class="sub">Ten roadbook boxes, one attempt — and <b>everyone gets the same stage today</b>. Read each box, answer, and share your score. A fresh stage drops every day at 00:00 UTC.</p>
     <button class="btn primary" id="start">Start today's run</button>
     <div id="alreadyMsg"></div>
+    <div id="introStats"></div>
   </div>
   <div id="play" hidden>
     <div class="pips" id="pips"></div>
@@ -68,6 +76,7 @@
       <a class="btn" href="course.html">Train in the Academy</a>
     </div>
     <div class="toast" id="toast"></div>
+    <div id="resStats"></div>
   </div>
 </main>
 <footer>Same seed for everyone each UTC day. Progress stored in your browser only.</footer>
@@ -130,6 +139,7 @@ function ask(){
 function finish(){
   const score = marks.filter(Boolean).length;
   localStorage.setItem(KEY, JSON.stringify({score, marks}));
+  const hist = histGet(); hist[ymd] = score; localStorage.setItem('rrDailyHistory', JSON.stringify(hist));
   showResult(score, marks);
 }
 function showResult(score, m){
@@ -137,12 +147,26 @@ function showResult(score, m){
   $('rScore').textContent = score+' / 10';
   $('rGrid').textContent = m.map(x=>x?'🟩':'🟥').join('');
   $('rMsg').textContent = score>=9 ? 'Outstanding navigation.' : score>=7 ? 'Solid run — back tomorrow for a new stage.' : 'Keep training — the Academy sharpens every skill.';
+  renderStats('resStats');
 }
 function shareText(){
   const saved = JSON.parse(localStorage.getItem(KEY)); const m = saved.marks;
   return `Rally Roadbook Daily #${ymd}\n${m.map(x=>x?'🟩':'🟥').join('')}  ${saved.score}/10\nhttps://drzapp1.github.io/rally-roadbook/daily.html`;
 }
 
+function histGet(){ try{ return JSON.parse(localStorage.getItem('rrDailyHistory'))||{}; }catch(e){ return {}; } }
+function ymdOf(d){ return `${d.getUTCFullYear()}${String(d.getUTCMonth()+1).padStart(2,'0')}${String(d.getUTCDate()).padStart(2,'0')}`; }
+function curStreak(h){ const d=new Date(); if(h[ymdOf(d)]==null) d.setUTCDate(d.getUTCDate()-1); let s=0; while(h[ymdOf(d)]!=null){ s++; d.setUTCDate(d.getUTCDate()-1); } return s; }
+function buildStats(){
+  const h=histGet(); const days=Object.keys(h); const n=days.length;
+  if(!n) return '<p class="sub" style="margin-top:16px">No runs yet — stats appear after your first stage.</p>';
+  const scores=days.map(k=>h[k]); const avg=scores.reduce((a,b)=>a+b,0)/n; const best=Math.max(...scores);
+  const sw=`<div class="statwrap"><div class="stat"><b>${n}</b><span>played</span></div><div class="stat"><b>${avg.toFixed(1)}</b><span>avg</span></div><div class="stat"><b>${best}</b><span>best</span></div><div class="stat"><b>${curStreak(h)}</b><span>day streak</span></div></div>`;
+  let bars='', lbls=''; const today=new Date();
+  for(let i=6;i>=0;i--){ const d=new Date(today); d.setUTCDate(d.getUTCDate()-i); const k=ymdOf(d); const sc=h[k]; const ht=sc!=null?(8+sc/10*36):4; bars+=`<div class="hbar ${sc!=null?'p':''}" style="height:${ht}px" title="${k}: ${sc!=null?sc+'/10':'-'}"></div>`; lbls+=`<span style="width:16px;display:inline-block;text-align:center">${'SMTWTFS'[d.getUTCDay()]}</span>`; }
+  return sw+`<div class="hist7">${bars}</div><div class="hlbl">${lbls}</div>`;
+}
+function renderStats(elId){ const el=$(elId); if(el) el.innerHTML=buildStats(); }
 $('tag').textContent = 'RALLY DAILY · #'+ymd;
 $('start').onclick = startRun;
 $('share').onclick = ()=>{ navigator.clipboard.writeText(shareText()).then(()=>{ $('toast').textContent='Copied — paste it anywhere.'; setTimeout(()=>$('toast').textContent='',1800); }).catch(()=>{ $('toast').textContent=shareText(); }); };
@@ -150,6 +174,7 @@ $('share').onclick = ()=>{ navigator.clipboard.writeText(shareText()).then(()=>{
 // already played today?
 const prev = localStorage.getItem(KEY);
 if(prev){ try{ const s=JSON.parse(prev); $('start').textContent='Replay (score won\'t change)'; $('alreadyMsg').innerHTML=`<p class="sub" style="margin-top:14px">You've ridden today's stage: <b>${s.score}/10</b>. <a href="#" id="seeRes" style="color:var(--cyan)">see result</a></p>`; setTimeout(()=>{ const sr=$('seeRes'); if(sr) sr.onclick=e=>{e.preventDefault(); showResult(s.score,s.marks);}; },0); }catch(e){} }
+renderStats('introStats');
 </script>
 </body>
 </html>

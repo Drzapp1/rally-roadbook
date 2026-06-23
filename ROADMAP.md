@@ -358,6 +358,9 @@ mentor matching.
   date-seeded (UTC) procedural stage everyone gets the same day — read 10 roadbook
   boxes (turn/CAP/sign), score, and share a Wordle-style grid. Deterministic
   generator unit-tested + browser-verified (play → result → share → once-per-day lock).
+- **Wave 31 · Daily streak & stats** *(Community)* — the Daily now tracks a
+  per-day history and shows played / average / best / current streak plus a 7-day
+  bar, on the intro and result. Browser-verified (streak stops correctly at gaps).
 
 ---
 
