@@ -70,6 +70,26 @@
   "difficulty": "Moderate"
  },
  {
+  "id": "proc_erg_dunes",
+  "file": "roadbooks/roadbook_proc_erg_dunes.json",
+  "name": "Erg Dunes (procedural)",
+  "group": "Procedural stages",
+  "km": 12.25,
+  "boxes": 61,
+  "turns": 37,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "proc_high_atlas",
+  "file": "roadbooks/roadbook_proc_high_atlas.json",
+  "name": "High Atlas (procedural)",
+  "group": "Procedural stages",
+  "km": 11.13,
+  "boxes": 55,
+  "turns": 39,
+  "difficulty": "Moderate"
+ },
+ {
   "id": "terrain_chamonix",
   "file": "roadbooks/roadbook_terrain_chamonix.json",
   "name": "Mont Blanc - Chamonix — terrain stage",
@@ -78,6 +98,16 @@
   "boxes": 73,
   "turns": 48,
   "difficulty": "Moderate"
+ },
+ {
+  "id": "proc_rift_valley",
+  "file": "roadbooks/roadbook_proc_rift_valley.json",
+  "name": "Rift Valley (procedural)",
+  "group": "Procedural stages",
+  "km": 9.46,
+  "boxes": 67,
+  "turns": 38,
+  "difficulty": "Hard"
  },
  {
   "id": "rally_baja_sanfelipe",

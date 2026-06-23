@@ -84,6 +84,18 @@
   "name": "Patagonia - Torres"
  },
  {
+  "id": "proc_erg_dunes",
+  "name": "Erg Dunes (procedural)"
+ },
+ {
+  "id": "proc_high_atlas",
+  "name": "High Atlas (procedural)"
+ },
+ {
+  "id": "proc_rift_valley",
+  "name": "Rift Valley (procedural)"
+ },
+ {
   "id": "pyrenees",
   "name": "Pyrenees"
  },

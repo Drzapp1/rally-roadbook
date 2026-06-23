@@ -428,6 +428,11 @@ mentor matching.
   + crest/dip/jump/downhill signs from the real elevation. No recorded ride needed.
   Shipped 8 real-terrain stages (26–51 turns each) + a "Terrain stages" library group.
   The shared engine for procedural rally-raid (#2) and the real-track library (#4).
+- **Wave 49 · Procedural rally-raid** *(AI/Procedural)* — `make_procedural_stage.py`
+  synthesizes terrain (multi-octave value-noise heightmap + a shaded aerial) as a
+  brand-new viewable track, then drives a stage across it with the Wave-48 engine →
+  a 3D-viewable track + a validated roadbook, fully synthetic. Styles: dunes /
+  mountains / mixed. Shipped 3 stages; browser-verified one renders in track3d.
 
 ---
 
