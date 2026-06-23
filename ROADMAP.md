@@ -465,6 +465,11 @@ mentor matching.
   Run, Karoo Flats, Altiplano) across dunes/mountains/mixed styles — each a 3D-viewable
   track + terrain-following roadbook with elevation signs (7–35 turns). Gives the
   "endless fresh stages" feature real substance.
+- **Wave 56 · Rally-raid marathon** *(Gameplay)* — `marathon.html` chains 5 library stages
+  into a multi-day event: read each stage’s roadbook and call the notes; your accuracy
+  sets your stage time and you chase the overall GC across a simulated bivouac field
+  (four rivals). Per-stage + final classification, progress saved, shareable result.
+  A capstone over the now-64-roadbook library.
 
 ---
 

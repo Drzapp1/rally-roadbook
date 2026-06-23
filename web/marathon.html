@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Marathon</title>
+<meta name="description" content="A multi-stage rally-raid marathon: read each stage's roadbook, call the notes, and your accuracy sets your stage time — chase the overall GC across the bivouac field.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/marathon.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook — Marathon"><meta property="og:description" content="A multi-stage rally-raid: read each roadbook, chase the overall GC."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --good:#46c37b; --bad:#e7574e; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:640px; margin:0 auto; padding:22px 18px 60px; }
+  p.lead{ color:var(--dim); font-size:14px; }
+  .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0; }
+  button.btn,a.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 16px; font-size:14px; cursor:pointer; text-decoration:none; }
+  button.btn.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:700; }
+  .rname{ font-size:24px; font-weight:800; margin:6px 0 2px; } .rname span{ color:var(--accent); }
+  .stagelist{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+  .scard{ display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:11px 14px; }
+  .scard .n{ width:26px; height:26px; border-radius:50%; background:#23272f; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:var(--accent); flex:none; }
+  .scard .t{ flex:1; } .scard .t b{ font-size:15px; } .scard .t small{ color:var(--dim); display:block; font-size:12px; }
+  .scard .done{ color:var(--good); font-weight:700; font-size:13px; }
+  .shead{ font-size:15px; color:var(--dim); margin-bottom:10px; } .shead b{ color:var(--ink); }
+  .box{ display:flex; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; min-height:150px; margin:10px 0; }
+  .box img.tu{ width:150px; height:150px; object-fit:contain; background:#0f1218; border-right:1px solid var(--line); padding:6px; }
+  .box .r{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; }
+  .cap{ font-size:17px; font-weight:700; font-family:ui-monospace,monospace; } .sg{ display:flex; gap:4px; flex-wrap:wrap; justify-content:center; } .sg img{ width:24px; height:24px; filter:invert(.92); }
+  .opts{ display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:6px; }
+  .opt{ background:#23272f; border:1px solid var(--line); border-radius:9px; padding:13px; font-size:15px; font-weight:600; cursor:pointer; text-align:center; }
+  .opt.correct{ background:var(--good); color:#06210f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a08; border-color:var(--bad); }
+  .prog{ height:6px; background:#23272f; border-radius:5px; overflow:hidden; } .prog>i{ display:block; height:100%; background:var(--accent); width:0; transition:width .2s; }
+  .big{ font-size:34px; font-weight:800; font-family:ui-monospace,monospace; } .sub{ color:var(--dim); font-size:13px; }
+  table.gc{ width:100%; border-collapse:collapse; margin:8px 0 4px; font-size:14px; }
+  table.gc td,table.gc th{ text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); }
+  table.gc th{ color:var(--dim); font-weight:600; font-size:12px; } table.gc td.t{ font-family:ui-monospace,monospace; text-align:right; }
+  table.gc tr.you{ background:rgba(255,176,40,.13); } table.gc tr.you td{ color:var(--accent); font-weight:700; }
+  table.gc td.pos{ color:var(--dim); width:26px; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+  a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · MARATHON</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="index.html">Library</a><a href="stage.html">Practice</a><a href="marathon.html" class="on">Marathon</a></nav>
+</header>
+<main>
+  <section id="overview">
+    <p class="lead">A multi-stage rally-raid. Read each stage's roadbook and call the notes — your accuracy sets your stage time, and you chase the overall <b>general classification</b> across the bivouac field. Progress is saved on this device.</p>
+    <div id="rallyName" class="rname"></div>
+    <div id="stageList" class="stagelist"></div>
+    <div class="row"><button class="btn primary" id="startRally">Start rally</button><button class="btn" id="newRally">New rally</button></div>
+  </section>
+
+  <section id="stageScreen" hidden>
+    <div id="stageHead" class="shead"></div>
+    <div class="prog"><i id="qprog"></i></div>
+    <div id="qhost"></div>
+    <div class="sub" style="margin-top:10px">Keys <b>1–4</b> to answer · <b>Enter</b> for next</div>
+  </section>
+
+  <section id="resultScreen" hidden>
+    <div id="stageResult"></div>
+    <h3 style="margin-bottom:4px">General classification</h3>
+    <table class="gc" id="gc"></table>
+    <div class="row"><button class="btn primary" id="nextStage">Next stage ▸</button></div>
+  </section>
+
+  <section id="finalScreen" hidden>
+    <div id="finalResult"></div>
+    <h3 style="margin-bottom:4px">Final general classification</h3>
+    <table class="gc" id="finalGc"></table>
+    <div class="row"><button class="btn primary" id="restart">New rally</button><button class="btn" id="shareR">Share result</button></div>
+  </section>
+</main>
+<footer>Times are a model of roadbook-reading skill (accuracy → stage time); the bivouac field is simulated. Stages are real library roadbooks.</footer>
+<script type="module">
+import { tulipCode } from './roadbook.js';
+const $ = id => document.getElementById(id);
+const RIVALS = [['Marc Vidal', 0.86], ['Yenna Kallio', 0.93], ['Tariq Benali', 1.00], ['Sol Vance', 1.09]];
+const NAMES = ['Trans-Sahara Raid', 'Andean Crossing', 'Silk Road Rally', 'Outback Marathon', 'Atlas Traverse', 'Patagonia Dakar', 'Gobi Expedition', 'Cape-to-Cairo Raid'];
+let MAN = [], RALLY = null, RB = null, QS = [], qi = 0, stageScore = 0;
+const fmt = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60; return (h ? h + ':' : '') + String(m).padStart(h ? 2 : 1, '0') + ':' + String(ss).padStart(2, '0'); };
+const show = id => { ['overview', 'stageScreen', 'resultScreen', 'finalScreen'].forEach(s => $(s).hidden = s !== id); };
+const save = () => localStorage.setItem('rrMarathon', JSON.stringify(RALLY));
+function boxAnswer(b){ return b.type === 'hairpin' ? 'Hairpin' : b.type === 'straight' ? 'Straight' : (b.turnDir === 'right' ? 'Right' : 'Left'); }
+const stageBase = s => (s.km * 6) + (s.turns * 55);              // notional driving time (s)
+
+function buildRally(){
+  const pool = MAN.filter(m => (m.turns || 0) >= 6);
+  if (pool.length < 5){ $('rallyName').textContent = 'Not enough stages yet.'; return; }
+  const sh = [...pool].sort(() => Math.random() - 0.5).slice(0, 5)
+    .map(s => ({ file: s.file, name: s.name, km: s.km, turns: s.turns }));
+  const name = NAMES[Math.floor(Math.random() * NAMES.length)];
+  const rivals = RIVALS.map(([nm, sk]) => ({
+    nm, times: sh.map(s => Math.round(stageBase(s) * sk * (0.9 + Math.random() * 0.2)))
+  }));
+  RALLY = { name, stages: sh, results: [], rivals, idx: 0 };
+  save(); renderOverview();
+}
+function renderOverview(){
+  show('overview');
+  $('rallyName').innerHTML = RALLY.name + ' <span>· 5 stages</span>';
+  const totKm = RALLY.stages.reduce((a, s) => a + s.km, 0), totT = RALLY.stages.reduce((a, s) => a + s.turns, 0);
+  $('stageList').innerHTML = RALLY.stages.map((s, i) => {
+    const done = RALLY.results[i];
+    return `<div class="scard"><div class="n">${i + 1}</div><div class="t"><b>${s.name}</b>`
+      + `<small>${s.km} km · ${s.turns} turns</small></div>`
+      + (done ? `<div class="done">${done.acc}% · ${fmt(done.time)}</div>` : '') + `</div>`;
+  }).join('') + `<div class="sub" style="margin-top:6px">Total ${totKm.toFixed(0)} km · ${totT} turns</div>`;
+  const next = RALLY.results.length;
+  $('startRally').textContent = next === 0 ? 'Start rally' : next >= 5 ? 'See final result' : `Resume — stage ${next + 1}`;
+}
+function startStage(i){
+  RALLY.idx = i;
+  fetch(RALLY.stages[i].file).then(r => r.json()).then(rb => {
+    RB = rb;
+    let turns = rb.boxes.filter(b => b.type === 'turn' || b.type === 'hairpin');
+    if (turns.length > 6){ const out = [], step = turns.length / 6; for (let k = 0; k < 6; k++) out.push(turns[Math.floor(k * step)]); turns = out; }
+    QS = turns; qi = 0; stageScore = 0;
+    show('stageScreen');
+    $('stageHead').innerHTML = `<b>Stage ${i + 1} / 5</b> — ${RALLY.stages[i].name}`;
+    ask();
+  });
+}
+function ask(){
+  if (qi >= QS.length) return finishStage();
+  $('qprog').style.width = (100 * qi / QS.length) + '%';
+  const b = QS[qi], code = tulipCode(b);
+  const sg = (b.pictograms || []).map(p => `<img src="signs/${p}.png" alt="${p}" onerror="this.style.display='none'">`).join('');
+  const ans = boxAnswer(b);
+  const opts = ['Left', 'Right', 'Hairpin', 'Straight'];
+  $('qhost').innerHTML = `<div class="box"><img class="tu" src="tulips/${code}.png" alt="tulip">`
+    + `<div class="r"><div class="cap">CAP ${String(b.capDeg || 0).padStart(3, '0')}°</div><div class="sg">${sg}</div>`
+    + `<div class="sub">Which way?</div></div></div>`
+    + `<div class="opts">` + opts.map(o => `<button class="opt" data-o="${o}">${o}</button>`).join('') + `</div>`;
+  $('qhost').querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+    if (btn.classList.contains('done')) return;
+    const ok = btn.dataset.o === ans;
+    if (ok) stageScore++;
+    $('qhost').querySelectorAll('.opt').forEach(o => { o.classList.add('done'); if (o.dataset.o === ans) o.classList.add('correct'); });
+    if (!ok) btn.classList.add('wrong');
+    const nx = document.createElement('button'); nx.className = 'btn primary'; nx.style.marginTop = '12px';
+    nx.textContent = qi < QS.length - 1 ? 'Next ▸' : 'Finish stage ▸'; nx.onclick = () => { qi++; ask(); };
+    $('qhost').appendChild(nx); nx.focus();
+  });
+}
+function finishStage(){
+  $('qprog').style.width = '100%';
+  const i = RALLY.idx, acc = QS.length ? stageScore / QS.length : 0;
+  const time = Math.round(stageBase(RALLY.stages[i]) * (1.15 - acc * 0.35));   // better reading -> faster
+  RALLY.results[i] = { acc: Math.round(acc * 100), time, score: stageScore, total: QS.length };
+  save();
+  const gc = standings(i);
+  const you = gc.find(r => r.you);
+  $('stageResult').innerHTML = `<div class="sub">Stage ${i + 1} done — ${stageScore}/${QS.length} notes (${Math.round(acc * 100)}%)</div>`
+    + `<div class="big">${fmt(time)}</div><div class="sub">stage time · lying <b style="color:var(--accent)">P${you.pos}</b> overall</div>`;
+  $('gc').innerHTML = gcRows(gc);
+  $('nextStage').textContent = (i >= 4) ? 'Final result ▸' : 'Next stage ▸';
+  show('resultScreen');
+}
+function standings(throughIdx){
+  const yourCum = RALLY.results.slice(0, throughIdx + 1).reduce((a, r) => a + r.time, 0);
+  const rows = [{ name: 'YOU', cum: yourCum, you: true }];
+  RALLY.rivals.forEach(rv => rows.push({ name: rv.nm, cum: rv.times.slice(0, throughIdx + 1).reduce((a, t) => a + t, 0) }));
+  rows.sort((a, b) => a.cum - b.cum); rows.forEach((r, k) => r.pos = k + 1);
+  return rows;
+}
+function gcRows(gc){
+  const lead = gc[0].cum;
+  return `<tr><th class="pos"></th><th>Rider</th><th style="text-align:right">Total</th><th style="text-align:right">Gap</th></tr>`
+    + gc.map(r => `<tr class="${r.you ? 'you' : ''}"><td class="pos">${r.pos}</td><td>${r.name}</td>`
+      + `<td class="t">${fmt(r.cum)}</td><td class="t">${r.pos === 1 ? '—' : '+' + fmt(r.cum - lead)}</td></tr>`).join('');
+}
+function finishRally(){
+  const gc = standings(4), you = gc.find(r => r.you);
+  $('finalResult').innerHTML = `<div class="rname">${RALLY.name}</div><div class="big" style="color:var(--accent)">P${you.pos} <span style="font-size:18px;color:var(--dim)">overall</span></div>`
+    + `<div class="sub">${fmt(you.cum)} total · ${RALLY.results.reduce((a, r) => a + r.score, 0)}/${RALLY.results.reduce((a, r) => a + r.total, 0)} notes called</div>`;
+  $('finalGc').innerHTML = gcRows(gc);
+  show('finalScreen');
+}
+$('startRally').onclick = () => { const n = RALLY.results.length; n >= 5 ? finishRally() : startStage(n); };
+$('newRally').onclick = () => buildRally();
+$('restart').onclick = () => buildRally();
+$('nextStage').onclick = () => { RALLY.idx >= 4 ? finishRally() : (RALLY.results.length >= 5 ? finishRally() : startStage(RALLY.results.length)); };
+$('shareR').onclick = () => {
+  const gc = standings(4), you = gc.find(r => r.you);
+  const t = `Rally Roadbook — ${RALLY.name}\nFinished P${you.pos}/5 · ${fmt(you.cum)}\nhttps://drzapp1.github.io/rally-roadbook/marathon.html`;
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => { $('shareR').textContent = 'Copied!'; }, () => alert(t));
+};
+document.addEventListener('keydown', e => {
+  if (!$('stageScreen').hidden){
+    const map = { '1': 'Left', '2': 'Right', '3': 'Hairpin', '4': 'Straight' };
+    if (map[e.key]){ const b = [...$('qhost').querySelectorAll('.opt')].find(o => o.dataset.o === map[e.key] && !o.classList.contains('done')); if (b){ b.click(); e.preventDefault(); } }
+    else if (e.key === 'Enter' || e.key === ' '){ const nx = $('qhost').querySelector('button.btn'); if (nx){ nx.click(); e.preventDefault(); } }
+  }
+});
+fetch('roadbooks/manifest.json').then(r => r.json()).then(list => {
+  MAN = list;
+  const saved = localStorage.getItem('rrMarathon');
+  if (saved){ try { RALLY = JSON.parse(saved); } catch (e){ RALLY = null; } }
+  if (RALLY && RALLY.stages && RALLY.stages.length === 5) renderOverview(); else buildRally();
+}).catch(() => { $('rallyName').textContent = 'Could not load the library.'; });
+</script>
+</body>
+</html>
