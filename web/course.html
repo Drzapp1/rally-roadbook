@@ -106,7 +106,10 @@ const LESSONS = [
     teach:`Every roadbook box carries two distances. <span class="hl">TOTAL</span> is how far you've ridden from the start — it only ever grows. <span class="hl">PARTIAL</span> is the distance since the <b>previous</b> box, and it resets to zero at every box.<br><br>On the bike you read both on the <b>ICO</b> (the trip meter / rally computer). To reach the next junction you watch PARTIAL count up to the box's partial figure — or watch TOTAL climb to the box's total. They agree, because <b>next&nbsp;TOTAL&nbsp;=&nbsp;this&nbsp;TOTAL&nbsp;+&nbsp;PARTIAL-to-next</b>. Get fluent with that one sum and you'll always know how far the next box is.`,
     practice:{ type:'distance' },
     check:{ type:'distance', count:5, pass:4 } },
-  { id:'cap', num:3, title:'CAP & the compass', sum:'Heading in degrees, and steering to it.', ready:false },
+  { id:'cap', num:3, title:'CAP & the compass', sum:'Heading in degrees, and steering to it.', ready:true,
+    teach:`<span class="hl">CAP</span> is your compass <b>heading in degrees</b>: 0° (or 360°) is North, 90° East, 180° South, 270° West. Every box gives the CAP to ride out on — you turn until your compass reads that number.<br><br>Two skills here: read what a bearing means (225° ≈ SW), and know which way to turn to reach it — always the <b>shorter</b> way round. Heading 40°, CAP 320°? That's an 80° turn <b>left</b> (anticlockwise), not a 280° right.`,
+    practice:{ type:'cap' },
+    check:{ type:'cap', count:5, pass:4 } },
   { id:'signs', num:4, title:'Danger & info signs', sum:'!, !!, !!! and the common pictograms.', ready:false },
   { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:false },
   { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:false },
@@ -147,6 +150,7 @@ const opts4 = (answer, ds) => { const set=[answer]; for(const d of ds){ if(set.l
 
 function genQ(type){
   if(type==='distance') return distanceQ();
+  if(type==='cap') return capQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -164,6 +168,35 @@ function distanceQ(){
   return { media:`<div class="dpanel"><div class="dline">TOTAL at this box <b>${a.toFixed(2)} km</b></div><div class="dline">Next box is <b>${partM} m</b> ahead</div></div>`,
            prompt:'What TOTAL will the next box read?',
            options:opts4(ans, [`${a.toFixed(2)} km`, `${(a+2*partM/1000).toFixed(2)} km`, `${(b+0.1).toFixed(2)} km`]), answer:ans };
+}
+
+const CARD8 = ['N','NE','E','SE','S','SW','W','NW'];
+function compassSVG(a, b){
+  const cx=80, cy=80, r=58;
+  const pt=(d,rr)=>[cx+rr*Math.sin(d*Math.PI/180), cy-rr*Math.cos(d*Math.PI/180)];
+  const needle=(d,col,w)=>{ const [x,y]=pt(d,r-9); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${col}"/>`; };
+  const lbl=(d,t)=>{ const [x,y]=pt(d,r+12); return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" fill="#8b919c" font-size="12" text-anchor="middle">${t}</text>`; };
+  return `<svg viewBox="0 0 160 160" width="150" height="150" role="img" aria-label="compass rose">`+
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#0f1218" stroke="#2a2e37" stroke-width="1.5"/>`+
+    [['N',0],['E',90],['S',180],['W',270]].map(([t,d])=>lbl(d,t)).join('')+
+    (b!=null?needle(b,'#5b616c',3):'')+ needle(a,'#ffb028',4)+
+    `<circle cx="${cx}" cy="${cy}" r="4" fill="#e6e8ec"/></svg>`;
+}
+function capQ(){
+  if(Math.random()<0.5){
+    const i = rand(8), deg = i*45, ans = CARD8[i];
+    const others = shuffle(CARD8.filter(c=>c!==ans)).slice(0,3);
+    return { media:`<div>${compassSVG(deg)}<div class="dline" style="margin-top:4px">CAP <b>${String(deg).padStart(3,'0')}°</b></div></div>`,
+             prompt:'Which direction is this heading?', options:shuffle([ans,...others]), answer:ans };
+  }
+  const cur = rand(72)*5;
+  const straight = Math.random()<0.18;
+  const mag = straight ? 0 : [30,45,60,90,120,150][rand(6)];
+  const dir = rand(2) ? 1 : -1;
+  const tgt = (((cur + dir*mag)%360)+360)%360;
+  const ans = straight ? 'Straight on' : (dir>0 ? 'Right' : 'Left');
+  return { media:`<div>${compassSVG(tgt,cur)}<div class="dline" style="margin-top:4px">Heading <b style="color:#5b616c">${String(cur).padStart(3,'0')}°</b> &nbsp;→&nbsp; CAP <b>${String(tgt).padStart(3,'0')}°</b></div></div>`,
+           prompt:'Turn which way to get onto the CAP? (grey = now, amber = CAP)', options:['Left','Straight on','Right'], answer:ans };
 }
 
 let L, score, qIdx, chkQs, marks;

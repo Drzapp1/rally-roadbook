@@ -328,6 +328,10 @@ mentor matching.
   & the ICO*: teach total-vs-partial, then distance-arithmetic practice + check
   (next TOTAL = this TOTAL + PARTIAL). Factory unit-tested over 8000 questions
   (always 4 unique options incl. the answer).
+- **Wave 24 · Academy Lesson 3 (CAP & compass)** *(Academy)* — a `cap` widget
+  with an inline compass-rose SVG: name the cardinal for a bearing, and turn
+  left/right onto a CAP (always the shorter way). Answers verified against an
+  independent shortest-turn calc over 8000 questions. 3 of 6 lessons live.
 
 ---
 
