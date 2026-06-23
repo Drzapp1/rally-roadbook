@@ -268,6 +268,10 @@ mentor matching.
   SVG-compass drill to read CAP headings fast (0°=N, clockwise) — two modes
   (read-the-needle / pick-the-bearing), score + streak + best. Carded under
   **Learn** on the hub.
+- **Wave 7 · Roadbook 101 guide** *(H4 · Academy)* — `guide.html`: an illustrated
+  primer on reading a roadbook (box anatomy, the 14 tulips, CAP, ICO, pictograms +
+  danger, the 3-step ride loop), wired straight to the drills. Completes the
+  concepts → drills → challenge learn path. Carded under **Learn**.
 
 ---
 

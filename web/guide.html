@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook — Roadbook 101</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --pink:#ff5a4d; --paper:#f3f1ea; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.55; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:860px; margin:0 auto; padding:24px 18px 60px; }
+  h2{ font-size:21px; margin:34px 0 10px; } h2:first-of-type{ margin-top:14px; }
+  p{ color:#cdd2da; } p.lead{ color:var(--dim); font-size:15px; }
+  .panel{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; margin:14px 0; }
+  /* box anatomy */
+  .box{ display:flex; max-width:430px; margin:6px 0; background:#14171e; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .box .col{ padding:12px 10px; } .box .l{ flex:0 0 32%; border-right:1px solid var(--line); }
+  .box .tot{ font-size:30px; font-weight:700; font-family:'Roboto Mono',monospace; } .box .part{ margin-top:8px; font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:6px; padding:2px 7px; display:inline-block; }
+  .box .c{ flex:0 0 40%; border-right:1px solid var(--line); display:flex; align-items:center; justify-content:center; } .box .c img{ width:84px; height:84px; object-fit:contain; }
+  .box .r{ flex:1; text-align:center; } .box .cap{ font-size:26px; font-weight:700; } .box .deg{ color:var(--dim); font-size:12px; } .box .dl{ color:var(--pink); font-weight:700; }
+  .legend{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px; margin-top:10px; font-size:12.5px; color:var(--dim); }
+  .legend b{ color:var(--ink); }
+  /* grids */
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:10px; margin-top:10px; }
+  .tile{ background:#14171e; border:1px solid var(--line); border-radius:10px; padding:8px; text-align:center; }
+  .tile img{ width:100%; height:74px; object-fit:contain; } .tile.sign img{ background:#f6f4ee; border-radius:6px; }
+  .tile span{ display:block; margin-top:5px; font-size:11.5px; color:var(--dim); }
+  ol.steps{ counter-reset:s; list-style:none; padding:0; } ol.steps li{ counter-increment:s; position:relative; padding:8px 0 8px 42px; }
+  ol.steps li::before{ content:counter(s); position:absolute; left:0; top:7px; width:28px; height:28px; background:var(--accent); color:#1a1205; border-radius:50%; text-align:center; line-height:28px; font-weight:700; }
+  .cta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .cta a{ text-decoration:none; background:var(--accent); color:#1a1205; padding:10px 18px; border-radius:10px; font-weight:600; font-size:14px; }
+  .cta a.alt{ background:#23272f; color:var(--ink); border:1px solid var(--line); }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · 101</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="guide.html" class="on">Guide</a><a href="academy.html">Academy</a><a href="compass.html">CAP</a><a href="navigate.html">Navigate</a></nav>
+</header>
+<main>
+  <p class="lead">A rally-raid roadbook is a scroll of <b>tulip boxes</b>. There's no GPS line — you match each
+  box to the terrain using <b>distance</b> and a compass <b>heading</b>. Here's how to read one.</p>
+
+  <h2>Anatomy of a box</h2>
+  <div class="panel">
+    <div class="box">
+      <div class="col l"><div class="tot">12,84</div><div class="part">540</div></div>
+      <div class="col c"><img src="tulips/right.png" alt="tulip"></div>
+      <div class="col r"><div class="cap">R</div><div class="deg">CAP 087</div><div class="dl">!</div></div>
+    </div>
+    <div class="legend">
+      <div><b>12,84</b> — total km from start (your trip TOTAL)</div>
+      <div><b>540</b> — metres since the last box (trip PARTIAL)</div>
+      <div><b>tulip</b> — the junction: ball = where you are, arrow = where to go</div>
+      <div><b>R / CAP 087</b> — turn right, then hold heading 087°</div>
+      <div><b>!</b> — danger level (! · !! · !!!)</div>
+    </div>
+  </div>
+
+  <h2>The tulips</h2>
+  <p>One diagram per junction, always drawn travel-up. The ball is your entry; the arrow is the exit.</p>
+  <div class="grid" id="tulips"></div>
+
+  <h2>CAP — the compass heading</h2>
+  <p>CAP is the bearing to follow out of the box: <b>0°=N, 90°=E, 180°=S, 270°=W</b>, clockwise. After each turn
+  you settle onto the new CAP and hold it until the next box. In low visibility, CAP + distance is <i>all</i> you have.</p>
+
+  <h2>ICO — the trip meter</h2>
+  <p>Two distances: <b>TOTAL</b> (whole stage) and <b>PARTIAL</b> (since the last box, reset at each one). You drive the
+  partial on the meter, and the next junction appears right where the book says it will.</p>
+
+  <h2>Pictograms &amp; danger</h2>
+  <p>Boxes carry warning + terrain signs. Danger escalates <b>! → !! → !!!</b>. A few you'll meet:</p>
+  <div class="grid" id="signs"></div>
+
+  <h2>How to ride it</h2>
+  <div class="panel"><ol class="steps">
+    <li>Read the next box: <b>distance</b> to it, the <b>tulip</b> shape, the <b>CAP</b> to leave on.</li>
+    <li>Drive the <b>partial</b> on the trip meter while watching the terrain.</li>
+    <li>At the junction, take the tulip's exit and settle onto the new <b>CAP</b> — then reset partial and repeat.</li>
+  </ol>
+  <p style="margin:6px 0 0;color:var(--dim);font-size:13px">The skill is trust: when unsure, ride the distance and the junction reveals itself.</p></div>
+
+  <div class="cta">
+    <a href="academy.html">Drill the tulips →</a>
+    <a href="compass.html" class="alt">Drill CAP →</a>
+    <a href="navigate.html" class="alt">Try a stage →</a>
+  </div>
+</main>
+<footer>Roadbook 101 · signs + tulips from the open-source tulip lexicon (GPLv2+).</footer>
+<script>
+const TULIPS=[['straight','straight'],['slightL','slight left'],['slightR','slight right'],['left','left'],['right','right'],['sharpL','sharp left'],['sharpR','sharp right'],['hairpinL','hairpin L'],['hairpinR','hairpin R'],['forkL','fork left'],['forkR','fork right'],['cross','crossroads'],['start','start'],['finish','finish']];
+const SIGNS=[['caution','caution !'],['danger2','danger !!'],['danger3','danger !!!'],['dune','dune'],['dunes','dunes'],['water','water'],['rocks','rocks'],['jump','jump'],['bridge','bridge'],['gate','gate'],['narrow','narrows'],['deadend','dead end']];
+function fill(id, list, dir, cls){ const g=document.getElementById(id);
+  list.forEach(([c,n])=>{ const t=document.createElement('div'); t.className='tile'+(cls?' '+cls:'');
+    t.innerHTML=`<img src="${dir}/${c}.png" alt="${n}" onerror="this.parentElement.style.display='none'"><span>${n}</span>`; g.appendChild(t); }); }
+fill('tulips', TULIPS, 'tulips');
+fill('signs', SIGNS, 'signs', 'sign');
+</script>
+</body>
+</html>
