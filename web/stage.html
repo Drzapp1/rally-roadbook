@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Stage Practice</title>
+<meta name="description" content="Practice navigating a real rally stage from the library — read each actual roadbook box and call the turn, then score yourself.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/stage.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook — Stage Practice"><meta property="og:description" content="Navigate a real rally stage box by box and score your roadbook reading."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --good:#46c37b; --bad:#ff5a4d; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.55; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:640px; margin:0 auto; padding:24px 18px 70px; text-align:center; }
+  h2{ font-size:22px; margin:6px 0 4px; } .sub{ color:var(--dim); font-size:14px; margin:0 0 16px; }
+  select,button.btn,a.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 16px; font-size:14px; cursor:pointer; text-decoration:none; }
+  button.btn.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:700; }
+  button.btn:disabled{ opacity:.5; cursor:default; }
+  .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0; align-items:center; }
+  .box{ display:flex; max-width:380px; margin:14px auto; background:#14171e; border:1px solid var(--line); border-radius:10px; overflow:hidden; text-align:left; }
+  .box .l{ flex:0 0 33%; padding:12px 10px; border-right:1px solid var(--line); }
+  .tot{ font-size:21px; font-weight:700; font-family:ui-monospace,monospace; } .part{ font-size:15px; margin-top:8px; font-family:ui-monospace,monospace; color:var(--cyan); } .sub2{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+  .box .m{ flex:0 0 38%; display:grid; place-items:center; border-right:1px solid var(--line); padding:6px; } .box canvas{ width:120px; height:120px; }
+  .box .r{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; } .cap{ font-size:17px; font-weight:700; font-family:ui-monospace,monospace; } .dl{ color:var(--bad); font-weight:700; } .sg{ display:flex; gap:3px; flex-wrap:wrap; justify-content:center; } .sg img{ width:22px; height:22px; filter:invert(.92); }
+  .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:8px auto 0; }
+  .opt{ padding:13px; font-size:15px; font-weight:600; background:#23272f; border:1px solid var(--line); border-radius:10px; color:var(--ink); cursor:pointer; }
+  .opt:hover:not(:disabled){ border-color:var(--accent); } .opt:disabled{ cursor:default; }
+  .opt.right{ background:var(--good); color:#06270f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a07; border-color:var(--bad); }
+  .pips{ display:flex; gap:5px; justify-content:center; flex-wrap:wrap; margin:6px 0 10px; } .pip{ width:11px; height:11px; border-radius:50%; background:#23272f; border:1px solid var(--line); } .pip.ok{ background:var(--good); border-color:var(--good); } .pip.no{ background:var(--bad); border-color:var(--bad); }
+  .score{ font-size:40px; font-weight:800; font-family:ui-monospace,monospace; } .fb{ min-height:22px; font-size:14px; font-weight:600; margin-top:8px; } .fb.ok{ color:var(--good); } .fb.no{ color:var(--bad); }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · STAGE PRACTICE</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="index.html">Library</a><a href="course.html">Academy</a><a href="daily.html">Daily</a><a href="stage.html" class="on">Practice</a></nav>
+</header>
+<main>
+  <div id="intro">
+    <h2>Practice a real stage</h2>
+    <p class="sub">Pick a stage from the library and ride its <b>actual roadbook</b> — read each real box (the recorded tulip, distances, CAP and signs) and call the turn. The decision points only; up to 12 boxes.</p>
+    <div class="row">
+      <select id="pick"><option value="">— choose a stage —</option></select>
+      <button class="btn primary" id="start" disabled>Start</button>
+    </div>
+    <div class="sub" id="meta"></div>
+  </div>
+  <div id="play" hidden>
+    <div class="sub" id="stageName"></div>
+    <div class="pips" id="pips"></div>
+    <div id="qhost"></div>
+  </div>
+  <div id="result" hidden>
+    <h2>Stage read</h2>
+    <div class="score" id="rScore"></div>
+    <p class="sub" id="rMsg"></p>
+    <div class="row"><button class="btn primary" id="again">Another stage</button><a class="btn" href="index.html">Open in viewer</a></div>
+  </div>
+</main>
+<footer>Real roadbooks from the library; validated with the open-format roadbook.js module.</footer>
+<script type="module">
+import { validate } from './roadbook.js';
+const $ = id => document.getElementById(id);
+const OPTS = ['Left','Straight','Right','Hairpin'];
+let MANIFEST = [], RB = null, QS = [], idx = 0, marks = [], score = 0;
+
+function boxAnswer(b){ return b.type==='hairpin' ? 'Hairpin' : b.type==='straight' ? 'Straight' : (b.turnDir==='right' ? 'Right' : 'Left'); }
+
+function drawTulip(cv, pts){
+  const x=cv.getContext('2d'), W=cv.width=120, H=cv.height=120, pad=20;
+  x.clearRect(0,0,W,H);
+  if(!pts||pts.length<2){ return; }
+  const map=p=>[pad + p[0]*(W-2*pad), pad + (1-p[1])*(H-2*pad)];
+  x.strokeStyle='#3ec6ff'; x.lineWidth=4; x.lineJoin='round'; x.lineCap='round'; x.beginPath();
+  pts.forEach((p,i)=>{ const m=map(p); i?x.lineTo(m[0],m[1]):x.moveTo(m[0],m[1]); }); x.stroke();
+  const e=map(pts[0]); x.fillStyle='#46c37b'; x.beginPath(); x.arc(e[0],e[1],6,0,Math.PI*2); x.fill();
+  const a=map(pts[pts.length-2]), b=map(pts[pts.length-1]); const ang=Math.atan2(b[1]-a[1],b[0]-a[0]);
+  x.fillStyle='#ffb028'; x.save(); x.translate(b[0],b[1]); x.rotate(ang); x.beginPath(); x.moveTo(2,0); x.lineTo(-12,-7); x.lineTo(-12,7); x.closePath(); x.fill(); x.restore();
+}
+
+function boxHTML(b){
+  const part = (b.distPartialM!=null) ? b.distPartialM+' m' : '';
+  const dl = b.dangerLevel ? `<span class="dl">${'!'.repeat(b.dangerLevel)}</span>` : '';
+  const sg = (b.pictograms||[]).slice(0,4).map(c=>`<img src="signs/${c}.png" alt="${c}" onerror="this.remove()">`).join('');
+  return `<div class="box"><div class="l"><div class="tot">${(b.distTotalKm||0).toFixed(2)}</div><div class="sub2">km total</div><div class="part">${part}</div><div class="sub2">partial</div></div>`
+    + `<div class="m"><canvas></canvas></div>`
+    + `<div class="r"><div class="cap">${String(b.capDeg||0).padStart(3,'0')}°</div>${dl}<div class="sg">${sg}</div></div></div>`;
+}
+
+function buildQuiz(rb){
+  const turns = rb.boxes.filter(b => b.type==='turn' || b.type==='hairpin');
+  let sel = turns;
+  if(turns.length > 12){ sel = []; const step = turns.length/12; for(let i=0;i<12;i++) sel.push(turns[Math.floor(i*step)]); }
+  return sel;
+}
+
+function ask(){
+  if(idx>=QS.length) return finish();
+  const b = QS[idx], ans = boxAnswer(b);
+  $('pips').innerHTML = QS.map((_,k)=>`<span class="pip ${k<idx?(marks[k]?'ok':'no'):''}"></span>`).join('');
+  $('qhost').innerHTML = boxHTML(b) + `<div class="opts">${OPTS.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div><div class="fb" id="fb">Box ${idx+1} of ${QS.length} — which way?</div>`;
+  drawTulip($('qhost').querySelector('canvas'), (b.tulip||{}).points);
+  $('qhost').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    const ok = btn.dataset.o===ans; marks[idx]=ok; if(ok) score++;
+    $('qhost').querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(x.dataset.o===ans) x.classList.add('right'); });
+    if(!ok) btn.classList.add('wrong');
+    const fb=$('fb'); fb.className='fb '+(ok?'ok':'no'); fb.textContent = ok?'✓ Correct.':`✗ It was ${ans}.`;
+    const nx=document.createElement('button'); nx.className='btn'; nx.textContent='Next ▸'; nx.style.marginTop='10px'; nx.onclick=()=>{ idx++; ask(); };
+    $('qhost').appendChild(nx);
+  });
+}
+function finish(){
+  $('play').hidden=true; $('result').hidden=false;
+  $('rScore').textContent = score+' / '+QS.length;
+  const pct = score/QS.length;
+  $('rMsg').textContent = pct>=0.9 ? 'Stage read clean — you could ride this one.' : pct>=0.7 ? 'Good reading — a few you would want to re-check at speed.' : 'Keep drilling in the Academy, then come back to this stage.';
+}
+function startStage(){
+  const file = $('pick').value; if(!file) return;
+  fetch(file).then(r=>r.json()).then(rb=>{
+    const v = validate(rb);
+    if(!v.valid){ $('meta').textContent = 'That roadbook failed validation: '+(v.issues[0]||''); return; }
+    RB = rb; QS = buildQuiz(rb); idx=0; marks=[]; score=0;
+    if(!QS.length){ $('meta').textContent = 'No turns to practise on this stage.'; return; }
+    $('stageName').textContent = (rb.trackName||'Stage') + ' — ' + QS.length + ' decision points';
+    $('intro').hidden=true; $('result').hidden=true; $('play').hidden=false; ask();
+  }).catch(()=>{ $('meta').textContent = 'Could not load that stage (run from the web server).'; });
+}
+
+fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
+  MANIFEST = list;
+  const sel=$('pick');
+  const playable = list.filter(m => (m.turns||0) >= 4);
+  playable.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=`${m.name} · ${m.turns} turns`; sel.appendChild(o); });
+  if(!playable.length){ $('meta').textContent = 'No stages with enough classified turns yet.'; }
+  sel.onchange=()=>{ $('start').disabled = !sel.value; const m=list.find(x=>x.file===sel.value); $('meta').textContent = m ? `${m.km} km · ${m.turns} turns · ${m.difficulty||''}` : ''; };
+}).catch(()=>{ $('meta').textContent='Could not load the library.'; });
+$('start').onclick = startStage;
+$('again').onclick = ()=>{ $('result').hidden=true; $('intro').hidden=false; };
+</script>
+</body>
+</html>

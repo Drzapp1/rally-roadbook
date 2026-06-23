@@ -29,7 +29,8 @@ const items = files.map(f => {
   const b = rb.boxes || [];
   const km = rb.totalDistanceKm || (rb.meta && rb.meta.totalDistanceKm) || (b.length ? b[b.length-1].distTotalKm : 0);
   const name = rb.trackName || (rb.meta && rb.meta.trackName) || id;
-  return { id, file: `roadbooks/${f}`, name, group: group(id), km: +km.toFixed(2), boxes: b.length, difficulty: difficulty(rb) };
+  const turns = b.filter(x => x.type === 'turn' || x.type === 'hairpin').length;
+  return { id, file: `roadbooks/${f}`, name, group: group(id), km: +km.toFixed(2), boxes: b.length, turns, difficulty: difficulty(rb) };
 });
 
 const ORDER = ['Real rally stages', 'Tracks', 'GPX stages', 'Practice drills'];

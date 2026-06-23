@@ -373,6 +373,12 @@ mentor matching.
   bonus lesson teaching which branch to take at a fork/crossroads (new ‘fork’
   widget on the fork/cross tulips). Flagged bonus, so it does not gate the
   certificate. Browser-verified: 6 core still unlock the exam; the bonus plays.
+- **Wave 35 · Practice a real stage** *(Academy + Content)* — `stage.html`: pick a
+  library roadbook and ride its **actual** boxes — the real recorded tulip geometry,
+  distances, CAP and signs — calling each turn for a score. Imports `validate` from
+  `roadbook.js`. Browser-testing caught that flat GPX stages have no classified
+  turns, so `make_manifest.mjs` now emits a per-stage `turns` count and the picker
+  only offers stages with ≥4 turns (19 of 28). Verified end to end.
 
 ---
 
