@@ -260,6 +260,10 @@ mentor matching.
   steer by the roadbook + trip meter, with the CAP bearing arrow unlocking only
   within range (ERTF/Unik-style). Procedural stage + derived roadbook + on-route
   scoring. Live as **Navigate**.
+- **Wave 5 · Landing hub** *(UX)* — `home.html`: a polished front door that groups
+  every tool into **Explore / Learn & Play / Create / Devices & Reference** cards
+  (hero + live stats), and a **⌂ Home** link added across the nav — taming the
+  growing nav sprawl as the site passes 10 pages.
 
 ---
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  .hero{ text-align:center; padding:48px 18px 26px; border-bottom:1px solid var(--line); background:radial-gradient(120% 90% at 50% -10%, rgba(255,176,40,.07), transparent 60%); }
+  .hero .kick{ color:var(--accent); letter-spacing:3px; font-size:12px; font-weight:700; }
+  .hero h1{ font-size:40px; margin:6px 0 8px; letter-spacing:1px; } .hero h1 b{ color:var(--accent); }
+  .hero p{ color:var(--dim); max-width:640px; margin:0 auto; font-size:15px; }
+  .stats{ display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-top:18px; color:var(--dim); font-size:13px; }
+  .stats b{ color:var(--ink); font-size:18px; display:block; }
+  main{ max-width:1060px; margin:0 auto; padding:26px 18px 56px; }
+  h2{ font-size:14px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin:28px 0 12px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; }
+  a.card{ display:block; text-decoration:none; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; transition:transform .12s, border-color .12s; }
+  a.card:hover{ transform:translateY(-3px); border-color:var(--accent); }
+  a.card .ic{ font-size:26px; } a.card h3{ margin:8px 0 4px; font-size:17px; }
+  a.card p{ margin:0; color:var(--dim); font-size:13px; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; border-top:1px solid var(--line); }
+  footer a{ color:var(--dim); }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="kick">PIBOSO · MX BIKES</div>
+  <h1>RALLY <b>ROADBOOK</b></h1>
+  <p>Authentic rally-raid roadbook navigation — read it, build it, learn it, and fly it.
+  Tulips, CAP headings and a trip meter, from a single sim plugin to a whole ecosystem.</p>
+  <div class="stats">
+    <div><b>26</b> real 3D tracks</div>
+    <div><b>23</b> device skins</div>
+    <div><b>94</b> FIA signs</div>
+    <div><b>14</b> turn tulips</div>
+  </div>
+</div>
+<main>
+  <h2>Explore</h2>
+  <div class="grid">
+    <a class="card" href="index.html"><div class="ic">📖</div><h3>Roadbook Viewer</h3><p>Browse the library of roadbooks — tulips, distances, CAP, signs.</p></a>
+    <a class="card" href="track3d.html"><div class="ic">⛰️</div><h3>3D Real Terrain</h3><p>Fly the actual MX Bikes maps — real heightmaps + aerials.</p></a>
+    <a class="card" href="map3d.html"><div class="ic">🗺️</div><h3>Route 3D</h3><p>See a roadbook's route draped over reconstructed terrain.</p></a>
+  </div>
+
+  <h2>Learn &amp; play</h2>
+  <div class="grid">
+    <a class="card" href="academy.html"><div class="ic">🎓</div><h3>Academy</h3><p>Drills to read tulips at a glance — score, streak, personal best.</p></a>
+    <a class="card" href="navigate.html"><div class="ic">🧭</div><h3>Navigate</h3><p>The eclipse challenge: no route line — steer by the book + trip meter.</p></a>
+  </div>
+
+  <h2>Create</h2>
+  <div class="grid">
+    <a class="card" href="builder.html"><div class="ic">✏️</div><h3>Route Builder</h3><p>Draw a route and generate a roadbook with classified tulips.</p></a>
+    <a class="card" href="editor.html"><div class="ic">🛠️</div><h3>Editor</h3><p>Hand-edit and review a roadbook box by box.</p></a>
+  </div>
+
+  <h2>Devices &amp; reference</h2>
+  <div class="grid">
+    <a class="card" href="devices.html"><div class="ic">📟</div><h3>Rally Computers</h3><p>23 photo-real device skins — modern tablets + classic holders.</p></a>
+    <a class="card" href="rally.html"><div class="ic">📱</div><h3>Mobile Reader</h3><p>An installable, offline roadbook device for your phone.</p></a>
+    <a class="card" href="format.html"><div class="ic">{ }</div><h3>Open Format</h3><p>The JSON schema + an interactive validator that everything reads.</p></a>
+  </div>
+</main>
+<footer>Rally Roadbook — a hobby MX Bikes mod + companion ecosystem · roadbook signs from the open-source tulip project (GPLv2+) · <a href="ROADMAP.md">20× roadmap</a></footer>
+</body>
+</html>
