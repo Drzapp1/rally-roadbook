@@ -369,6 +369,10 @@ mentor matching.
   local progress and shows a returning visitor their Academy completion and Daily
   streak with contextual CTAs; stays hidden for first-time visitors. Browser-
   verified both states.
+- **Wave 34 · Academy bonus lesson: Junctions & forks** *(Academy)* — a 7th
+  bonus lesson teaching which branch to take at a fork/crossroads (new ‘fork’
+  widget on the fork/cross tulips). Flagged bonus, so it does not gate the
+  certificate. Browser-verified: 6 core still unlock the exam; the bonus plays.
 
 ---
 

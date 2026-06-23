@@ -139,6 +139,10 @@ const LESSONS = [
     teach:`The real skill: <b>glance, commit, ride</b>. You don't stare at the book — you take in the next box in one look, put your eyes back on the trail, and trust it. Misread it and you're off-piste with no GPS line to save you.<br><br>Here the box shows for a moment, then <b>hides</b> — answer from memory, the way you would at speed. This is the whole course in one move: read a full box at a glance and commit.`,
     practice:{ type:'blind' },
     check:{ type:'blind', count:6, pass:5 } },
+  { id:'forks', num:7, title:'Junctions & forks', sum:'Pick the right branch where roads split.', ready:true, bonus:true,
+    teach:`A bonus skill. At a <b>junction</b> the roadbook draws the whole shape — including the roads you <b>don't</b> take — and marks the one you do. A <span class="hl">fork</span> splits in two: follow the branch the arrow points down. A <span class="hl">crossroads</span> usually means straight through, unless the arrow turns. The un-taken spokes are there to confirm you're at the <b>right</b> junction — match the shape to the ground, then commit to the marked branch.`,
+    practice:{ type:'fork' },
+    check:{ type:'fork', count:5, pass:4 } },
 ];
 
 const KEY='rrAcademyProgress';
@@ -151,8 +155,9 @@ const show = which => { for(const k of ['overview','lesson','exam','cert']) $(k)
 
 function renderOverview(){
   const p = prog();
-  const doneCount = readyLessons().filter(l=>p[l.id]).length;
-  $('prog').style.width = (100*doneCount/LESSONS.length)+'%';
+  const core = LESSONS.filter(l=>l.ready && !l.bonus);
+  const doneCount = core.filter(l=>p[l.id]).length;
+  $('prog').style.width = (100*doneCount/core.length)+'%';
   const wrap = $('lessons'); wrap.innerHTML='';
   LESSONS.forEach((l,i)=>{
     const done = !!p[l.id]; const unlocked = l.ready && isUnlocked(i); const cur = unlocked && !done;
@@ -164,7 +169,8 @@ function renderOverview(){
     if(unlocked) b.onclick = ()=>openLesson(i);
     wrap.appendChild(b);
   });
-  if(readyLessons().length===LESSONS.length && readyLessons().every(l=>p[l.id])){
+  const coreL = LESSONS.filter(l=>l.ready && !l.bonus);
+  if(coreL.length && coreL.every(l=>p[l.id])){
     const b=document.createElement('button'); b.className='btn primary'; b.style.marginTop='8px';
     if(p.exam){ b.textContent='🏅 View your certificate'; b.onclick=openCert; }
     else { b.textContent='🎯 Take the Final Exam'; b.onclick=openExam; }
@@ -183,6 +189,7 @@ function genQ(type){
   if(type==='signs') return signsQ();
   if(type==='follow') return followQ();
   if(type==='blind') return blindQ();
+  if(type==='fork') return forkQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -263,6 +270,12 @@ function armPeek(host, q){
   const opts = host.querySelectorAll('.opt'); opts.forEach(b=>b.disabled=true);
   const media = host.querySelector('.peekable');
   setTimeout(()=>{ opts.forEach(b=>{ if(!b.classList.contains('right') && !b.classList.contains('wrong')) b.disabled=false; }); try{ if(media) media.innerHTML='<div class="recall">📕 box hidden — recall it</div>'; }catch(e){} }, 2600);
+}
+
+function forkQ(){
+  const code = ['forkL','forkR','cross'][rand(3)];
+  const ans = code==='forkL' ? 'Left branch' : code==='forkR' ? 'Right branch' : 'Straight through';
+  return { media:`<div class="tulipbox"><img src="tulips/${code}.png" alt="junction"></div>`, prompt:'At this junction, which way do you take?', options:shuffle(['Left branch','Right branch','Straight through']), answer:ans };
 }
 
 let L, score, qIdx, chkQs, marks;
