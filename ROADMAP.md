@@ -340,6 +340,11 @@ mentor matching.
   widget that renders a full roadbook box (TOTAL/PARTIAL + tulip + CAP + sign) and
   quizzes one aspect at random, synthesizing lessons 1–4. Logic-tested over 12000
   questions. 5 of 6 lessons live.
+- **Wave 27 · Academy Lesson 6 (Blind nav) + course complete** *(Academy)* — a
+  `blind` widget: the full box shows briefly then hides (setTimeout, reduced-motion-
+  safe; options locked until it hides) so you answer from memory. All 6 lessons
+  now live → the completion certificate unlocks. The Academy pillar’s first full
+  curriculum is shipped.
 
 ---
 

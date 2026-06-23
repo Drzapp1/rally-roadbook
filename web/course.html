@@ -43,6 +43,7 @@
   .tulipbox img{ width:84%; height:84%; object-fit:contain; }
   .signbox{ width:150px; height:150px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
   .signbox img{ width:72%; height:72%; object-fit:contain; filter:invert(.92); }
+  .peekable{ display:inline-block; } .recall{ width:380px; max-width:78vw; height:122px; display:grid; place-items:center; color:var(--dim); font-size:14px; background:#0f1218; border:1px dashed var(--line); border-radius:10px; margin:6px auto 16px; }
   .rbbox{ display:flex; max-width:380px; margin:6px auto 16px; background:#14171e; border:1px solid var(--line); border-radius:10px; overflow:hidden; text-align:left; }
   .rbbox .l{ flex:0 0 34%; padding:12px 10px; border-right:1px solid var(--line); }
   .rbtot{ font-size:22px; font-weight:700; font-family:ui-monospace,monospace; } .rbpart{ font-size:16px; margin-top:8px; font-family:ui-monospace,monospace; color:var(--cyan); } .rbsub{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
@@ -125,7 +126,10 @@ const LESSONS = [
     teach:`Now it all comes together. A real roadbook box stacks the lot: <b>TOTAL</b> and <b>PARTIAL</b> distances on the left, the <b>tulip</b> in the middle, the <b>CAP</b> and any <b>warning sign</b> on the right. Riding it, one glance takes in how far to go, the shape of the turn, the heading to hold, and the hazard to expect.<br><br>These boxes mix every skill from lessons 1–4. Each question shows a full box and asks about one part of it — read it fast and right.`,
     practice:{ type:'follow' },
     check:{ type:'follow', count:6, pass:5 } },
-  { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:false },
+  { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:true,
+    teach:`The real skill: <b>glance, commit, ride</b>. You don't stare at the book — you take in the next box in one look, put your eyes back on the trail, and trust it. Misread it and you're off-piste with no GPS line to save you.<br><br>Here the box shows for a moment, then <b>hides</b> — answer from memory, the way you would at speed. This is the whole course in one move: read a full box at a glance and commit.`,
+    practice:{ type:'blind' },
+    check:{ type:'blind', count:6, pass:5 } },
 ];
 
 const KEY='rrAcademyProgress';
@@ -166,6 +170,7 @@ function genQ(type){
   if(type==='cap') return capQ();
   if(type==='signs') return signsQ();
   if(type==='follow') return followQ();
+  if(type==='blind') return blindQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -240,6 +245,14 @@ function followQ(){
   return { media:box, prompt:'What does the warning sign mean?', options:shuffle([sign[1],...others]), answer:sign[1] };
 }
 
+function blindQ(){ const q = followQ(); q.media = `<div class="peekable">${q.media}</div>`; q.peek = true; return q; }
+function armPeek(host, q){
+  if(!q || !q.peek) return;
+  const opts = host.querySelectorAll('.opt'); opts.forEach(b=>b.disabled=true);
+  const media = host.querySelector('.peekable');
+  setTimeout(()=>{ opts.forEach(b=>{ if(!b.classList.contains('right') && !b.classList.contains('wrong')) b.disabled=false; }); try{ if(media) media.innerHTML='<div class="recall">📕 box hidden — recall it</div>'; }catch(e){} }, 2600);
+}
+
 let L, score, qIdx, chkQs, marks;
 function openLesson(i){
   L = LESSONS[i]; show('lesson');
@@ -264,6 +277,7 @@ function nextPractice(){
     const nx=document.createElement('button'); nx.className='btn'; nx.textContent='Next ▸'; nx.style.marginTop='12px'; nx.onclick=nextPractice;
     $('L-practice').appendChild(nx);
   });
+  armPeek($('L-practice'), q);
 }
 
 // check — fixed-count quiz; pass threshold unlocks the next lesson
@@ -285,6 +299,7 @@ function askCheck(){
     $('L-check').querySelectorAll('.opt').forEach(b=>b.disabled=true);
     qIdx++; setTimeout(askCheck, 550);
   });
+  armPeek($('L-check'), q);
 }
 function finishCheck(){
   const pass = score >= L.check.pass;
