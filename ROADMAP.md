@@ -450,6 +450,12 @@ mentor matching.
   procedural) regenerated terrain-following; turn counts now reflect the terrain (flat
   Namib ~8, mountainous Dolomites ~30). Flat tracks fall back to a meander below 8
   turns. Deepens roadbook-from-track / procedural / real-track library.
+- **Wave 53 · Elevation → sign enrichment** *(AI/Procedural)* — the generator now
+  reads each route’s real elevation profile and tags boxes with the terrain signs the
+  relief implies: crest / jump on a launch, dip / compression in a bowl, steep descent
+  and climb — so "elevation → crest/dip/jump signs" is delivered from the landscape.
+  All 29 generated stages now carry elevation signs (crestL on 25, dip 20, jump 6,
+  compression 4); variety tracks the terrain (rich on Iceland, sparse on smooth Patagonia).
 
 ---
 

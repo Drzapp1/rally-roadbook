@@ -10,7 +10,7 @@ for free, from the shared generator.
 Usage:  python tools/make_terrain_stage.py <track_id> [seed]
         (run from repo root; reads web/tracks, writes web/roadbooks)
 """
-import os, sys, math, json, array, random, subprocess, heapq
+import os, sys, math, json, array, random, subprocess, heapq, bisect
 
 ROOT = r'D:\BikesRoadbook'
 EXE  = next((p for p in (os.path.join(ROOT, 'build', c, 'RoadbookTests.exe')
@@ -115,6 +115,38 @@ def walk_path(pts, H, size):
         rows.append((dist / 22.0, x, y, z, head, 0, 0, 0, 22.0, 0, dist))
     return rows
 
+def enrich_signs(rb):
+    """Read the route's real elevation profile and tag boxes with the terrain signs
+    the relief implies — crest / jump on a launch, dip / compression in a bowl, steep
+    descent — so 'elevation -> crest/dip/jump signs' is delivered from the landscape."""
+    route = rb.get('route', [])
+    if len(route) < 12: return rb
+    ds = [p[2] for p in route]; es = [p[3] for p in route]
+    def elev_at(d):
+        i = bisect.bisect_left(ds, d)
+        if i <= 0: return es[0]
+        if i >= len(ds): return es[-1]
+        d0, d1 = ds[i - 1], ds[i]; t = (d - d0) / ((d1 - d0) or 1.0)
+        return es[i - 1] * (1 - t) + es[i] * t
+    boxes = rb.get('boxes', []); D = 70.0
+    be = [elev_at(b['distTotalKm'] * 1000.0) for b in boxes]   # elevation at each box
+    for i, b in enumerate(boxes):
+        if b.get('type') in ('start', 'finish'): continue
+        d = b['distTotalKm'] * 1000.0; e = be[i]
+        e1 = elev_at(d + D); post = (e1 - e) / D                # gradient out of the box
+        ep = be[i - 1] if i > 0 else elev_at(d - D)             # neighbour-box elevations
+        en = be[i + 1] if i < len(boxes) - 1 else e1
+        pg = b.setdefault('pictograms', [])
+        def add(s):
+            if s not in pg and len(pg) < 3: pg.append(s)
+        if e > ep + 2.4 and e > en + 2.4:                       # higher than both neighbours -> crest
+            add('jump' if post < -0.12 else ('crestR' if b.get('turnDir') == 'right' else 'crestL'))
+        elif e < ep - 2.4 and e < en - 2.4:                     # lower than both -> dip / compression
+            add('compression' if post > 0.12 else 'dip')
+        elif post < -0.07: add('downhill')                      # descent
+        elif post > 0.10: add('hill')                           # climb
+    return rb
+
 def main():
     if not EXE: print('ERROR: RoadbookTests.exe not built'); return 1
     if len(sys.argv) < 2: print('usage: make_terrain_stage.py <track_id> [seed] [follow|drive]'); return 2
@@ -134,6 +166,7 @@ def main():
     rb = run_gen(walk_path(route_follow(H, size, rng), H, size) if mode == 'follow' else drive(rng, H, size))
     if mode == 'follow' and sum(1 for b in rb.get('boxes', []) if b['type'] in ('turn', 'hairpin')) < 8:
         rb = run_gen(drive(rng, H, size))         # terrain too flat to navigate by -> add a meander
+    enrich_signs(rb)                              # tag crest/dip/jump/descent from the real elevation
     title = f'{name} — terrain stage'
     rb['trackName'] = title; rb.setdefault('meta', {})['trackName'] = title
     rb['meta']['generatedBy'] = 'terrain'; rb['meta']['sourceTrack'] = tid
