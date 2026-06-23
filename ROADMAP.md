@@ -297,6 +297,9 @@ mentor matching.
 - **Wave 14 · README front page** *(Reach)* — a **🌐 Live web companion** section in
   the repo README pointing visitors to the deployed site + the tool map + the open
   format, so the GitHub front page leads to the live experience.
+- **Wave 16 · CI link-gate** *(Quality)* — wired `check_web_links.py` into the Pages
+  deploy workflow (after manifest generation, before upload), so a broken internal
+  link/asset now **fails the deploy** instead of shipping. QA is permanent.
 
 ---
 
