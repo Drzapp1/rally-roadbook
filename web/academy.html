@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook — Academy</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --good:#46c37b; --bad:#ff5a4d; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:680px; margin:0 auto; padding:22px 18px 50px; }
+  .lead{ color:var(--dim); font-size:14px; margin:0 0 18px; line-height:1.5; }
+  .bar{ display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .seg{ display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; }
+  .seg button{ background:var(--panel); color:var(--ink); border:0; padding:8px 14px; font-size:13px; cursor:pointer; }
+  .seg button.on{ background:var(--accent); color:#1a1205; font-weight:600; }
+  .stat{ margin-left:auto; color:var(--dim); font-size:13px; } .stat b{ color:var(--ink); }
+  .stat .streak{ color:var(--accent); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; text-align:center; }
+  .q{ color:var(--dim); font-size:13px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+  .prompt-img{ width:200px; height:200px; object-fit:contain; margin:4px auto 14px; display:block; background:#0f1218; border-radius:12px; border:1px solid var(--line); }
+  .prompt-name{ font-size:30px; font-weight:700; margin:10px 0 18px; }
+  .choices{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .choices.img{ grid-template-columns:1fr 1fr 1fr 1fr; }
+  .choice{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:11px; padding:14px 10px; font-size:16px; cursor:pointer; transition:transform .08s; }
+  .choice.img{ padding:6px; }
+  .choice img{ width:100%; height:96px; object-fit:contain; }
+  .choice:hover{ border-color:var(--accent); } .choice:active{ transform:scale(.97); }
+  .choice.good{ background:rgba(70,195,123,.18); border-color:var(--good); }
+  .choice.bad{ background:rgba(255,90,77,.16); border-color:var(--bad); }
+  .choice:disabled{ cursor:default; }
+  .next{ margin-top:16px; background:var(--accent); color:#1a1205; border:0; padding:11px 22px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .15s; }
+  .next.show{ opacity:1; pointer-events:auto; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · ACADEMY</h1>
+  <nav>
+    <a href="index.html">Explore</a><a href="devices.html">Devices</a>
+    <a href="rally.html">Mobile</a><a href="academy.html" class="on">Academy</a><a href="builder.html">Build</a>
+  </nav>
+</header>
+<main>
+  <p class="lead">Learn to read a roadbook tulip at a glance — the core rally-raid navigation skill.
+  Identify the turn before your trip meter reaches it.</p>
+  <div class="bar">
+    <div class="seg" id="mode">
+      <button data-m="name" class="on">Name the tulip</button>
+      <button data-m="spot">Spot the tulip</button>
+    </div>
+    <div class="stat">Score <b id="score">0</b> · streak <b class="streak" id="streak">0</b> · best <b id="best">0</b></div>
+  </div>
+  <div class="card">
+    <div class="q" id="q">What turn is this?</div>
+    <div id="prompt"></div>
+    <div class="choices" id="choices"></div>
+    <button class="next" id="next">Next ›</button>
+  </div>
+</main>
+<footer>14 authentic roadbook tulips. Part of the Rally Roadbook academy.</footer>
+<script>
+const TULIPS = {
+  straight:'Straight on', slightL:'Slight left', slightR:'Slight right',
+  left:'Left', right:'Right', sharpL:'Sharp left', sharpR:'Sharp right',
+  hairpinL:'Hairpin left', hairpinR:'Hairpin right', forkL:'Fork left',
+  forkR:'Fork right', cross:'Crossroads', start:'Start', finish:'Finish'
+};
+const CODES = Object.keys(TULIPS);
+let mode='name', score=0, streak=0, best=+(localStorage.tulipBest||0), answered=false, correct=null;
+document.getElementById('best').textContent=best;
+const $=id=>document.getElementById(id);
+function pick(n, exclude){ const pool=CODES.filter(c=>c!==exclude); const out=[]; while(out.length<n && pool.length){ out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); } return out; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function round(){
+  answered=false; correct=CODES[Math.floor(Math.random()*CODES.length)];
+  const opts=shuffle([correct, ...pick(3, correct)]);
+  const ch=$('choices'); ch.className='choices'+(mode==='spot'?' img':''); ch.innerHTML='';
+  $('next').classList.remove('show');
+  if(mode==='name'){
+    $('q').textContent='What turn is this?';
+    $('prompt').innerHTML=`<img class="prompt-img" src="tulips/${correct}.png" alt="tulip">`;
+    opts.forEach(c=>{ const b=document.createElement('button'); b.className='choice'; b.textContent=TULIPS[c]; b.onclick=()=>answer(b,c); ch.appendChild(b); });
+  } else {
+    $('q').textContent='Which tulip is this?';
+    $('prompt').innerHTML=`<div class="prompt-name">${TULIPS[correct]}</div>`;
+    opts.forEach(c=>{ const b=document.createElement('button'); b.className='choice img'; b.innerHTML=`<img src="tulips/${c}.png" alt="${c}">`; b.onclick=()=>answer(b,c); ch.appendChild(b); });
+  }
+}
+function answer(btn, code){
+  if(answered) return; answered=true;
+  const ok=code===correct;
+  [...$('choices').children].forEach(b=>{ b.disabled=true;
+    const c=mode==='name'? CODES.find(k=>TULIPS[k]===b.textContent) : b.querySelector('img').alt;
+    if(c===correct) b.classList.add('good'); });
+  if(ok){ score++; streak++; if(streak>best){ best=streak; localStorage.tulipBest=best; } }
+  else { btn.classList.add('bad'); streak=0; }
+  $('score').textContent=score; $('streak').textContent=streak; $('best').textContent=best;
+  $('next').classList.add('show');
+}
+$('next').onclick=round;
+$('mode').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+  [...$('mode').children].forEach(x=>x.classList.toggle('on',x===b)); mode=b.dataset.m; round(); });
+round();
+</script>
+</body>
+</html>

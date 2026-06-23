@@ -247,6 +247,10 @@ mentor matching.
   library picker and a service worker (offline app shell + runtime cache). Live
   as **📱 Mobile** in the site nav. *Next:* live position scroll via a plugin
   telemetry shim.
+- **Wave 2 · Academy “Read the Tulip” drill** *(H4 · Academy)* — `academy.html`:
+  an interactive quiz to learn the roadbook tulips at a glance — two modes
+  (name-the-tulip / spot-the-tulip), live score + streak + personal best. Live as
+  **Academy** in the nav.
 
 ---
 
