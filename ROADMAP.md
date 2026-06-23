@@ -365,6 +365,10 @@ mentor matching.
   certificate now renders to a PNG via canvas (name + date + seal) with Download
   and Copy-share-text buttons. Browser-verified: drawCert produces a valid ~79 KB
   PNG with no errors. Closes the Academy reward loop.
+- **Wave 33 · Personalized home hub** *(Community)* — the home page now reads
+  local progress and shows a returning visitor their Academy completion and Daily
+  streak with contextual CTAs; stays hidden for first-time visitors. Browser-
+  verified both states.
 
 ---
 
