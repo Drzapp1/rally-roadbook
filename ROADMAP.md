@@ -251,6 +251,10 @@ mentor matching.
   an interactive quiz to learn the roadbook tulips at a glance — two modes
   (name-the-tulip / spot-the-tulip), live score + streak + personal best. Live as
   **Academy** in the nav.
+- **Wave 3 · Open roadbook format v1** *(H2 keystone · Multi-Sim)* — published a
+  draft-07 **JSON Schema** (`web/roadbook.schema.json`) + `format.html`: a field
+  reference and an **interactive validator** (mirrors `rbtool validate`) so any
+  tool, sim or app can read/write the same roadbook. Live as **Format** in the nav.
 
 ---
 

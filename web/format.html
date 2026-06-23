@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook — Open Format</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --good:#46c37b; --bad:#ff5a4d; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:920px; margin:0 auto; padding:22px 18px 60px; }
+  h2{ font-size:19px; margin:26px 0 10px; } h2:first-child{ margin-top:6px; }
+  p.lead{ color:var(--dim); font-size:14px; max-width:720px; }
+  code,pre{ font-family:'Roboto Mono',ui-monospace,monospace; }
+  code{ background:#23272f; padding:1px 6px; border-radius:5px; font-size:13px; color:var(--cyan); }
+  .panel{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin:12px 0; }
+  textarea{ width:100%; height:200px; background:#0f1218; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:11px; font-family:'Roboto Mono',monospace; font-size:12.5px; resize:vertical; }
+  .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:10px 0; }
+  button,select{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; }
+  button.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  #verdict{ font-weight:700; padding:10px 14px; border-radius:9px; display:none; margin:10px 0; }
+  #verdict.pass{ display:block; background:rgba(70,195,123,.16); border:1px solid var(--good); color:var(--good); }
+  #verdict.fail{ display:block; background:rgba(255,90,77,.15); border:1px solid var(--bad); color:var(--bad); }
+  ul.issues{ margin:6px 0; padding-left:20px; font-size:13px; } ul.issues li{ margin:2px 0; }
+  ul.issues li.warn{ color:var(--accent); }
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin:8px 0; }
+  th,td{ text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ color:var(--dim); font-weight:600; } td code{ font-size:12px; }
+  pre.ex{ background:#0f1218; border:1px solid var(--line); border-radius:9px; padding:12px; overflow:auto; font-size:12px; color:#c9d2dd; }
+  a.dl{ color:var(--accent); }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · OPEN FORMAT</h1>
+  <nav>
+    <a href="index.html">Explore</a><a href="academy.html">Academy</a>
+    <a href="builder.html">Build</a><a href="format.html" class="on">Format</a>
+  </nav>
+</header>
+<main>
+  <h2>The open roadbook format (v1)</h2>
+  <p class="lead">A small, sim-agnostic JSON format for a rally-raid roadbook: an ordered list of
+  <b>tulip boxes</b> — each a junction diagram, a cumulative distance, a compass heading (CAP) and
+  optional pictograms. It is the contract every tool here reads and writes (the in-game plugin, the
+  web viewer + builder, the mobile reader, the printable sheets), and the keystone that lets other
+  sims, apps and a marketplace interoperate. <a class="dl" href="roadbook.schema.json" download>Download the JSON Schema ↓</a></p>
+
+  <h2>Validate a roadbook</h2>
+  <div class="panel">
+    <div class="row">
+      <select id="lib"><option value="">— load a sample from the library —</option></select>
+      <button id="val" class="primary">Validate</button>
+      <button id="clr">Clear</button>
+    </div>
+    <textarea id="json" placeholder="Paste a roadbook .json here…"></textarea>
+    <div id="verdict"></div>
+    <ul class="issues" id="issues"></ul>
+  </div>
+
+  <h2>Field reference</h2>
+  <table>
+    <tr><th>Path</th><th>Type</th><th>Meaning</th></tr>
+    <tr><td><code>schemaVersion</code></td><td>int = 1</td><td>Format version (required).</td></tr>
+    <tr><td><code>trackName</code> / <code>trackId</code></td><td>string</td><td>Human + machine track id.</td></tr>
+    <tr><td><code>meta</code></td><td>object</td><td>Provenance (<code>generatedBy</code>, <code>sourceRide</code>) + world calibration (<code>worldUpAxis</code>, <code>capNorthOffsetDeg</code>).</td></tr>
+    <tr><td><code>boxes[]</code></td><td>array</td><td>The roadbook, one tulip box per instruction, in travel order (required, ≥1).</td></tr>
+    <tr><td><code>boxes[].distTotalKm</code></td><td>number</td><td>Cumulative distance from start; non-decreasing (required).</td></tr>
+    <tr><td><code>boxes[].distPartialM</code></td><td>number</td><td>Metres since the previous box.</td></tr>
+    <tr><td><code>boxes[].capDeg</code></td><td>int 0–359</td><td>Compass heading at the box, 0=N clockwise (required).</td></tr>
+    <tr><td><code>boxes[].type</code></td><td>enum</td><td><code>start straight turn hairpin finish</code> (required).</td></tr>
+    <tr><td><code>boxes[].turnDir</code></td><td>enum</td><td><code>left right none</code>.</td></tr>
+    <tr><td><code>boxes[].dangerLevel</code></td><td>int 0–3</td><td>Severity (! .. !!!).</td></tr>
+    <tr><td><code>boxes[].pictograms[]</code></td><td>string[]</td><td>FIA/Dakar sign codes (<code>caution</code>, <code>dune</code>, <code>water</code>…).</td></tr>
+    <tr><td><code>boxes[].tulip.points[]</code></td><td>[x,y][]</td><td>Junction polyline, travel-up, each in 0..1; entry first (≥2, required).</td></tr>
+    <tr><td><code>boxes[].crossDeg</code> / <code>branchDeg[]</code></td><td>number(s)</td><td>Crossing road / un-taken branch bearings.</td></tr>
+    <tr><td><code>route[]</code></td><td>[x,z,distM,elev][]</td><td>Optional source polyline.</td></tr>
+  </table>
+
+  <h2>Minimal example</h2>
+  <pre class="ex">{
+  "schemaVersion": 1,
+  "trackName": "Demo stage",
+  "meta": { "generatedBy": "builder", "totalDistanceKm": 0.31 },
+  "boxes": [
+    { "index": 0, "distTotalKm": 0.0,  "distPartialM": 0,   "capDeg": 90,
+      "type": "start", "turnDir": "none", "dangerLevel": 0, "pictograms": [],
+      "tulip": { "points": [[0.5,0.9],[0.5,0.1]] } },
+    { "index": 1, "distTotalKm": 0.31, "distPartialM": 310, "capDeg": 78,
+      "type": "turn", "turnDir": "right", "dangerLevel": 1, "pictograms": ["caution"],
+      "tulip": { "points": [[0.5,0.9],[0.5,0.44],[0.88,0.44]] } }
+  ]
+}</pre>
+</main>
+<footer>Rally Roadbook open format v1 · schema is draft-07 JSON Schema.</footer>
+<script>
+const $=id=>document.getElementById(id);
+// validator — mirrors tools/rbtool.py `validate`
+function validate(rb){
+  const issues=[], warns=[];
+  if(rb===null||typeof rb!=='object'||Array.isArray(rb)) { issues.push('top level must be a JSON object'); return {issues,warns}; }
+  if(rb.schemaVersion!==1) warns.push('schemaVersion should be 1');
+  const boxes=rb.boxes;
+  if(!Array.isArray(boxes)||!boxes.length){ issues.push('no boxes'); return {issues,warns}; }
+  let prev=-1, prevType=null;
+  boxes.forEach((b,i)=>{
+    ['distTotalKm','capDeg','type','tulip'].forEach(k=>{ if(!(k in b)) issues.push(`box ${i}: missing ${k}`); });
+    const d=b.distTotalKm, t=b.type;
+    if(typeof d==='number'){
+      if(Number.isNaN(d)) issues.push(`box ${i}: distTotalKm is NaN`);
+      if(d<prev-1e-6) issues.push(`box ${i}: distance goes backwards (${d} < ${prev})`);
+      const edge = ['start','finish'].includes(t)||['start','finish'].includes(prevType);
+      if(!edge && prev>=0 && (d-prev)*1000<5) issues.push(`box ${i}: coincident with previous (<5 m)`);
+      prev=d;
+    }
+    prevType=t;
+    const c=b.capDeg;
+    if(typeof c==='number' && !(c>=0 && c<360)) issues.push(`box ${i}: cap out of range (${c})`);
+    const pts=(b.tulip&&b.tulip.points)||[];
+    if(pts.length<2) issues.push(`box ${i}: tulip < 2 points`);
+    if(pts.some(p=>!Array.isArray(p)||p.length<2||!(p[0]>=0&&p[0]<=1&&p[1]>=0&&p[1]<=1))) issues.push(`box ${i}: tulip point out of [0,1]`);
+  });
+  const km = boxes[boxes.length-1].distTotalKm||0;
+  if(km>0 && boxes.length/km>25) warns.push(`high box density: ${(boxes.length/km).toFixed(1)}/km`);
+  return {issues,warns,boxes:boxes.length};
+}
+function run(){
+  const v=$('verdict'), ul=$('issues'); ul.innerHTML=''; v.className='';
+  let rb; try{ rb=JSON.parse($('json').value); }catch(e){ v.className='fail'; v.textContent='✗ Invalid JSON: '+e.message; return; }
+  const r=validate(rb);
+  if(r.issues.length){ v.className='fail'; v.textContent=`✗ ${r.issues.length} issue(s)`+(r.warns.length?`, ${r.warns.length} warning(s)`:''); }
+  else { v.className='pass'; v.textContent=`✓ Valid roadbook — ${r.boxes} boxes`+(r.warns.length?`, ${r.warns.length} warning(s)`:''); }
+  r.issues.forEach(s=>{ const li=document.createElement('li'); li.textContent='✗ '+s; ul.appendChild(li); });
+  r.warns.forEach(s=>{ const li=document.createElement('li'); li.className='warn'; li.textContent='~ '+s; ul.appendChild(li); });
+}
+$('val').onclick=run;
+$('clr').onclick=()=>{ $('json').value=''; $('verdict').className=''; $('issues').innerHTML=''; };
+fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
+  const sel=$('lib'); list.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=m.name; sel.appendChild(o); });
+  sel.onchange=()=>{ if(!sel.value)return; fetch('roadbooks/'+sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; run(); }); };
+}).catch(()=>{});
+</script>
+</body>
+</html>

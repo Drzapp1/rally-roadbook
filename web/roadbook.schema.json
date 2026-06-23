@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drzapp1.github.io/rally-roadbook/roadbook.schema.json",
+  "title": "Rally Roadbook",
+  "description": "Open, sim-agnostic format for a rally-raid roadbook: an ordered list of tulip boxes (junction diagram + distance + compass heading + pictograms), optionally with the source route polyline. Version 1.",
+  "type": "object",
+  "required": ["schemaVersion", "boxes"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1, "description": "Format version." },
+    "trackName": { "type": "string" },
+    "trackId": { "type": "string" },
+    "totalDistanceKm": { "type": "number", "minimum": 0 },
+    "meta": {
+      "type": "object",
+      "description": "Provenance + world calibration.",
+      "properties": {
+        "trackId": { "type": "string" },
+        "trackName": { "type": "string" },
+        "totalDistanceKm": { "type": "number", "minimum": 0 },
+        "generatedBy": { "type": "string", "description": "e.g. 'plugin', 'builder', 'gpx'." },
+        "sourceRide": { "type": "string" },
+        "worldUpAxis": { "type": "string", "enum": ["x", "y", "z"] },
+        "capNorthOffsetDeg": { "type": "number" }
+      }
+    },
+    "boxes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The roadbook, one tulip box per navigation instruction, in travel order.",
+      "items": { "$ref": "#/definitions/box" }
+    },
+    "route": {
+      "type": "array",
+      "description": "Optional source polyline; each sample is [x, z, distM, elevation].",
+      "items": { "type": "array", "minItems": 2, "items": { "type": "number" } }
+    }
+  },
+  "definitions": {
+    "point": {
+      "type": "array",
+      "description": "Normalized tulip-space point, travel-up: [x,y] each in 0..1.",
+      "minItems": 2, "maxItems": 2,
+      "items": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "box": {
+      "type": "object",
+      "required": ["distTotalKm", "capDeg", "type", "tulip"],
+      "additionalProperties": true,
+      "properties": {
+        "index": { "type": "integer", "minimum": 0 },
+        "distTotalKm": { "type": "number", "minimum": 0, "description": "Cumulative distance from start (km); non-decreasing across boxes." },
+        "distPartialM": { "type": "number", "minimum": 0, "description": "Metres since the previous box." },
+        "capDeg": { "type": "integer", "minimum": 0, "maximum": 359, "description": "Compass heading at the box (0=N, clockwise)." },
+        "type": { "enum": ["start", "straight", "turn", "hairpin", "finish"] },
+        "turnDir": { "enum": ["left", "right", "none"] },
+        "dangerLevel": { "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none .. 3 (!!!)." },
+        "pictograms": { "type": "array", "items": { "type": "string" }, "description": "FIA/Dakar sign codes (caution, dune, water, ...)." },
+        "note": { "type": "string" },
+        "crossDeg": { "type": "number", "description": "Crossing-road angle through the box centre; -999 = none." },
+        "branchDeg": { "type": "array", "items": { "type": "number" }, "description": "Un-taken junction branch bearings." },
+        "tulip": {
+          "type": "object",
+          "required": ["points"],
+          "description": "The junction diagram in normalized travel-up space.",
+          "properties": {
+            "points": { "type": "array", "minItems": 2, "items": { "$ref": "#/definitions/point" }, "description": "Route polyline, entry first." },
+            "entry": { "$ref": "#/definitions/point" },
+            "exit": {
+              "type": "object",
+              "properties": {
+                "at": { "$ref": "#/definitions/point" },
+                "headingDeg": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
