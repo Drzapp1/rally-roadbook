@@ -96,6 +96,11 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   </section>
 
   <section id="library" class="hide">
+    <div id="libFilter" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <input id="libSearch" type="search" placeholder="Search stages…" aria-label="Search stages" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:13px;flex:1;min-width:160px;max-width:320px">
+      <select id="libGroup" aria-label="Filter by group" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px"></select>
+      <span id="libCount" style="color:var(--dim);font-size:12px"></span>
+    </div>
     <div class="cards" id="libCards"></div>
   </section>
 

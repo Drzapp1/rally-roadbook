@@ -180,17 +180,34 @@ const LIBRARY=[
 let MANIFEST=null;
 function manifestGroups(){ const g={}; (MANIFEST||[]).forEach(it=>{ (g[it.group]=g[it.group]||[]).push(it); }); return g; }
 const GRPHEAD='grid-column:1/-1;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:8px 0 0';
+function filterLibrary(){
+  const ql=((document.getElementById('libSearch')||{}).value||'').trim().toLowerCase();
+  const grp=(document.getElementById('libGroup')||{}).value||'';
+  let shown=0;
+  document.querySelectorAll('#libCards .libcard').forEach(c=>{
+    const ok=(!grp||c.dataset.group===grp)&&(!ql||c.dataset.name.indexOf(ql)>=0);
+    c.style.display=ok?'':'none'; if(ok)shown++;
+  });
+  document.querySelectorAll('#libCards .ghead').forEach(h=>{
+    const any=[...document.querySelectorAll('#libCards .libcard')].some(c=>c.dataset.group===h.dataset.group&&c.style.display!=='none');
+    h.style.display=any?'':'none';
+  });
+  const cnt=document.getElementById('libCount'); if(cnt) cnt.textContent=shown+' stage'+(shown===1?'':'s');
+}
 function buildLibrary(){
   const el=document.getElementById('libCards'); el.innerHTML='';
   if(MANIFEST){
     const g=manifestGroups();
+    const gs=document.getElementById('libGroup');
+    if(gs && !gs.options.length){ gs.innerHTML='<option value="">All groups</option>'+Object.keys(g).map(k=>'<option>'+k+'</option>').join(''); }
     Object.keys(g).forEach(group=>{
-      const h=document.createElement('div'); h.style.cssText=GRPHEAD; h.textContent=group+' ('+g[group].length+')'; el.appendChild(h);
-      g[group].forEach(it=>{ const card=document.createElement('div'); card.className='card';
+      const h=document.createElement('div'); h.style.cssText=GRPHEAD; h.className='ghead'; h.dataset.group=group; h.textContent=group+' ('+g[group].length+')'; el.appendChild(h);
+      g[group].forEach(it=>{ const card=document.createElement('div'); card.className='card libcard'; card.dataset.name=(it.name||'').toLowerCase(); card.dataset.group=group;
         card.innerHTML='<h3>'+it.name+'</h3><div class="sub">'+group+' · '+it.km.toFixed(1)+' km · '+it.difficulty+'</div>';
         const b=document.createElement('button'); b.textContent='Open'; b.onclick=()=>fetch(it.file).then(r=>r.json()).then(loadRB).catch(()=>alert('Run from a local web server — file:// blocks fetch.'));
         card.appendChild(b); el.appendChild(card); });
     });
+    filterLibrary();
     return;
   }
   LIBRARY.forEach(([group,names])=>{
@@ -212,7 +229,9 @@ function buildHub(){
     const b=document.createElement('button'); b.textContent='Download .json'; b.onclick=()=>{ fetch(it.file).then(r=>r.blob()).then(blob=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='roadbook_'+it.dl+'.json'; a.click(); }).catch(()=>alert('Run from a local web server to download.')); };
     c.appendChild(b); el.appendChild(c); });
 }
-fetch('roadbooks/manifest.json').then(r=>r.ok?r.json():null).then(m=>{ MANIFEST=m; }).catch(()=>{}).finally(()=>{ buildLibrary(); buildHub(); buildLegend(); });
+fetch('roadbooks/manifest.json').then(r=>r.ok?r.json():null).then(m=>{ MANIFEST=m; }).catch(()=>{}).finally(()=>{ buildLibrary(); buildHub(); buildLegend();
+  const ls=document.getElementById('libSearch'); if(ls)ls.oninput=filterLibrary;
+  const lg=document.getElementById('libGroup'); if(lg)lg.onchange=filterLibrary; });
 // ---- theme switcher (chrome only; the roadbook cases stay authentic paper) ----
 const THEMES={
   midnight:{'--bg':'#14161b','--panel':'#1c1f26','--ink':'#e6e8ec','--dim':'#8b919c','--accent':'#ffb028','--line':'#2a2e37'},

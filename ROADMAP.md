@@ -490,6 +490,10 @@ mentor matching.
   of the day" to the home hub (spotlighting the generated terrain/procedural stages) with
   one-click Drive / Practice / In-3D, powered by a new `?stage=` deep-link param on
   codriver, stage and map3d.
+- **Wave 61 · Library filter & search** *(UX)* — the explore page now has a live search
+  box + group filter so the 64-stage library stays navigable: search by name, filter by
+  Terrain / Procedural / etc., with a live result count and auto-hiding of empty group
+  headers.
 
 ---
 
