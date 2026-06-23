@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Symbol Cheat-Sheet</title>
+<meta name="description" content="A one-page printable reference of rally roadbook symbols: tulip turns, danger levels, CAP, and the common pictograms with their meanings.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/cheatsheet.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook — Symbol Cheat-Sheet"><meta property="og:description" content="A printable one-page reference of roadbook tulips, danger levels and signs."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:1000px; margin:0 auto; padding:20px 18px 60px; }
+  .top{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:4px; }
+  h2{ font-size:22px; margin:0; } .lead{ color:var(--dim); font-size:13.5px; margin:2px 0 14px; }
+  button.print{ background:var(--accent); color:#1a1205; border:1px solid var(--accent); border-radius:8px; padding:8px 16px; font-size:13px; font-weight:700; cursor:pointer; }
+  h3{ font-size:13px; text-transform:uppercase; letter-spacing:1.2px; color:var(--accent); margin:20px 0 8px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(118px,1fr)); gap:8px; }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:7px; text-align:center; }
+  .sym{ height:62px; display:grid; place-items:center; background:#0f1218; border-radius:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .sym.tul img{ height:90%; }
+  .sym.sgn img{ height:64%; filter:invert(.92); }
+  .lbl{ font-size:11px; margin-top:5px; color:var(--ink); line-height:1.25; }
+  .note{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-size:13px; color:var(--dim); margin:10px 0; }
+  .note b{ color:var(--ink); } .note .hl{ color:var(--accent); font-weight:700; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+  @media print {
+    header, footer, .print, nav { display:none !important; }
+    body{ background:#fff; color:#111; } main{ padding:0; max-width:100%; }
+    h2{ color:#111; } h3{ color:#111; border-color:#999; } .lead, .lbl{ color:#111; }
+    .card{ background:#fff; border-color:#bbb; break-inside:avoid; }
+    .note{ background:#f4f4f4; border-color:#bbb; color:#333; }
+    .grid{ grid-template-columns:repeat(6,1fr); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · CHEAT-SHEET</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="guide.html">Guide</a><a href="course.html">Academy</a><a href="cheatsheet.html" class="on">Cheat-sheet</a></nav>
+</header>
+<main>
+  <div class="top">
+    <h2>Roadbook symbol cheat-sheet</h2>
+    <button class="print" onclick="window.print()">Print / Save PDF</button>
+  </div>
+  <p class="lead">One page to keep beside the screen. Travel reads bottom-to-top; the ball is the entry, the arrow the way out.</p>
+
+  <div class="note"><b>Danger marks:</b> <span class="hl">!</span> caution &nbsp;·&nbsp; <span class="hl">!!</span> more serious &nbsp;·&nbsp; <span class="hl">!!!</span> very serious (slow right down). &nbsp;&nbsp; <b>CAP</b> = compass heading in degrees: <b>0°</b> N · <b>90°</b> E · <b>180°</b> S · <b>270°</b> W — always turn the shorter way onto it.</p>
+
+  <h3>Tulips — the turn</h3>
+  <div class="grid" id="tulips"></div>
+  <h3>Direction &amp; danger</h3>
+  <div class="grid" id="dir"></div>
+  <h3>Terrain</h3>
+  <div class="grid" id="terrain"></div>
+  <h3>Water &amp; hazards</h3>
+  <div class="grid" id="haz"></div>
+  <h3>Services</h3>
+  <div class="grid" id="svc"></div>
+</main>
+<footer>Tulip + sign art original to this project · roadbook signs derive from the open-source tulip lexicon (GPLv2+).</footer>
+<script>
+const TULIPS = [['straight','Straight on'],['slightL','Slight left'],['slightR','Slight right'],['left','Left'],['right','Right'],['sharpL','Sharp left'],['sharpR','Sharp right'],['hairpinL','Hairpin left'],['hairpinR','Hairpin right'],['forkL','Fork — keep left'],['forkR','Fork — keep right'],['cross','Crossroads'],['start','Start'],['finish','Finish']];
+const DIR = [['caution','Caution !'],['danger2','Danger !!'],['danger3','Danger !!!'],['stop','Stop'],['deadend','Dead end'],['noentry','No entry'],['slowdown','Slow down'],['keepL','Keep left'],['keepR','Keep right'],['keepS','Keep straight'],['keepMain','Keep on main']];
+const TERRAIN = [['jump','Jump'],['dip','Dip'],['hole','Hole'],['ditch','Ditch'],['compression','Compression'],['bump','Bump'],['crestL','Crest'],['downhill','Steep descent'],['dune','Dune'],['rough','Rough'],['narrow','Narrows'],['rocky','Rocky']];
+const HAZ = [['water','Water'],['river','River'],['wadi','Wadi'],['bridge','Bridge'],['gate','Gate'],['cattleguard','Cattle guard'],['fence','Fence'],['barbwire','Barbed wire']];
+const SVC = [['fuel','Fuel'],['fuelzone','Fuel zone'],['checkpoint','Checkpoint'],['medical','Medical'],['police','Police'],['north','North']];
+function fill(id, list, kind){
+  const el=document.getElementById(id); const dir = kind==='tul' ? 'tulips' : 'signs';
+  el.innerHTML = list.map(([c,l])=>`<div class="card"><div class="sym ${kind}"><img src="${dir}/${c}.png" alt="${l}" onerror="this.style.display='none'"></div><div class="lbl">${l}</div></div>`).join('');
+}
+fill('tulips', TULIPS, 'tul');
+fill('dir', DIR, 'sgn');
+fill('terrain', TERRAIN, 'sgn');
+fill('haz', HAZ, 'sgn');
+fill('svc', SVC, 'sgn');
+</script>
+</body>
+</html>

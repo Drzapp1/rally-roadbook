@@ -397,6 +397,10 @@ mentor matching.
   lesson on anticipating crests/dips/jumps/surface from the signs (new ‘terrain’
   widget over a 12-sign pool). Excluded from the certificate like the forks bonus;
   terrainQ logic-tested over 6000 questions.
+- **Wave 41 · Printable cheat-sheet** *(Reference)* — `cheatsheet.html`: a one-page
+  reference of the 14 tulips, danger marks, CAP, and ~36 common signs with
+  meanings, with a print stylesheet + Print/Save-PDF button. Eager-loaded so it
+  prints complete. Browser-verified (51 symbols render).
 
 ---
 
