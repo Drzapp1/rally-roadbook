@@ -155,6 +155,8 @@ fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
   playable.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=`${m.name} · ${m.turns} turns`; sel.appendChild(o); });
   if(!playable.length){ $('meta').textContent = 'No stages with enough classified turns yet.'; }
   sel.onchange=()=>{ $('start').disabled = !sel.value; const m=list.find(x=>x.file===sel.value); $('meta').textContent = m ? `${m.km} km · ${m.turns} turns · ${m.difficulty||''}` : ''; };
+  const deep = new URLSearchParams(location.search).get('stage');   // deep-link from the home "featured stage"
+  if(deep && [...sel.options].some(o=>o.value===deep)){ sel.value=deep; sel.dispatchEvent(new Event('change')); }
 }).catch(()=>{ $('meta').textContent='Could not load the library.'; });
 $('start').onclick = startStage;
 $('again').onclick = ()=>{ $('result').hidden=true; $('intro').hidden=false; };

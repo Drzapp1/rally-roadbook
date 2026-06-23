@@ -169,7 +169,8 @@ fetch('roadbooks/manifest.json').then(r=>r.json()).then(m=>{
     groups[g].forEach(it=>{ const o=document.createElement('option'); o.value=it.file; o.textContent=it.name+' · '+it.km+' km'; og.appendChild(o); });
     sel.appendChild(og); });
   sel.onchange=()=>load(sel.value);
-  const first=m.find(it=>it.id.startsWith('rally_'))||m[0]; if(first){ sel.value=first.file; load(first.file); }
+  const deep=new URLSearchParams(location.search).get('stage');   // deep-link from the home "featured stage"
+  const first=(deep&&m.find(it=>it.file===deep))||m.find(it=>it.id.startsWith('rally_'))||m[0]; if(first){ sel.value=first.file; load(first.file); }
 }).catch(()=>{ document.getElementById('stat').textContent='Run from a web server to load maps (file:// blocks fetch).'; });
 
 document.getElementById('exag').oninput=e=>{ EXAG=+e.target.value; document.getElementById('exagOut').textContent=EXAG+'×'; if(RB) build(); };

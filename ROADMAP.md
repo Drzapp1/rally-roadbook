@@ -485,6 +485,11 @@ mentor matching.
   five stages + rival field for everyone that week (verified deterministic), mirroring
   the daily-challenge hook. A "Rally of the week" button + "New random rally" option;
   the overview shows the week id; last week’s rally auto-refreshes on load.
+- **Wave 60 · Featured stage + deep-links** *(Discovery/QA)* — verified the whole library
+  (64 roadbooks + 36 tracks all valid/intact), then added a date-seeded "Featured stage
+  of the day" to the home hub (spotlighting the generated terrain/procedural stages) with
+  one-click Drive / Practice / In-3D, powered by a new `?stage=` deep-link param on
+  codriver, stage and map3d.
 
 ---
 

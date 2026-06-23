@@ -62,6 +62,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 </div>
 <div id="myProgress" hidden></div>
 <main>
+  <div id="featured" hidden></div>
   <h2>Explore</h2>
   <div class="grid">
     <a class="card" href="index.html"><div class="ic">📖</div><h3>Roadbook Viewer</h3><p>Browse the library of roadbooks — tulips, distances, CAP, signs.</p></a>
@@ -125,6 +126,28 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
     + '<a href="course.html" style="text-decoration:none;color:#e6e8ec;background:#23272f;border:1px solid #2a2e37;border-radius:20px;padding:6px 14px;font-size:13px">'+acLabel+(exam?' 🏅':' · continue')+'</a>'
     + '<a href="daily.html" style="text-decoration:none;color:#1a1205;background:#ffb028;border:1px solid #ffb028;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600">'+dLabel+' · '+dCta+'</a>'
     + (stages ? '<a href="stage.html" style="text-decoration:none;color:#e6e8ec;background:#23272f;border:1px solid #2a2e37;border-radius:20px;padding:6px 14px;font-size:13px">'+stages+(stages>1?' stages':' stage')+' practised</a>' : '');
+})();
+</script>
+<script>
+(function(){
+  const el=document.getElementById('featured'); if(!el) return;
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  const d=new Date(); const ymd=`${d.getUTCFullYear()}${String(d.getUTCMonth()+1).padStart(2,'0')}${String(d.getUTCDate()).padStart(2,'0')}`;
+  fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
+    let pool=list.filter(m=>/^(terrain|proc)_/.test(m.id) && (m.turns||0)>=8);   // spotlight the generated stages
+    if(pool.length<3) pool=list.filter(m=>(m.turns||0)>=6);
+    if(!pool.length) return;
+    const m=pool[Math.floor(mulberry32(parseInt(ymd,10))()*pool.length)];
+    el.hidden=false;
+    el.innerHTML=`<div style="background:linear-gradient(100deg,#1c1f26,#181b22);border:1px solid #2a2e37;border-left:3px solid #ffb028;border-radius:14px;padding:16px 18px;margin-bottom:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">`
+      +`<div style="flex:1;min-width:220px"><div style="color:#ffb028;font-size:12px;font-weight:700;letter-spacing:.5px">★ FEATURED STAGE OF THE DAY</div>`
+      +`<div style="font-size:20px;font-weight:800;margin:2px 0">${m.name}</div>`
+      +`<div style="color:#8b919c;font-size:13px">${m.km} km · ${m.turns} turns${m.group?' · '+m.group:''}</div></div>`
+      +`<div style="display:flex;gap:8px;flex-wrap:wrap">`
+      +`<a href="codriver.html?stage=${encodeURIComponent(m.file)}" style="text-decoration:none;color:#1a1205;background:#ffb028;border-radius:9px;padding:9px 15px;font-size:14px;font-weight:700">▶ Drive it</a>`
+      +`<a href="stage.html?stage=${encodeURIComponent(m.file)}" style="text-decoration:none;color:#e6e8ec;background:#23272f;border:1px solid #2a2e37;border-radius:9px;padding:9px 15px;font-size:14px">Practice</a>`
+      +`<a href="map3d.html?stage=${encodeURIComponent(m.file)}" style="text-decoration:none;color:#e6e8ec;background:#23272f;border:1px solid #2a2e37;border-radius:9px;padding:9px 15px;font-size:14px">In 3D</a></div></div>`;
+  }).catch(()=>{});
 })();
 </script>
 </body>
