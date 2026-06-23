@@ -313,6 +313,11 @@ mentor matching.
   JSON-LD on the hub so search engines get rich, machine-readable metadata about
   the plugin (free, Windows, help link, author). The gate now also validates that
   every `ld+json` block parses.
+- **Wave 21 · Consolidation & handoff** *(Docs)* — `web/README.md`
+  documenting the site map, the open format, the CI pipeline (manifest → sitemap
+  → link + a11y/JSON-LD gates), and how to add a page. Closes the 21-wave web
+  build-out; the big roadmap pillars (multi-sim, AI, cloud) are next and need a
+  focused session.
 
 ---
 
