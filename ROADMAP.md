@@ -283,6 +283,9 @@ mentor matching.
   bests across the drills (tulip + CAP streaks, Navigate times per difficulty) as
   stat cards + 8 earnable **badges**, all from localStorage. Completes the gamified
   learn loop. Carded under **Learn**.
+- **Wave 11 · Social share-cards** *(Reach)* — a 1200×630 `og-card.png` + Open
+  Graph / Twitter meta on **every page**, so the site previews professionally
+  (title, tagline, tulip strip) when shared to Discord / X / forums.
 
 ---
 
