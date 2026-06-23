@@ -21,6 +21,8 @@ build, and embed rally roadbooks without installing the plugin — and shares on
 | | `progress.html` | Local progress / best scores (localStorage). |
 | **Play** | `daily.html` | A date-seeded daily stage (same for everyone each UTC day) + streak, stats and a shareable grid. |
 | | `stage.html` | Practice a real library roadbook box-by-box — its actual recorded tulip geometry, distances, CAP and signs. |
+| | `codriver.html` | Spoken **co-driver** — reads any stage aloud as natural pace notes (Web Speech API), with cross-box chaining + voice pick. |
+| | `marathon.html` | A multi-stage **rally-raid marathon** — read each stage's roadbook and chase the overall GC across a simulated field. |
 | **Create** | `builder.html` · `editor.html` | Route builder + roadbook editor. |
 | | `generate.html` | Generate a roadbook from a drawn route. |
 | **Reference** | `format.html` | The open format — spec + live validator. |
@@ -36,6 +38,25 @@ A roadbook is one JSON document — `{ schemaVersion, trackName, meta, boxes[], 
 — validated by [`roadbook.schema.json`](roadbook.schema.json) and described on
 [format.html](format.html). `roadbook.js` is the reference reader/renderer; the
 plugin, the CLI tools, and this site all read the same shape.
+
+## Generating stages from terrain
+
+Most library stages are **auto-generated from terrain** — no recorded ride needed. They run
+through the *same* C++ generator the plugin uses (`build/.../RoadbookTests.exe`, which turns a
+ride trace into a roadbook), so generated stages match the in-game output exactly:
+
+- **`tools/make_terrain_stage.py <track_id>`** drives a **terrain-following** rally line — a
+  least-cost path biased toward valleys and gentle slopes — across a real MX Bikes heightmap
+  (`web/tracks/<id>/height.bin`), samples the elevation along it, and tags each box with the
+  signs the relief implies (crest / jump / dip / compression / descent / climb). Both
+  *curvature → tulips* and *elevation → signs* come from the real landscape.
+- **`tools/make_procedural_stage.py <name> [seed] [dunes|mountains|mixed]`** synthesizes a
+  brand-new world (multi-octave noise heightmap + a hill-shaded aerial) as a 3D-viewable track,
+  then drives a stage across it — endless fresh rally-raid.
+
+The library (`roadbooks/manifest.json`) is **64 roadbooks**: 26 real-terrain stages, 10
+procedural worlds, and 28 hand-built / GPX / drill stages — grouped in the viewer as *Terrain
+stages*, *Procedural stages*, and so on.
 
 ## Build & deploy pipeline
 

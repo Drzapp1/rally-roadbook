@@ -470,6 +470,11 @@ mentor matching.
   sets your stage time and you chase the overall GC across a simulated bivouac field
   (four rivals). Per-stage + final classification, progress saved, shareable result.
   A capstone over the now-64-roadbook library.
+- **Wave 57 · Docs consolidation** *(Docs)* — refreshed both READMEs to reflect the
+  feature program: added the co-driver + marathon pages and a "Generating stages from
+  terrain" section (make_terrain_stage / make_procedural_stage, terrain-following +
+  elevation signs, the 64-roadbook library) to web/README, and updated the root
+  README’s companion summary. Confirmed the new signs already render in the viewer.
 
 ---
 

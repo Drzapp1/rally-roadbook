@@ -14,7 +14,7 @@ A full **browser companion** is live — no install needed — to explore, learn
 
 | Explore | Learn & play | Create | Reference |
 |---|---|---|---|
-| roadbook viewer · 3D real terrain · route 3D | Roadbook 101 guide · tulip + CAP drills · the *eclipse* Navigate challenge | route builder · stage generator | 23 photo-real device skins · installable mobile reader · open JSON format + validator + embed module |
+| roadbook viewer · 3D real terrain · route 3D · **64-stage library** | Academy course · daily challenge · stage practice · **spoken co-driver** · **rally-raid marathon** · tulip + CAP drills | route builder · roadbook editor · **auto-generate stages from real & procedural terrain** | photo-real device skins · installable mobile reader · open JSON format + validator + embed module |
 
 The plugin and the site share one **open roadbook format** ([schema](https://drzapp1.github.io/rally-roadbook/roadbook.schema.json) · [validator](https://drzapp1.github.io/rally-roadbook/format.html) · [embed module](https://drzapp1.github.io/rally-roadbook/roadbook.js)). See the [20× roadmap](ROADMAP.md).
 
