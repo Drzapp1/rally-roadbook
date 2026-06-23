@@ -336,6 +336,10 @@ mentor matching.
   over a curated 26-sign pool (danger ! !! !!!, terrain, hazards, water, services)
   using the FIA art; identify each sign’s meaning. All 26 codes verified present;
   options logic-tested. 4 of 6 lessons live.
+- **Wave 26 · Academy Lesson 5 (Putting it together)** *(Academy)* — a `follow`
+  widget that renders a full roadbook box (TOTAL/PARTIAL + tulip + CAP + sign) and
+  quizzes one aspect at random, synthesizing lessons 1–4. Logic-tested over 12000
+  questions. 5 of 6 lessons live.
 
 ---
 

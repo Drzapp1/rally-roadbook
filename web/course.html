@@ -43,6 +43,11 @@
   .tulipbox img{ width:84%; height:84%; object-fit:contain; }
   .signbox{ width:150px; height:150px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
   .signbox img{ width:72%; height:72%; object-fit:contain; filter:invert(.92); }
+  .rbbox{ display:flex; max-width:380px; margin:6px auto 16px; background:#14171e; border:1px solid var(--line); border-radius:10px; overflow:hidden; text-align:left; }
+  .rbbox .l{ flex:0 0 34%; padding:12px 10px; border-right:1px solid var(--line); }
+  .rbtot{ font-size:22px; font-weight:700; font-family:ui-monospace,monospace; } .rbpart{ font-size:16px; margin-top:8px; font-family:ui-monospace,monospace; color:var(--cyan); } .rbsub{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+  .rbbox .m{ flex:0 0 36%; display:grid; place-items:center; border-right:1px solid var(--line); padding:8px; } .rbbox .m img{ width:90%; max-height:96px; object-fit:contain; }
+  .rbbox .r{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:8px; } .rbcap{ font-size:18px; font-weight:700; font-family:ui-monospace,monospace; } .rbsign{ width:34px; height:34px; object-fit:contain; filter:invert(.92); }
   .dpanel{ display:inline-block; text-align:left; background:#0f1218; border:1px solid var(--line); border-radius:10px; padding:14px 20px; margin:4px auto 16px; font-size:15px; }
   .dline{ padding:4px 0; } .dline b{ color:var(--accent); font-family:ui-monospace,monospace; font-size:18px; }
   .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:0 auto; }
@@ -116,7 +121,10 @@ const LESSONS = [
     teach:`Beyond the tulip, a box can carry <b>pictograms</b> — symbols warning what's ahead. The key ones are the <b>danger marks</b>: <span class="hl">!</span> caution, <span class="hl">!!</span> more serious, <span class="hl">!!!</span> very serious — slow right down. Around them you'll meet terrain (jump, dip, dune), hazards (hole, cattle guard, gate), water crossings, and services (fuel, checkpoint, medical).<br><br>You don't memorise all ninety-odd — you learn to recognise the common ones at a glance. This lesson drills the ones you'll see most.`,
     practice:{ type:'signs' },
     check:{ type:'signs', count:5, pass:4 } },
-  { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:false },
+  { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:true,
+    teach:`Now it all comes together. A real roadbook box stacks the lot: <b>TOTAL</b> and <b>PARTIAL</b> distances on the left, the <b>tulip</b> in the middle, the <b>CAP</b> and any <b>warning sign</b> on the right. Riding it, one glance takes in how far to go, the shape of the turn, the heading to hold, and the hazard to expect.<br><br>These boxes mix every skill from lessons 1–4. Each question shows a full box and asks about one part of it — read it fast and right.`,
+    practice:{ type:'follow' },
+    check:{ type:'follow', count:6, pass:5 } },
   { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:false },
 ];
 
@@ -157,6 +165,7 @@ function genQ(type){
   if(type==='distance') return distanceQ();
   if(type==='cap') return capQ();
   if(type==='signs') return signsQ();
+  if(type==='follow') return followQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -210,6 +219,25 @@ function signsQ(){
   const [code,label] = SIGNS[rand(SIGNS.length)];
   const others = shuffle(SIGNS.filter(s=>s[1]!==label)).slice(0,3).map(s=>s[1]);
   return { media:`<div class="signbox"><img src="signs/${code}.png" alt="rally sign"></div>`, prompt:'What does this sign mean?', options:shuffle([label,...others]), answer:label };
+}
+
+function renderBox(total, partM, code, cap, sign){
+  return `<div class="rbbox"><div class="l"><div class="rbtot">${total.toFixed(2)}</div><div class="rbsub">km total</div><div class="rbpart">${partM} m</div><div class="rbsub">partial</div></div><div class="m"><img src="tulips/${code}.png" alt="tulip"></div><div class="r"><div class="rbcap">${String(cap).padStart(3,'0')}°</div>${sign?`<img class="rbsign" src="signs/${sign[0]}.png" alt="sign">`:''}</div></div>`;
+}
+function followQ(){
+  const code = TUL[rand(TUL.length)];
+  const total = Math.round((Math.random()*9+1)*100)/100;
+  const partM = (rand(81)+12)*10;
+  const sign = Math.random()<0.6 ? SIGNS[rand(SIGNS.length)] : null;
+  const aspects = ['dir','dist','cap']; if(sign) aspects.push('sign');
+  const asp = aspects[rand(aspects.length)];
+  const cap = (asp==='cap') ? rand(8)*45 : rand(72)*5;
+  const box = renderBox(total, partM, code, cap, sign);
+  if(asp==='dir')  return { media:box, prompt:'Which way do you go at this box?', options:OPTS, answer:DIR[code] };
+  if(asp==='dist'){ const a=`${partM} m`; return { media:box, prompt:'How far is this box from the previous one? (read PARTIAL)', options:opts4(a,[`${partM+100} m`,`${Math.max(20,partM-100)} m`,`${partM+200} m`]), answer:a }; }
+  if(asp==='cap'){ const ans=CARD8[cap/45]; const others=shuffle(CARD8.filter(c=>c!==ans)).slice(0,3); return { media:box, prompt:'Roughly which way will you head out? (read the CAP)', options:shuffle([ans,...others]), answer:ans }; }
+  const others=shuffle(SIGNS.filter(s=>s[1]!==sign[1])).slice(0,3).map(s=>s[1]);
+  return { media:box, prompt:'What does the warning sign mean?', options:shuffle([sign[1],...others]), answer:sign[1] };
 }
 
 let L, score, qIdx, chkQs, marks;
