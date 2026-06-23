@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Academy</title>
+<meta name="description" content="A structured course that teaches rally-raid roadbook navigation lesson by lesson: reading tulips, distances and the ICO, CAP headings, danger signs, and blind navigation.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/course.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook Academy"><meta property="og:description" content="Learn roadbook navigation lesson by lesson — tulips, distances, CAP, signs, blind nav."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --good:#46c37b; --bad:#ff5a4d; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.55; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:860px; margin:0 auto; padding:22px 18px 70px; }
+  h2{ font-size:22px; margin:6px 0 4px; } h3{ font-size:17px; margin:22px 0 8px; }
+  p.lead{ color:var(--dim); font-size:14.5px; margin:0 0 6px; }
+  .bar{ height:8px; background:#23272f; border-radius:6px; overflow:hidden; margin:14px 0 22px; }
+  .bar > i{ display:block; height:100%; background:linear-gradient(90deg,var(--accent),#ffd27f); width:0; transition:width .4s; }
+  .lessons{ display:flex; flex-direction:column; gap:11px; }
+  .lcard{ display:flex; align-items:center; gap:14px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; text-align:left; color:var(--ink); cursor:pointer; font:inherit; transition:border-color .12s, transform .12s; }
+  .lcard:hover:not(:disabled){ border-color:var(--accent); transform:translateX(3px); }
+  .lcard:disabled{ opacity:.5; cursor:not-allowed; }
+  .lnum{ flex:0 0 42px; height:42px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:17px; background:#23272f; border:1px solid var(--line); }
+  .lcard.done .lnum{ background:var(--good); color:#06270f; border-color:var(--good); }
+  .lcard.cur .lnum{ background:var(--accent); color:#1a1205; border-color:var(--accent); }
+  .lmeta{ flex:1; } .lmeta .t{ font-weight:600; font-size:15px; } .lmeta .s{ color:var(--dim); font-size:12.5px; }
+  .badge{ font-size:11px; padding:3px 9px; border-radius:20px; border:1px solid var(--line); color:var(--dim); white-space:nowrap; }
+  .badge.done{ color:var(--good); border-color:var(--good); } .badge.cur{ color:var(--accent); border-color:var(--accent); }
+  button.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:9px 16px; font-size:14px; cursor:pointer; }
+  button.btn.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  button.btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .teach{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px; font-size:14.5px; }
+  .teach b{ color:var(--ink); } .teach .hl{ color:var(--accent); font-weight:600; }
+  .stage{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center; margin-top:16px; }
+  .tulipbox{ width:200px; height:200px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
+  .tulipbox img{ width:84%; height:84%; object-fit:contain; }
+  .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:0 auto; }
+  .opt{ padding:13px; font-size:15px; font-weight:600; background:#23272f; border:1px solid var(--line); border-radius:10px; color:var(--ink); cursor:pointer; }
+  .opt:hover{ border-color:var(--accent); } .opt.right{ background:var(--good); color:#06270f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a07; border-color:var(--bad); }
+  .fb{ min-height:24px; margin:14px 0 4px; font-size:14px; font-weight:600; } .fb.ok{ color:var(--good); } .fb.no{ color:var(--bad); }
+  .pips{ display:flex; gap:6px; justify-content:center; margin-bottom:10px; } .pip{ width:11px; height:11px; border-radius:50%; background:#23272f; border:1px solid var(--line); } .pip.ok{ background:var(--good); border-color:var(--good); } .pip.no{ background:var(--bad); border-color:var(--bad); }
+  .cert{ text-align:center; border:2px solid var(--accent); border-radius:16px; padding:34px; background:linear-gradient(180deg,#1c1f26,#141821); }
+  .cert h2{ color:var(--accent); } .cert .seal{ font-size:54px; }
+  .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; }
+  a.back{ color:var(--cyan); text-decoration:none; font-size:13px; cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · ACADEMY</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="guide.html">Guide</a><a href="academy.html">Drills</a><a href="course.html" class="on">Course</a></nav>
+</header>
+<main>
+  <div id="overview">
+    <h2>Roadbook Academy</h2>
+    <p class="lead">Learn to navigate by roadbook the way rally-raid riders do — one lesson at a time. Each lesson teaches a skill, lets you practise it, then checks you before unlocking the next.</p>
+    <div class="bar"><i id="prog"></i></div>
+    <div class="lessons" id="lessons"></div>
+  </div>
+
+  <div id="lesson" hidden>
+    <a class="back" onclick="toOverview()">← All lessons</a>
+    <h2 id="L-title"></h2>
+    <p class="lead" id="L-sum"></p>
+    <h3>Learn</h3>
+    <div class="teach" id="L-teach"></div>
+    <div id="L-practiceWrap"><h3>Practise</h3><div class="stage" id="L-practice"></div></div>
+    <div id="L-checkWrap"><h3>Check</h3><div class="stage" id="L-check"></div></div>
+  </div>
+
+  <div id="cert" hidden>
+    <a class="back" onclick="toOverview()">← All lessons</a>
+    <div class="cert">
+      <div class="seal">🏅</div>
+      <h2>Certificate of Completion</h2>
+      <p>This certifies that</p>
+      <input id="certName" placeholder="your name" style="font-size:18px;text-align:center;background:#0f1218;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0">
+      <p>has completed the <b>Rally Roadbook Academy</b> and can read and navigate a rally roadbook.</p>
+      <p id="certMeta" style="color:var(--dim);font-size:13px"></p>
+    </div>
+  </div>
+</main>
+<footer>Progress is saved in your browser only. Tulip + sign art original to this project.</footer>
+<script>
+const DIR = { straight:'Straight', slightL:'Left', left:'Left', sharpL:'Left', slightR:'Right', right:'Right', sharpR:'Right', hairpinL:'Hairpin', hairpinR:'Hairpin' };
+const TUL = Object.keys(DIR);
+const OPTS = ['Left','Straight','Right','Hairpin'];
+
+const LESSONS = [
+  { id:'tulips', num:1, title:'Reading tulips', sum:'The shape of a junction, at a glance.', ready:true,
+    teach:`A <b>tulip</b> is a simplified top-down sketch of one junction. The <span class="hl">ball (dot)</span> is where you <b>enter</b>; the line is the road; the <span class="hl">arrow</span> is the way <b>out</b> — the direction to take. Travel is always drawn <b>bottom-to-top</b>.<br><br>The shape tells you the turn: a gentle bend is a <b>slight</b> turn, a right-angle is a <b>normal</b> turn, a tight U is a <b>hairpin</b>, and a straight line means <b>keep ahead</b>. Right now, just read the <span class="hl">way out</span>: Left, Straight, Right, or Hairpin.`,
+    practice:{ type:'tulip-id' },
+    check:{ type:'tulip-id', items:['left','straight','hairpinR','sharpR','slightL'], pass:4 } },
+  { id:'distance', num:2, title:'Distances & the ICO', sum:'Total vs partial — how riders find the next box.', ready:false },
+  { id:'cap', num:3, title:'CAP & the compass', sum:'Heading in degrees, and steering to it.', ready:false },
+  { id:'signs', num:4, title:'Danger & info signs', sum:'!, !!, !!! and the common pictograms.', ready:false },
+  { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:false },
+  { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:false },
+];
+
+const KEY='rrAcademyProgress';
+const prog = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
+const setDone = id => { const p=prog(); p[id]=true; localStorage.setItem(KEY, JSON.stringify(p)); };
+const readyLessons = () => LESSONS.filter(l=>l.ready);
+const isUnlocked = i => { if(LESSONS[i].num===1) return true; const prev=LESSONS[i-1]; return prev && prog()[prev.id]; };
+const $ = id => document.getElementById(id);
+const show = which => { for(const k of ['overview','lesson','cert']) $(k).hidden = (k!==which); window.scrollTo(0,0); };
+
+function renderOverview(){
+  const p = prog();
+  const doneCount = readyLessons().filter(l=>p[l.id]).length;
+  $('prog').style.width = (100*doneCount/LESSONS.length)+'%';
+  const wrap = $('lessons'); wrap.innerHTML='';
+  LESSONS.forEach((l,i)=>{
+    const done = !!p[l.id]; const unlocked = l.ready && isUnlocked(i); const cur = unlocked && !done;
+    const b = document.createElement('button');
+    b.className = 'lcard'+(done?' done':'')+(cur?' cur':'');
+    b.disabled = !unlocked;
+    const badge = !l.ready ? '<span class="badge">soon</span>' : done ? '<span class="badge done">✓ done</span>' : unlocked ? '<span class="badge cur">start →</span>' : '<span class="badge">🔒 locked</span>';
+    b.innerHTML = `<span class="lnum">${done?'✓':l.num}</span><span class="lmeta"><div class="t">${l.title}</div><div class="s">${l.sum}</div></span>${badge}`;
+    if(unlocked) b.onclick = ()=>openLesson(i);
+    wrap.appendChild(b);
+  });
+  // certificate row when everything available is complete
+  if(readyLessons().length && readyLessons().every(l=>p[l.id]) && readyLessons().length===LESSONS.length){
+    const b=document.createElement('button'); b.className='btn primary'; b.style.marginTop='8px'; b.textContent='🏅 View your certificate'; b.onclick=openCert; wrap.appendChild(b);
+  }
+}
+
+let L, score, qIdx;
+function openLesson(i){
+  L = LESSONS[i]; show('lesson');
+  $('L-title').textContent = `Lesson ${L.num} · ${L.title}`;
+  $('L-sum').textContent = L.sum;
+  $('L-teach').innerHTML = L.teach;
+  startPractice(); resetCheck();
+}
+function toOverview(){ renderOverview(); show('overview'); }
+
+// ---- practice: endless tulip identification with instant feedback ----
+function startPractice(){ nextPractice(); }
+function nextPractice(){
+  const code = TUL[Math.floor(Math.random()*TUL.length)];
+  const ans = DIR[code];
+  $('L-practice').innerHTML =
+    `<div class="tulipbox"><img src="tulips/${code}.png" alt="tulip"></div>`+
+    `<div class="opts">${OPTS.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`+
+    `<div class="fb" id="pfb">Which way is the exit?</div>`;
+  $('L-practice').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    const ok = btn.dataset.o===ans;
+    btn.classList.add(ok?'right':'wrong');
+    const fb=$('pfb'); fb.className='fb '+(ok?'ok':'no'); fb.textContent = ok?`✓ Yes — that's a ${ans}.`:`✗ That one is a ${ans}.`;
+    $('L-practice').querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    const nx=document.createElement('button'); nx.className='btn'; nx.textContent='Next ▸'; nx.style.marginTop='12px'; nx.onclick=nextPractice;
+    $('L-practice').appendChild(nx);
+  });
+}
+
+// ---- check: fixed quiz, pass threshold unlocks the next lesson ----
+function resetCheck(){
+  score=0; qIdx=0;
+  $('L-check').innerHTML = `<p class="lead">Answer ${L.check.items.length} in a row. ${L.check.pass}/${L.check.items.length} to pass and unlock the next lesson.</p><button class="btn primary" id="startChk">Start the check</button>`;
+  $('startChk').onclick = askCheck;
+}
+function askCheck(){
+  if(qIdx >= L.check.items.length) return finishCheck();
+  const code = L.check.items[qIdx]; const ans = DIR[code];
+  const pips = L.check.items.map((_,k)=>`<span class="pip ${k<qIdx?(window._marks[k]?'ok':'no'):''}" ></span>`).join('');
+  window._marks = window._marks || [];
+  $('L-check').innerHTML =
+    `<div class="pips">${pips}</div>`+
+    `<div class="tulipbox"><img src="tulips/${code}.png" alt="tulip"></div>`+
+    `<div class="opts">${OPTS.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`+
+    `<div class="fb" id="cfb">Question ${qIdx+1} of ${L.check.items.length}</div>`;
+  $('L-check').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    const ok = btn.dataset.o===ans; window._marks[qIdx]=ok; if(ok) score++;
+    btn.classList.add(ok?'right':'wrong');
+    $('L-check').querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    qIdx++;
+    setTimeout(askCheck, 600);
+  });
+}
+function finishCheck(){
+  const pass = score >= L.check.pass;
+  window._marks = [];
+  if(pass) setDone(L.id);
+  $('L-check').innerHTML =
+    `<div class="seal" style="font-size:40px">${pass?'✅':'🔁'}</div>`+
+    `<h3 style="margin:6px 0">${score} / ${L.check.items.length}</h3>`+
+    `<p class="lead">${pass?'Passed — next lesson unlocked.':'Not yet — review the tulip shapes and try again.'}</p>`+
+    `<div class="row">${pass?'<button class="btn primary" onclick="toOverview()">Continue ▸</button>':'<button class="btn primary" onclick="resetCheck()">Try again</button>'} <button class="btn" onclick="toOverview()">All lessons</button></div>`;
+}
+
+function openCert(){
+  show('cert');
+  const n = readyLessons().length;
+  $('certMeta').textContent = `${n} of ${n} lessons · Rally Roadbook Academy`;
+}
+
+renderOverview();
+</script>
+</body>
+</html>

@@ -318,6 +318,11 @@ mentor matching.
   → link + a11y/JSON-LD gates), and how to add a page. Closes the 21-wave web
   build-out; the big roadmap pillars (multi-sim, AI, cloud) are next and need a
   focused session.
+- **Wave 22 · Academy pillar: course + Lesson 1** *(Academy)* — `course.html`:
+  a structured, progress-tracked curriculum (6 lessons, each locked until the prior
+  passes). Lesson 1 *Reading tulips* is fully playable — teach → endless practice →
+  a 5-question mastery check that unlocks the next. Lessons 2–6 scaffolded; the loop
+  now builds the ROADMAP Academy pillar one lesson per wave.
 
 ---
 
