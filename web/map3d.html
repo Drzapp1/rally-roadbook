@@ -35,6 +35,10 @@
   .legend{ position:absolute; right:14px; bottom:12px; background:rgba(20,23,30,.82); border:1px solid var(--line); border-radius:8px; padding:8px 11px; font-size:11px; color:var(--dim); line-height:1.7; }
   .legend i{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:0; }
 </style>
+<style>/* a11y: focus ring + reduced-motion (Wave 17) */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent,#ffb028);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
 <header>

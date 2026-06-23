@@ -300,6 +300,9 @@ mentor matching.
 - **Wave 16 · CI link-gate** *(Quality)* — wired `check_web_links.py` into the Pages
   deploy workflow (after manifest generation, before upload), so a broken internal
   link/asset now **fails the deploy** instead of shipping. QA is permanent.
+- **Wave 17 · Accessibility** *(Quality)* — a keyboard `:focus-visible` ring and a
+  `prefers-reduced-motion` guard on every page, plus `check_a11y.py` (lang + title +
+  viewport + img-alt) wired into the deploy gate beside the link check.
 
 ---
 

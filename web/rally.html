@@ -46,6 +46,10 @@
   #hint{ color:var(--dim); font-size:12px; text-align:center; padding:10px; }
   a.back{ position:fixed; bottom:calc(env(safe-area-inset-bottom) + 12px); right:12px; background:#23272f; border:1px solid var(--line); color:var(--ink); text-decoration:none; padding:9px 13px; border-radius:10px; font-size:13px; }
 </style>
+<style>/* a11y: focus ring + reduced-motion (Wave 17) */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent,#ffb028);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
 <header>
