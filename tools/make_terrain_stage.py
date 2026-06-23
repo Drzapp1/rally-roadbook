@@ -147,6 +147,43 @@ def enrich_signs(rb):
         elif post > 0.10: add('hill')                           # climb
     return rb
 
+def surface_signs(rb, aerial_path, size):
+    """Classify the surface from the track's aerial imagery and tag transitions —
+    sandy -> dune, vegetation -> bush, rock/dark -> rocky, blue -> water — so the
+    roadbook's terrain signs come from the imagery, not just the heightmap."""
+    try:
+        from PIL import Image
+        im = Image.open(aerial_path).convert('RGB')
+    except Exception:
+        return rb
+    W, Hh = im.size; px = im.load(); span = size * CELL
+    route = rb.get('route', [])
+    if len(route) < 5: return rb
+    ds = [p[2] for p in route]
+    def pos_at(dm):
+        i = max(1, min(len(route) - 1, bisect.bisect_left(ds, dm))); return route[i][0], route[i][1]
+    def classify(x, z):
+        u = min(W - 1, max(0, int(x / span * W))); v = min(Hh - 1, max(0, int(z / span * Hh)))
+        rs = gs = bs = n = 0
+        for du in (-2, 0, 2):
+            for dv in (-2, 0, 2):
+                c = px[min(W - 1, max(0, u + du)), min(Hh - 1, max(0, v + dv))]; rs += c[0]; gs += c[1]; bs += c[2]; n += 1
+        r, g, b = rs // n, gs // n, bs // n; mx = max(r, g, b); mn = min(r, g, b)
+        if b > r + 15 and b > g + 15 and b > 100: return 'water'
+        if g > r + 10 and g > b + 10: return 'bush'
+        if r > 150 and g > 115 and (r - b) > 35: return 'dune'
+        if mx < 115 or (mx > 200 and mx - mn < 28): return 'rocky'
+        return None
+    prev = None
+    for b in rb.get('boxes', []):
+        if b.get('type') in ('start', 'finish'): continue
+        x, z = pos_at(b['distTotalKm'] * 1000.0); s = classify(x, z)
+        if s and s != prev:                                  # mark only surface transitions
+            pg = b.setdefault('pictograms', [])
+            if s not in pg and len(pg) < 3: pg.append(s)
+        if s: prev = s
+    return rb
+
 def main():
     if not EXE: print('ERROR: RoadbookTests.exe not built'); return 1
     if len(sys.argv) < 2: print('usage: make_terrain_stage.py <track_id> [seed] [follow|drive]'); return 2
@@ -167,6 +204,7 @@ def main():
     if mode == 'follow' and sum(1 for b in rb.get('boxes', []) if b['type'] in ('turn', 'hairpin')) < 8:
         rb = run_gen(drive(rng, H, size))         # terrain too flat to navigate by -> add a meander
     enrich_signs(rb)                              # tag crest/dip/jump/descent from the real elevation
+    surface_signs(rb, os.path.join('web', 'tracks', tid, 'aerial.jpg'), size)   # surface from the aerial imagery
     title = f'{name} — terrain stage'
     rb['trackName'] = title; rb.setdefault('meta', {})['trackName'] = title
     rb['meta']['generatedBy'] = 'terrain'; rb['meta']['sourceTrack'] = tid

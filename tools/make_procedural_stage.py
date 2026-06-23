@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from make_terrain_stage import route_follow, walk_path, enrich_signs, EXE, ROOT, HAMP  # reuse the engine
+from make_terrain_stage import route_follow, walk_path, enrich_signs, surface_signs, EXE, ROOT, HAMP  # reuse
 
 N = 256
 STYLES = {  # octaves, persistence, base grid, peak sharpening exponent
@@ -80,6 +80,7 @@ def main():
     rb['trackName'] = title; rb.setdefault('meta', {})['trackName'] = title
     rb['meta']['generatedBy'] = 'procedural'; rb['meta']['sourceTrack'] = tid
     enrich_signs(rb)                              # tag crest/dip/jump/descent from the generated relief
+    surface_signs(rb, os.path.join(tdir, 'aerial.jpg'), N)   # surface from the generated aerial imagery
     json.dump(rb, open(os.path.join('web', 'roadbooks', f'roadbook_{tid}.json'), 'w', encoding='utf-8'), separators=(',', ':'))
     boxes = rb.get('boxes', []); turns = sum(1 for b in boxes if b['type'] in ('turn', 'hairpin'))
     km = boxes[-1]['distTotalKm'] if boxes else 0

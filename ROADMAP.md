@@ -494,6 +494,12 @@ mentor matching.
   box + group filter so the 64-stage library stays navigable: search by name, filter by
   Terrain / Procedural / etc., with a live result count and auto-hiding of empty group
   headers.
+- **Wave 62 · Surface from imagery** *(AI/Content)* — the generator now classifies the
+  surface from each track’s aerial image (sandy→dune, vegetation→bush, rock/dark→rocky,
+  blue→water) and tags the transitions, so terrain signs come from the imagery as well
+  as the heightmap. Regenerated the library: all 36 generated stages now carry surface
+  signs matching their terrain. Delivers the backlog’s "surface/biome classification from
+  imagery".
 
 ---
 
