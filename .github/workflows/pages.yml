@@ -36,6 +36,8 @@ jobs:
         run: python3 tools/check_web_links.py
       - name: QA — accessibility basics
         run: python3 tools/check_a11y.py
+      - name: QA — self-contained (no external deps)
+        run: python3 tools/check_selfcontained.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web

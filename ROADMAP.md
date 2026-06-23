@@ -413,6 +413,10 @@ mentor matching.
   are vendored under `web/vendor/three/` and the import maps point at local paths.
   The 3D viewers now work offline and behind CDN-blocking networks. Browser-verified
   (1.2 MB module loads from /vendor, canvas inits, zero jsdelivr requests).
+- **Wave 45 · Self-contained gate** *(Reliability)* — audited every page for
+  external runtime deps (scripts/styles/fonts/importmaps/module imports): zero remain
+  after vendoring Three.js. Added `check_selfcontained.py` as a 3rd CI gate
+  (negative-tested) so an external dependency can never slip in again.
 
 ---
 
