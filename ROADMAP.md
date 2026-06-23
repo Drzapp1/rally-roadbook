@@ -272,6 +272,9 @@ mentor matching.
   primer on reading a roadbook (box anatomy, the 14 tulips, CAP, ICO, pictograms +
   danger, the 3-step ride loop), wired straight to the drills. Completes the
   concepts → drills → challenge learn path. Carded under **Learn**.
+- **Wave 8 · Navigate polish** *(H1 · Nav Engine)* — added a **breadcrumb trail**,
+  a per-difficulty **best-time** (localStorage), and an **Easy / Medium / Hard**
+  selector (waypoint count + unlock range + speed) to the eclipse demo.
 
 ---
 

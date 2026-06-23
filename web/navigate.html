@@ -43,6 +43,14 @@
   <p class="lead">The real rally-raid challenge: there's <b>no route line</b>. Steer by the roadbook — drive each
   partial distance on the trip meter, then turn to the next <b>CAP</b> heading. The bearing arrow to a waypoint
   only <b>unlocks within range</b> (like a real ERTF/Unik GPS), so you navigate on the book, not the map.</p>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+    <span style="color:#8b919c;font-size:13px">Difficulty</span>
+    <span id="diff" style="display:inline-flex;border:1px solid #2a2e37;border-radius:9px;overflow:hidden">
+      <button data-d="easy" style="background:#1c1f26;color:#e6e8ec;border:0;padding:7px 14px;font-size:13px;cursor:pointer">Easy</button>
+      <button data-d="medium" style="background:#ffb028;color:#1a1205;border:0;padding:7px 14px;font-size:13px;cursor:pointer;font-weight:600">Medium</button>
+      <button data-d="hard" style="background:#1c1f26;color:#e6e8ec;border:0;padding:7px 14px;font-size:13px;cursor:pointer">Hard</button>
+    </span>
+  </div>
   <div class="wrap">
     <div class="stage">
       <canvas id="cv" width="560" height="520"></canvas>
@@ -66,19 +74,20 @@ const D2R=Math.PI/180, dir=h=>[Math.sin(h*D2R),-Math.cos(h*D2R)];
 const TURNS={straight:'straight',slightL:'slight left',slightR:'slight right',left:'left',right:'right',sharpL:'sharp left',sharpR:'sharp right',hairpinL:'hairpin left',hairpinR:'hairpin right'};
 let route, wps, bike, trip, active, started=false, won=false, t0=0, offCount=0, sampleCount=0;
 const tulipCache={};
+let trail=[]; const DIFFS={easy:{n:7,unlock:190,sp:2.2},medium:{n:10,unlock:150,sp:2.4},hard:{n:14,unlock:110,sp:2.7}}; let diff='medium';
 function tulip(code){ if(tulipCache[code])return tulipCache[code]; const i=new Image(); i.src='tulips/'+code+'.png'; tulipCache[code]=i; return i; }
 function classify(ang){ const a=Math.abs(ang); if(a<18)return'straight'; if(a<40)return ang>0?'slightR':'slightL'; if(a<100)return ang>0?'right':'left'; if(a<150)return ang>0?'sharpR':'sharpL'; return ang>0?'hairpinR':'hairpinL'; }
 function gen(){
   route=[{x:0,y:0}]; wps=[{x:0,y:0,cap:0,dist:0,code:'straight'}];
   let h=0, dist=0;
-  for(let s=0;s<10;s++){
+  for(let s=0;s<DIFFS[diff].n;s++){
     const len=120+Math.random()*130, [dx,dy]=dir(h), last=route[route.length-1];
     const nx=last.x+dx*len, ny=last.y+dy*len; route.push({x:nx,y:ny}); dist+=len;
     const ang=(Math.random()*2-1)*130, nh=h+ang, code=classify(ang);
     wps.push({x:nx,y:ny,cap:Math.round(((nh%360)+360)%360),dist,code}); h=nh;
   }
   wps[wps.length-1].code='finish';
-  bike={x:0,y:0,h:wps[1]?wps[1].cap:0,sp:2.4}; trip=0; active=1; won=false; offCount=0; sampleCount=0; t0=performance.now();
+  bike={x:0,y:0,h:wps[1]?wps[1].cap:0,sp:DIFFS[diff].sp}; trail=[]; trip=0; active=1; won=false; offCount=0; sampleCount=0; t0=performance.now();
 }
 function nearestRouteDist(p){ let md=1e9; for(let i=1;i<route.length;i++){ const a=route[i-1],b=route[i]; const vx=b.x-a.x,vy=b.y-a.y,wx=p.x-a.x,wy=p.y-a.y; const L=vx*vx+vy*vy||1; let t=(wx*vx+wy*vy)/L; t=Math.max(0,Math.min(1,t)); const dx=a.x+vx*t-p.x,dy=a.y+vy*t-p.y; md=Math.min(md,Math.hypot(dx,dy)); } return md; }
 const keys={}; addEventListener('keydown',e=>{ if(['ArrowLeft','ArrowRight','a','d','A','D'].includes(e.key)){keys[e.key.toLowerCase()]=1; e.preventDefault();} });
@@ -89,6 +98,7 @@ function step(){
   let steer=0; if(keys['arrowleft']||keys['a'])steer-=1; if(keys['arrowright']||keys['d'])steer+=1; steer+=touch;
   bike.h=(bike.h+steer*2.6+360)%360;
   const [dx,dy]=dir(bike.h); bike.x+=dx*bike.sp; bike.y+=dy*bike.sp; trip+=bike.sp;
+  if(!trail.length||Math.hypot(bike.x-trail[trail.length-1].x,bike.y-trail[trail.length-1].y)>6){ trail.push({x:bike.x,y:bike.y}); if(trail.length>1500)trail.shift(); }
   const wp=wps[active]; const dwp=Math.hypot(wp.x-bike.x,wp.y-bike.y);
   if(dwp<26){ active++; if(active>=wps.length){ won=true; started=false; showWin(); } }
   sampleCount++; if(nearestRouteDist(bike)>70) offCount++;
@@ -110,14 +120,14 @@ function draw(){
   const g=64; for(let gx=Math.floor((bike.x-cx)/g)*g; gx<bike.x+cx; gx+=g){ ctx.beginPath(); ctx.moveTo(gx+ox,0); ctx.lineTo(gx+ox,H); ctx.stroke(); }
   for(let gy=Math.floor((bike.y-cy)/g)*g; gy<bike.y+H-cy; gy+=g){ ctx.beginPath(); ctx.moveTo(0,gy+oy); ctx.lineTo(W,gy+oy); ctx.stroke(); }
   // waypoints within unlock range
-  const UNLOCK=150;
+  const UNLOCK=DIFFS[diff].unlock;
   for(let k=0;k<wps.length;k++){ const wp=wps[k], d=Math.hypot(wp.x-bike.x,wp.y-bike.y); if(d>UNLOCK&&k!==active-1)continue;
     const sx=wp.x+ox, sy=wp.y+oy; ctx.beginPath(); ctx.arc(sx,sy,k===active?11:7,0,7);
     ctx.fillStyle=k<active?'rgba(70,195,123,.5)':(k===active?'rgba(255,176,40,.9)':'rgba(120,140,160,.5)'); ctx.fill(); }
   // eclipse CAP arrow to active wp, only within range
   const wp=wps[active]; const dwp=wp?Math.hypot(wp.x-bike.x,wp.y-bike.y):1e9; let unlocked=wp&&dwp<UNLOCK;
-  // breadcrumb
-  ctx.fillStyle='rgba(62,198,255,.5)'; // (path not stored to keep it light)
+  // breadcrumb of where you've been
+  if(trail.length>1){ ctx.strokeStyle='rgba(62,198,255,.32)'; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(trail[0].x+ox,trail[0].y+oy); for(let i=1;i<trail.length;i++)ctx.lineTo(trail[i].x+ox,trail[i].y+oy); ctx.stroke(); }
   // bike
   ctx.save(); ctx.translate(cx,cy); ctx.rotate(bike.h*D2R);
   ctx.fillStyle=getOff()?'#ff5a4d':'#3ec6ff'; ctx.beginPath(); ctx.moveTo(0,-12); ctx.lineTo(8,10); ctx.lineTo(0,5); ctx.lineTo(-8,10); ctx.closePath(); ctx.fill(); ctx.restore();
@@ -137,14 +147,19 @@ function draw(){
 }
 function getOff(){ return route && nearestRouteDist(bike)>70; }
 function showWin(){
-  const ov=document.getElementById('ov'); const sec=((performance.now()-t0)/1000).toFixed(1);
+  const ov=document.getElementById('ov'); const sec=(performance.now()-t0)/1000;
   const acc=sampleCount?Math.round(100*(1-offCount/sampleCount)):100;
-  ov.style.display='flex'; ov.innerHTML=`<h2>Stage complete 🏁</h2><p>Time <b>${sec}s</b> · on-route <b>${acc}%</b>. You navigated ${wps.length-1} waypoints on the roadbook.</p><button id="go2">Run another</button>`;
+  const key='navBest_'+diff, prev=+(localStorage[key]||0), isBest=!prev||sec<prev; if(isBest)localStorage[key]=sec.toFixed(1);
+  const best=(+(localStorage[key]||sec)).toFixed(1);
+  ov.style.display='flex'; ov.innerHTML=`<h2>Stage complete 🏁</h2><p>Time <b>${sec.toFixed(1)}s</b> · on-route <b>${acc}%</b> · ${diff} · best <b>${best}s</b>${isBest&&prev?' 🏆 new best!':''}</p><button id="go2">Run another</button>`;
   document.getElementById('go2').onclick=start;
 }
 function start(){ gen(); started=true; document.getElementById('ov').style.display='none'; }
 function loop(){ if(started&&!won){ step(); } if(route){ draw(); cells(); } requestAnimationFrame(loop); }
 document.getElementById('go').onclick=start;
+document.getElementById('diff').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return; diff=b.dataset.d;
+  [...document.getElementById('diff').children].forEach(x=>{ const on=x===b; x.style.background=on?'#ffb028':'#1c1f26'; x.style.color=on?'#1a1205':'#e6e8ec'; x.style.fontWeight=on?'600':'400'; });
+  start(); });
 gen(); draw(); cells(); loop();
 </script>
 </body>
