@@ -10,7 +10,7 @@ for free, from the shared generator.
 Usage:  python tools/make_terrain_stage.py <track_id> [seed]
         (run from repo root; reads web/tracks, writes web/roadbooks)
 """
-import os, sys, math, json, array, random, subprocess
+import os, sys, math, json, array, random, subprocess, heapq
 
 ROOT = r'D:\BikesRoadbook'
 EXE  = next((p for p in (os.path.join(ROOT, 'build', c, 'RoadbookTests.exe')
@@ -60,21 +60,80 @@ def drive(rng, H, size):
         head += (1 if rng.random() < 0.5 else -1) * mag
     return rows
 
+def route_follow(H, size, rng):
+    """Least-cost path that follows the real terrain — biased toward low ground
+    (valleys/wadis, where rally-raid lines naturally run) and gentle slopes — so the
+    turns come from the landscape, not a synthetic meander. Dijkstra on a coarse grid."""
+    G = 104; cells = size / G
+    ch = lambda gx, gz: sample(H, size, min(size - 1, (gx + 0.5) * cells), min(size - 1, (gz + 0.5) * cells))
+    margin = 6
+    sx = rng.randint(margin, G - margin); sz = 2
+    gx = rng.randint(margin, G - margin); gz = G - 3
+    start, goal = (sx, sz), (gx, gz)
+    INF = float('inf'); dist = {start: 0.0}; prev = {}; pq = [(0.0, start)]
+    nb = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, 1), (-1, 1), (1, -1)]
+    while pq:
+        d, (cx, cz) = heapq.heappop(pq)
+        if (cx, cz) == goal: break
+        if d > dist.get((cx, cz), INF): continue
+        h0 = ch(cx, cz)
+        for dx, dz in nb:
+            nx, nz = cx + dx, cz + dz
+            if not (0 <= nx < G and 0 <= nz < G): continue
+            h1 = ch(nx, nz); slope = abs(h1 - h0)
+            stepc = 1.0 if (dx == 0 or dz == 0) else 1.4142
+            cost = stepc * (0.35 + 2.6 * h1 + 7.0 * slope)     # low ground + gentle slope
+            nd = d + cost
+            if nd < dist.get((nx, nz), INF):
+                dist[(nx, nz)] = nd; prev[(nx, nz)] = (cx, cz); heapq.heappush(pq, (nd, (nx, nz)))
+    path = [goal]; cur = goal
+    while cur in prev: cur = prev[cur]; path.append(cur)
+    path.reverse()
+    gcell = size * CELL / G
+    return [((px + 0.5) * gcell, (pz + 0.5) * gcell) for px, pz in path]
+
+def walk_path(pts, H, size):
+    """Densify the terrain-following waypoints to a 3 m ride trace, smoothing out the
+    grid staircase so the generator sees the terrain's real bends as turns."""
+    STEP = 3.0; dense = []
+    for i in range(len(pts) - 1):
+        (x0, z0), (x1, z1) = pts[i], pts[i + 1]
+        seg = math.hypot(x1 - x0, z1 - z0); n = max(1, int(seg / STEP))
+        for k in range(n): t = k / n; dense.append((x0 + (x1 - x0) * t, z0 + (z1 - z0) * t))
+    dense.append(pts[-1])
+    sm = []
+    for i in range(len(dense)):                                # moving-average smooth
+        a, b = max(0, i - 4), min(len(dense), i + 5); seg = dense[a:b]
+        sm.append((sum(p[0] for p in seg) / len(seg), sum(p[1] for p in seg) / len(seg)))
+    rows = []; dist = 0.0
+    for i, (x, z) in enumerate(sm):
+        if i > 0:
+            dx, dz = x - sm[i - 1][0], z - sm[i - 1][1]; dist += math.hypot(dx, dz)
+            head = math.degrees(math.atan2(dx, dz)) % 360
+        else: head = 0.0
+        y = HAMP * sample(H, size, x / CELL, z / CELL)
+        rows.append((dist / 22.0, x, y, z, head, 0, 0, 0, 22.0, 0, dist))
+    return rows
+
 def main():
     if not EXE: print('ERROR: RoadbookTests.exe not built'); return 1
-    if len(sys.argv) < 2: print('usage: make_terrain_stage.py <track_id> [seed]'); return 2
+    if len(sys.argv) < 2: print('usage: make_terrain_stage.py <track_id> [seed] [follow|drive]'); return 2
     tid = sys.argv[1]; seed = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    mode = sys.argv[3] if len(sys.argv) > 3 else 'follow'
     rng = random.Random(hash((tid, seed)) & 0x7fffffff)
     H, size, name = load_height(tid)
-    rows = drive(rng, H, size)
     scratch = os.path.join(ROOT, 'build'); os.makedirs(scratch, exist_ok=True)
-    csv = os.path.join(scratch, f'_terrain_{tid}.csv')
-    with open(csv, 'w') as f:
-        f.write('t,x,y,z,yaw,vx,vy,vz,speed,pos,dist\n')
-        for r in rows: f.write(','.join(f'{v:.3f}' for v in r) + '\n')
-    svg = os.path.join(scratch, f'_terrain_{tid}.svg')
-    subprocess.run([EXE, csv, svg], check=True, stdout=subprocess.DEVNULL)
-    rb = json.load(open(os.path.splitext(svg)[0] + '.json', encoding='utf-8'))
+    def run_gen(rows):
+        csv = os.path.join(scratch, f'_terrain_{tid}.csv')
+        with open(csv, 'w') as f:
+            f.write('t,x,y,z,yaw,vx,vy,vz,speed,pos,dist\n')
+            for r in rows: f.write(','.join(f'{v:.3f}' for v in r) + '\n')
+        svg = os.path.join(scratch, f'_terrain_{tid}.svg')
+        subprocess.run([EXE, csv, svg], check=True, stdout=subprocess.DEVNULL)
+        return json.load(open(os.path.splitext(svg)[0] + '.json', encoding='utf-8'))
+    rb = run_gen(walk_path(route_follow(H, size, rng), H, size) if mode == 'follow' else drive(rng, H, size))
+    if mode == 'follow' and sum(1 for b in rb.get('boxes', []) if b['type'] in ('turn', 'hairpin')) < 8:
+        rb = run_gen(drive(rng, H, size))         # terrain too flat to navigate by -> add a meander
     title = f'{name} — terrain stage'
     rb['trackName'] = title; rb.setdefault('meta', {})['trackName'] = title
     rb['meta']['generatedBy'] = 'terrain'; rb['meta']['sourceTrack'] = tid

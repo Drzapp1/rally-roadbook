@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from make_terrain_stage import drive, EXE, ROOT, HAMP  # reuse the route+roadbook engine
+from make_terrain_stage import route_follow, walk_path, EXE, ROOT, HAMP  # reuse the route+roadbook engine
 
 N = 256
 STYLES = {  # octaves, persistence, base grid, peak sharpening exponent
@@ -68,7 +68,7 @@ def main():
         man.append({'id': tid, 'name': title}); man.sort(key=lambda m: m['id'])
         json.dump(man, open(mp, 'w'), indent=1)
     # roadbook via the shared engine (route across the generated terrain)
-    rows = drive(random.Random(seed * 7919 + 3), h, N)
+    rows = walk_path(route_follow(h, N, random.Random(seed * 7919 + 3)), h, N)
     scratch = os.path.join(ROOT, 'build'); os.makedirs(scratch, exist_ok=True)
     csv = os.path.join(scratch, f'_{tid}.csv')
     with open(csv, 'w') as f:

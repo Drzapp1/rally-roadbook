@@ -443,6 +443,13 @@ mentor matching.
   from each box; the Web Speech API voices them in sequence with a synced tulip/CAP
   display, pace control and play/stop. Delivers feature #3 — completes the four
   autonomous features (roadbook-from-track, procedural, real-track library, co-driver).
+- **Wave 52 · Terrain-following routes** *(AI/Procedural)* — the stage generator now
+  drives a least-cost path that follows the real terrain (biased to low ground/valleys
+  + gentle slopes; Dijkstra on a 104² grid, densified + smoothed), so the tulip turns
+  come from the landscape, not a synthetic meander. The whole library (26 terrain + 3
+  procedural) regenerated terrain-following; turn counts now reflect the terrain (flat
+  Namib ~8, mountainous Dolomites ~30). Flat tracks fall back to a meander below 8
+  turns. Deepens roadbook-from-track / procedural / real-track library.
 
 ---
 
