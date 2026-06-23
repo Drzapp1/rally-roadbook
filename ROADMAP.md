@@ -286,6 +286,9 @@ mentor matching.
 - **Wave 11 · Social share-cards** *(Reach)* — a 1200×630 `og-card.png` + Open
   Graph / Twitter meta on **every page**, so the site previews professionally
   (title, tagline, tulip strip) when shared to Discord / X / forums.
+- **Wave 12 · Browser & SEO polish** *(Reach)* — a crisp **favicon** + apple-touch
+  icon on every page, a **sitemap.xml**, **robots.txt**, and a branded **404** page
+  ("Off the route"). Rounds out the site's discoverability + presentation.
 
 ---
 
