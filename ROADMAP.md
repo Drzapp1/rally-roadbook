@@ -433,6 +433,10 @@ mentor matching.
   brand-new viewable track, then drives a stage across it with the Wave-48 engine →
   a 3D-viewable track + a validated roadbook, fully synthetic. Styles: dunes /
   mountains / mixed. Shipped 3 stages; browser-verified one renders in track3d.
+- **Wave 50 · Real-track library** *(Content)* — batch-generated terrain-stage
+  roadbooks for all 26 real MXB track heightmaps in `web/tracks/` (18 new this wave),
+  each a valid open-terrain rally stage over real elevation. The library is now
+  genuinely real tracks (the "Terrain stages" group). Delivers feature #4.
 
 ---
 

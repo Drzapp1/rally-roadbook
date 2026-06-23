@@ -10,6 +10,16 @@
   "difficulty": "Hard"
  },
  {
+  "id": "terrain_adriaticenduro",
+  "file": "roadbooks/roadbook_terrain_adriaticenduro.json",
+  "name": "Adriatic Enduro — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.88,
+  "boxes": 56,
+  "turns": 33,
+  "difficulty": "Moderate"
+ },
+ {
   "id": "terrain_almeria",
   "file": "roadbooks/roadbook_terrain_almeria.json",
   "name": "Almeria - Tabernas Desert — terrain stage",
@@ -40,6 +50,16 @@
   "difficulty": "Moderate"
  },
  {
+  "id": "terrain_baja",
+  "file": "roadbooks/roadbook_terrain_baja.json",
+  "name": "Baja California — terrain stage",
+  "group": "Terrain stages",
+  "km": 10.12,
+  "boxes": 57,
+  "turns": 36,
+  "difficulty": "Hard"
+ },
+ {
   "id": "terrain_bryce",
   "file": "roadbooks/roadbook_terrain_bryce.json",
   "name": "Bryce Canyon — terrain stage",
@@ -47,6 +67,16 @@
   "km": 8.35,
   "boxes": 46,
   "turns": 26,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_rockies",
+  "file": "roadbooks/roadbook_terrain_rockies.json",
+  "name": "Colorado Rockies — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.36,
+  "boxes": 61,
+  "turns": 39,
   "difficulty": "Moderate"
  },
  {
@@ -70,6 +100,26 @@
   "difficulty": "Moderate"
  },
  {
+  "id": "terrain_dubai",
+  "file": "roadbooks/roadbook_terrain_dubai.json",
+  "name": "Dubai Desert — terrain stage",
+  "group": "Terrain stages",
+  "km": 10.41,
+  "boxes": 61,
+  "turns": 34,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_empty_quarter",
+  "file": "roadbooks/roadbook_terrain_empty_quarter.json",
+  "name": "Empty Quarter - Rub al Khali — terrain stage",
+  "group": "Terrain stages",
+  "km": 12.99,
+  "boxes": 89,
+  "turns": 57,
+  "difficulty": "Hard"
+ },
+ {
   "id": "proc_erg_dunes",
   "file": "roadbooks/roadbook_proc_erg_dunes.json",
   "name": "Erg Dunes (procedural)",
@@ -80,6 +130,26 @@
   "difficulty": "Easy"
  },
  {
+  "id": "terrain_gobi",
+  "file": "roadbooks/roadbook_terrain_gobi.json",
+  "name": "Gobi Desert — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.95,
+  "boxes": 78,
+  "turns": 50,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_grand_canyon",
+  "file": "roadbooks/roadbook_terrain_grand_canyon.json",
+  "name": "Grand Canyon Rim — terrain stage",
+  "group": "Terrain stages",
+  "km": 12.15,
+  "boxes": 77,
+  "turns": 46,
+  "difficulty": "Hard"
+ },
+ {
   "id": "proc_high_atlas",
   "file": "roadbooks/roadbook_proc_high_atlas.json",
   "name": "High Atlas (procedural)",
@@ -87,6 +157,36 @@
   "km": 11.13,
   "boxes": 55,
   "turns": 39,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_iceland",
+  "file": "roadbooks/roadbook_terrain_iceland.json",
+  "name": "Iceland Highlands — terrain stage",
+  "group": "Terrain stages",
+  "km": 9.19,
+  "boxes": 55,
+  "turns": 37,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_fagradalsfjall",
+  "file": "roadbooks/roadbook_terrain_fagradalsfjall.json",
+  "name": "Iceland Volcano — terrain stage",
+  "group": "Terrain stages",
+  "km": 9.5,
+  "boxes": 49,
+  "turns": 32,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_mojave",
+  "file": "roadbooks/roadbook_terrain_mojave.json",
+  "name": "Mojave Desert — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.43,
+  "boxes": 82,
+  "turns": 43,
   "difficulty": "Moderate"
  },
  {
@@ -100,6 +200,46 @@
   "difficulty": "Moderate"
  },
  {
+  "id": "terrain_monument_valley",
+  "file": "roadbooks/roadbook_terrain_monument_valley.json",
+  "name": "Monument Valley — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.24,
+  "boxes": 52,
+  "turns": 38,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_namib",
+  "file": "roadbooks/roadbook_terrain_namib.json",
+  "name": "Namib - Sossusvlei — terrain stage",
+  "group": "Terrain stages",
+  "km": 13.04,
+  "boxes": 76,
+  "turns": 55,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_patagonia",
+  "file": "roadbooks/roadbook_terrain_patagonia.json",
+  "name": "Patagonia - Torres — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.49,
+  "boxes": 68,
+  "turns": 48,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_pyrenees",
+  "file": "roadbooks/roadbook_terrain_pyrenees.json",
+  "name": "Pyrenees — terrain stage",
+  "group": "Terrain stages",
+  "km": 11.34,
+  "boxes": 79,
+  "turns": 42,
+  "difficulty": "Hard"
+ },
+ {
   "id": "proc_rift_valley",
   "file": "roadbooks/roadbook_proc_rift_valley.json",
   "name": "Rift Valley (procedural)",
@@ -108,6 +248,46 @@
   "boxes": 67,
   "turns": 38,
   "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_grand_erg",
+  "file": "roadbooks/roadbook_terrain_grand_erg.json",
+  "name": "Sahara - Grand Erg — terrain stage",
+  "group": "Terrain stages",
+  "km": 10.71,
+  "boxes": 58,
+  "turns": 38,
+  "difficulty": "Moderate"
+ },
+ {
+  "id": "terrain_stage01",
+  "file": "roadbooks/roadbook_terrain_stage01.json",
+  "name": "Stage 1 - Erg Chebbi Crossing — terrain stage",
+  "group": "Terrain stages",
+  "km": 12.67,
+  "boxes": 101,
+  "turns": 48,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_wadi_rum",
+  "file": "roadbooks/roadbook_terrain_wadi_rum.json",
+  "name": "Wadi Rum — terrain stage",
+  "group": "Terrain stages",
+  "km": 8.84,
+  "boxes": 57,
+  "turns": 36,
+  "difficulty": "Hard"
+ },
+ {
+  "id": "terrain_zion",
+  "file": "roadbooks/roadbook_terrain_zion.json",
+  "name": "Zion Canyon — terrain stage",
+  "group": "Terrain stages",
+  "km": 10.68,
+  "boxes": 71,
+  "turns": 48,
+  "difficulty": "Moderate"
  },
  {
   "id": "rally_baja_sanfelipe",
