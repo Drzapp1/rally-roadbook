@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Embed</title>
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook"><meta property="og:description" content="Render and embed any rally roadbook with the open-format reference module."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --good:#46c37b; --bad:#ff5a4d; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:920px; margin:0 auto; padding:22px 18px 60px; }
+  h2{ font-size:18px; margin:24px 0 10px; }
+  p.lead{ color:var(--dim); font-size:14px; }
+  .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:10px 0; }
+  button,select,a.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; text-decoration:none; }
+  button.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  textarea{ width:100%; height:120px; background:#0f1218; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:11px; font-family:ui-monospace,monospace; font-size:12.5px; }
+  #out{ margin:14px 0; } #status{ font-size:13px; color:var(--dim); } #status.bad{ color:var(--bad); } #status.good{ color:var(--good); }
+  pre.snip{ background:#0f1218; border:1px solid var(--line); border-radius:9px; padding:14px; overflow:auto; font-size:12px; color:#c9d2dd; position:relative; }
+  .copy{ position:absolute; top:8px; right:8px; }
+  code{ color:var(--cyan); }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · EMBED</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="format.html">Format</a><a href="generate.html">Generate</a><a href="embed.html" class="on">Embed</a></nav>
+</header>
+<main>
+  <p class="lead">Render any roadbook with the <code>roadbook.js</code> reference module — the same renderer the
+  site uses, dependency-free. Pick one or paste your own, then copy the snippet to embed it anywhere.</p>
+
+  <div class="row">
+    <select id="lib"><option value="">— load a sample —</option></select>
+    <button class="primary" id="render">Render</button>
+    <span id="status"></span>
+  </div>
+  <textarea id="json" placeholder="…or paste a roadbook .json here"></textarea>
+  <div id="out"></div>
+
+  <h2>Embed it on your own page</h2>
+  <p style="color:var(--dim);font-size:13.5px">Drop this in any HTML page — it pulls the renderer + tulip/sign art from here:</p>
+  <pre class="snip"><button class="copy" id="cp">Copy</button><code id="snippet"></code></pre>
+</main>
+<footer>roadbook.js is MIT-spirit reference code for the open format; bundled art stays under its own licence (see NOTICE).</footer>
+<script type="module">
+import { renderRoadbook, injectStyles, validate } from './roadbook.js';
+injectStyles();
+const BASE = location.href.replace(/embed\.html.*$/, '');
+const $ = id => document.getElementById(id);
+function show(rb){
+  const v = validate(rb);
+  const st = $('status'); st.className = v.valid ? 'good' : 'bad';
+  st.textContent = v.valid ? `✓ ${v.boxes} boxes${v.warns.length ? ' · ' + v.warns.length + ' warning(s)' : ''}` : `✗ ${v.issues.length} issue(s): ${v.issues[0]}`;
+  renderRoadbook($('out'), rb, { base: BASE });
+}
+function fromText(){ try { show(JSON.parse($('json').value)); } catch(e){ const st=$('status'); st.className='bad'; st.textContent='✗ invalid JSON: '+e.message; } }
+$('render').onclick = fromText;
+fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
+  const sel=$('lib'); list.forEach(m=>{ const o=document.createElement('option'); o.value=m.file; o.textContent=m.name; sel.appendChild(o); });
+  sel.onchange=()=>{ if(!sel.value)return; fetch('roadbooks/'+sel.value).then(r=>r.text()).then(t=>{ $('json').value=t; fromText(); }); };
+  if(list[0]){ sel.value=list[0].file; fetch('roadbooks/'+list[0].file).then(r=>r.json()).then(show); }
+}).catch(()=>{});
+$('snippet').textContent =
+`<div id="roadbook"></div>
+<script type="module">
+  import { renderRoadbook, injectStyles }
+    from '${BASE}roadbook.js';
+  injectStyles();
+  fetch('YOUR_ROADBOOK.json').then(r => r.json()).then(rb =>
+    renderRoadbook(document.getElementById('roadbook'), rb,
+                   { base: '${BASE}' }));
+<\/script>`;
+$('cp').onclick = () => { navigator.clipboard.writeText($('snippet').textContent); $('cp').textContent='Copied'; setTimeout(()=>$('cp').textContent='Copy',1200); };
+</script>
+</body>
+</html>

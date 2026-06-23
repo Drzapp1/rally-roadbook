@@ -289,6 +289,11 @@ mentor matching.
 - **Wave 12 · Browser & SEO polish** *(Reach)* — a crisp **favicon** + apple-touch
   icon on every page, a **sitemap.xml**, **robots.txt**, and a branded **404** page
   ("Off the route"). Rounds out the site's discoverability + presentation.
+- **Wave 13 · Reference module + embed** *(H3 keystone · Multi-Sim)* — `roadbook.js`:
+  a dependency-free ES module that validates + renders the open format (the same
+  renderer the site uses). `embed.html`: pick/paste a roadbook → live render + a
+  **copyable embed snippet** so any site can drop in a roadbook via the hosted
+  module + art. The format's real interop step.
 
 ---
 
