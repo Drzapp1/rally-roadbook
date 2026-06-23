@@ -57,6 +57,7 @@
     <div class="sub" id="stageName"></div>
     <div class="pips" id="pips"></div>
     <div id="qhost"></div>
+    <div class="sub" style="font-size:11px;opacity:.7;margin-top:12px">Keys <b>1–4</b> to answer · <b>Enter</b> for next</div>
   </div>
   <div id="result" hidden>
     <h2>Stage read</h2>
@@ -158,6 +159,11 @@ fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
 $('start').onclick = startStage;
 $('again').onclick = ()=>{ $('result').hidden=true; $('intro').hidden=false; };
 $('shareStage').onclick = shareStage;
+document.addEventListener('keydown', e=>{
+  if(document.getElementById('play').hidden) return;
+  if(e.key>='1' && e.key<='4'){ const o=[...document.querySelectorAll('#qhost .opt:not([disabled])')][+e.key-1]; if(o){ o.click(); e.preventDefault(); } }
+  else if(e.key==='Enter' || e.key===' '){ const nx=[...document.querySelectorAll('#qhost button.btn')].find(b=>/Next/.test(b.textContent)); if(nx){ nx.click(); e.preventDefault(); } }
+});
 </script>
 </body>
 </html>

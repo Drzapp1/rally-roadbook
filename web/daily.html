@@ -65,6 +65,7 @@
   <div id="play" hidden>
     <div class="pips" id="pips"></div>
     <div id="qhost"></div>
+    <div class="sub" style="font-size:11px;opacity:.7;margin-top:12px">Keys <b>1–4</b> to answer · <b>Enter</b> for next</div>
   </div>
   <div id="result" hidden>
     <h2 id="rTitle">Stage complete</h2>
@@ -175,6 +176,11 @@ $('share').onclick = ()=>{ navigator.clipboard.writeText(shareText()).then(()=>{
 const prev = localStorage.getItem(KEY);
 if(prev){ try{ const s=JSON.parse(prev); $('start').textContent='Replay (score won\'t change)'; $('alreadyMsg').innerHTML=`<p class="sub" style="margin-top:14px">You've ridden today's stage: <b>${s.score}/10</b>. <a href="#" id="seeRes" style="color:var(--cyan)">see result</a></p>`; setTimeout(()=>{ const sr=$('seeRes'); if(sr) sr.onclick=e=>{e.preventDefault(); showResult(s.score,s.marks);}; },0); }catch(e){} }
 renderStats('introStats');
+document.addEventListener('keydown', e=>{
+  if(document.getElementById('play').hidden) return;
+  if(e.key>='1' && e.key<='4'){ const o=[...document.querySelectorAll('#qhost .opt:not([disabled])')][+e.key-1]; if(o){ o.click(); e.preventDefault(); } }
+  else if(e.key==='Enter' || e.key===' '){ const nx=[...document.querySelectorAll('#qhost button.btn')].find(b=>/Next/.test(b.textContent)); if(nx){ nx.click(); e.preventDefault(); } }
+});
 </script>
 </body>
 </html>

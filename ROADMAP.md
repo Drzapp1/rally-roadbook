@@ -386,6 +386,9 @@ mentor matching.
 - **Wave 37 · Stage-practice best + share + hub** *(Community)* — Stage practice
   now saves a per-stage best, shows it on the result, and offers a shareable
   grid; the home hub gains a "N stages practised" pill. Browser-verified end to end.
+- **Wave 38 · Keyboard answering** *(Accessibility)* — the Daily and Stage
+  quizzes now accept keys 1–4 to pick an option (Enter for next), with an on-screen
+  hint. Browser-verified (key press marks the right option).
 
 ---
 
