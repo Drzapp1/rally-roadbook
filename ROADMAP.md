@@ -361,6 +361,10 @@ mentor matching.
 - **Wave 31 · Daily streak & stats** *(Community)* — the Daily now tracks a
   per-day history and shows played / average / best / current streak plus a 7-day
   bar, on the intro and result. Browser-verified (streak stops correctly at gaps).
+- **Wave 32 · Academy certificate download** *(Academy)* — the completion
+  certificate now renders to a PNG via canvas (name + date + seal) with Download
+  and Copy-share-text buttons. Browser-verified: drawCert produces a valid ~79 KB
+  PNG with no errors. Closes the Academy reward loop.
 
 ---
 

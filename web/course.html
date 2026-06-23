@@ -103,6 +103,8 @@
       <input id="certName" placeholder="your name" style="font-size:18px;text-align:center;background:#0f1218;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0">
       <p>has completed the <b>Rally Roadbook Academy</b> and can read and navigate a rally roadbook.</p>
       <p id="certMeta" style="color:var(--dim);font-size:13px"></p>
+      <div class="row"><button class="btn primary" id="dlCert">Download PNG</button><button class="btn" id="shareCert">Copy share text</button></div>
+      <div id="certToast" style="color:var(--good);font-size:13px;min-height:18px;margin-top:8px"></div>
     </div>
   </div>
 </main>
@@ -346,6 +348,28 @@ function finishExam(){
   $('examBody').innerHTML = `<div class="seal" style="font-size:40px">${pass?'🏅':'🔁'}</div><h3 style="margin:6px 0">${exScore} / 12</h3><p class="lead">${pass?"Outstanding — you've earned your certificate.":'So close — review any shaky skill and retake it.'}</p><div class="row">${pass?'<button class="btn primary" onclick="openCert()">View certificate ▸</button>':'<button class="btn primary" onclick="openExam()">Retake</button>'} <button class="btn" onclick="toOverview()">All lessons</button></div>`;
 }
 function openCert(){ show('cert'); const n=readyLessons().length; $('certMeta').textContent = `${n} lessons + final exam · Rally Roadbook Academy`; }
+function drawCert(){
+  const name = (($('certName').value||'').trim() || 'Rally Navigator').slice(0,42);
+  const c = document.createElement('canvas'); c.width=1000; c.height=680; const x=c.getContext('2d');
+  x.fillStyle='#0d1016'; x.fillRect(0,0,1000,680);
+  x.strokeStyle='#ffb028'; x.lineWidth=6; x.strokeRect(22,22,956,636);
+  x.strokeStyle='#2a2e37'; x.lineWidth=2; x.strokeRect(40,40,920,600);
+  x.textAlign='center';
+  x.font='84px serif'; x.fillText('🏅',500,150);
+  x.fillStyle='#ffb028'; x.font='bold 38px Segoe UI,Arial,sans-serif'; x.fillText('RALLY ROADBOOK ACADEMY',500,228);
+  x.fillStyle='#e6e8ec'; x.font='25px Segoe UI,Arial,sans-serif'; x.fillText('Certificate of Completion',500,278);
+  x.fillStyle='#8b919c'; x.font='18px Segoe UI,Arial,sans-serif'; x.fillText('This certifies that',500,344);
+  x.fillStyle='#e6e8ec'; x.font='bold 44px Georgia,serif'; x.fillText(name,500,402);
+  x.fillStyle='#8b919c'; x.font='18px Segoe UI,Arial,sans-serif';
+  x.fillText('has completed all six lessons and the final exam,',500,452);
+  x.fillText('and can read and navigate a rally roadbook.',500,480);
+  const ds = new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  x.fillStyle='#3ec6ff'; x.font='17px ui-monospace,monospace'; x.fillText(ds,500,558);
+  x.fillStyle='#5b616c'; x.font='14px Segoe UI,Arial,sans-serif'; x.fillText('drzapp1.github.io/rally-roadbook',500,612);
+  c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='rally-roadbook-certificate.png'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); $('certToast').textContent='Saved as PNG.'; setTimeout(()=>$('certToast').textContent='',1900); });
+}
+$('dlCert').onclick = drawCert;
+$('shareCert').onclick = ()=>{ const t='I earned my Rally Roadbook Academy certificate — read and navigate a rally roadbook!\nhttps://drzapp1.github.io/rally-roadbook/course.html'; navigator.clipboard.writeText(t).then(()=>{ $('certToast').textContent='Share text copied.'; setTimeout(()=>$('certToast').textContent='',1900); }).catch(()=>{ $('certToast').textContent=t; }); };
 
 renderOverview();
 </script>
