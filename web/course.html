@@ -41,6 +41,8 @@
   .stage{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center; margin-top:16px; }
   .tulipbox{ width:200px; height:200px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
   .tulipbox img{ width:84%; height:84%; object-fit:contain; }
+  .signbox{ width:150px; height:150px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
+  .signbox img{ width:72%; height:72%; object-fit:contain; filter:invert(.92); }
   .dpanel{ display:inline-block; text-align:left; background:#0f1218; border:1px solid var(--line); border-radius:10px; padding:14px 20px; margin:4px auto 16px; font-size:15px; }
   .dline{ padding:4px 0; } .dline b{ color:var(--accent); font-family:ui-monospace,monospace; font-size:18px; }
   .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:0 auto; }
@@ -110,7 +112,10 @@ const LESSONS = [
     teach:`<span class="hl">CAP</span> is your compass <b>heading in degrees</b>: 0° (or 360°) is North, 90° East, 180° South, 270° West. Every box gives the CAP to ride out on — you turn until your compass reads that number.<br><br>Two skills here: read what a bearing means (225° ≈ SW), and know which way to turn to reach it — always the <b>shorter</b> way round. Heading 40°, CAP 320°? That's an 80° turn <b>left</b> (anticlockwise), not a 280° right.`,
     practice:{ type:'cap' },
     check:{ type:'cap', count:5, pass:4 } },
-  { id:'signs', num:4, title:'Danger & info signs', sum:'!, !!, !!! and the common pictograms.', ready:false },
+  { id:'signs', num:4, title:'Danger & info signs', sum:'!, !!, !!! and the common pictograms.', ready:true,
+    teach:`Beyond the tulip, a box can carry <b>pictograms</b> — symbols warning what's ahead. The key ones are the <b>danger marks</b>: <span class="hl">!</span> caution, <span class="hl">!!</span> more serious, <span class="hl">!!!</span> very serious — slow right down. Around them you'll meet terrain (jump, dip, dune), hazards (hole, cattle guard, gate), water crossings, and services (fuel, checkpoint, medical).<br><br>You don't memorise all ninety-odd — you learn to recognise the common ones at a glance. This lesson drills the ones you'll see most.`,
+    practice:{ type:'signs' },
+    check:{ type:'signs', count:5, pass:4 } },
   { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:false },
   { id:'blind', num:6, title:'Blind navigation', sum:'Read ahead and commit — no map.', ready:false },
 ];
@@ -151,6 +156,7 @@ const opts4 = (answer, ds) => { const set=[answer]; for(const d of ds){ if(set.l
 function genQ(type){
   if(type==='distance') return distanceQ();
   if(type==='cap') return capQ();
+  if(type==='signs') return signsQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -197,6 +203,13 @@ function capQ(){
   const ans = straight ? 'Straight on' : (dir>0 ? 'Right' : 'Left');
   return { media:`<div>${compassSVG(tgt,cur)}<div class="dline" style="margin-top:4px">Heading <b style="color:#5b616c">${String(cur).padStart(3,'0')}°</b> &nbsp;→&nbsp; CAP <b>${String(tgt).padStart(3,'0')}°</b></div></div>`,
            prompt:'Turn which way to get onto the CAP? (grey = now, amber = CAP)', options:['Left','Straight on','Right'], answer:ans };
+}
+
+const SIGNS = [['caution','Caution (!)'],['danger2','Danger !! (more serious)'],['danger3','Danger !!! (most serious)'],['deadend','Dead end'],['noentry','No entry / off-track'],['stop','Stop'],['slowdown','Slow down'],['downhill','Steep descent'],['jump','Jump (kicker)'],['dip','Dip'],['hole','Hole'],['dune','Dune'],['rough','Rough ground'],['narrow','Narrows'],['compression','Compression'],['water','Water crossing'],['river','River'],['wadi','Wadi'],['gate','Gate'],['bridge','Bridge'],['fence','Fence'],['cattleguard','Cattle guard'],['fuel','Fuel'],['checkpoint','Checkpoint'],['medical','Medical'],['north','North']];
+function signsQ(){
+  const [code,label] = SIGNS[rand(SIGNS.length)];
+  const others = shuffle(SIGNS.filter(s=>s[1]!==label)).slice(0,3).map(s=>s[1]);
+  return { media:`<div class="signbox"><img src="signs/${code}.png" alt="rally sign"></div>`, prompt:'What does this sign mean?', options:shuffle([label,...others]), answer:label };
 }
 
 let L, score, qIdx, chkQs, marks;

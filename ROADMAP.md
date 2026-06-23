@@ -332,6 +332,10 @@ mentor matching.
   with an inline compass-rose SVG: name the cardinal for a bearing, and turn
   left/right onto a CAP (always the shorter way). Answers verified against an
   independent shortest-turn calc over 8000 questions. 3 of 6 lessons live.
+- **Wave 25 · Academy Lesson 4 (Danger & signs)** *(Academy)* — a `signs` widget
+  over a curated 26-sign pool (danger ! !! !!!, terrain, hazards, water, services)
+  using the FIA art; identify each sign’s meaning. All 26 codes verified present;
+  options logic-tested. 4 of 6 lessons live.
 
 ---
 
