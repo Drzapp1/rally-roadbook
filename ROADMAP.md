@@ -264,6 +264,10 @@ mentor matching.
   every tool into **Explore / Learn & Play / Create / Devices & Reference** cards
   (hero + live stats), and a **⌂ Home** link added across the nav — taming the
   growing nav sprawl as the site passes 10 pages.
+- **Wave 6 · CAP-heading drill** *(H4 · Academy)* — `compass.html`: an interactive
+  SVG-compass drill to read CAP headings fast (0°=N, clockwise) — two modes
+  (read-the-needle / pick-the-bearing), score + streak + best. Carded under
+  **Learn** on the hub.
 
 ---
 
