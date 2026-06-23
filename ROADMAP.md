@@ -349,6 +349,11 @@ mentor matching.
   12-question mixed exam (a random skill each question) gates the certificate: 10/12
   to earn it. Reuses the five tested widget types; 24000 generated exam questions
   verified valid.
+- **Wave 29 · Academy browser verification** *(Quality)* — drove a real browser
+  over the live course: all 6 widget types generate valid questions, lesson
+  practice/feedback works, the blind-peek auto-hide times correctly (locked → hidden
+  → unlocked), and the exam gate generates 12, passes, and unlocks the certificate.
+  Zero console errors, no bugs.
 
 ---
 
