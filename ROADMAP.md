@@ -309,6 +309,10 @@ mentor matching.
 - **Wave 19 · Auto sitemap** *(Reach)* — `make_sitemap.mjs` regenerates `sitemap.xml`
   from the actual `web/*.html` set and is wired into the Pages workflow, so the
   sitemap can never go stale again (it was missing `embed.html`).
+- **Wave 20 · Structured data** *(Reach)* — `WebSite` + `SoftwareApplication`
+  JSON-LD on the hub so search engines get rich, machine-readable metadata about
+  the plugin (free, Windows, help link, author). The gate now also validates that
+  every `ld+json` block parses.
 
 ---
 

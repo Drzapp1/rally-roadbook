@@ -5,7 +5,7 @@ concrete, unambiguous failures — exits non-zero listing each.
 
 Run from repo root:  python tools/check_a11y.py
 """
-import glob, re, os, sys
+import glob, re, os, sys, json
 
 WEB = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'web')
 problems = []
@@ -20,10 +20,13 @@ for f in pages:
     if not re.search(r'<meta\s+name="description"', s): problems.append(f'{n}: missing meta description')
     for t in re.findall(r'<img\b[^>]*>', s):
         if 'alt=' not in t: problems.append(f'{n}: <img> without alt -> {t[:64]}')
+    for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S):
+        try: json.loads(block)
+        except Exception as ex: problems.append(f'{n}: invalid JSON-LD ({ex})')
 
 print(f'a11y: checked {len(pages)} pages')
 if problems:
     print(f'FAIL: {len(problems)} issue(s):')
     for p in problems: print('  -', p)
     sys.exit(1)
-print('PASS: lang + title + viewport + description + every img alt present.')
+print('PASS: lang + title + viewport + description + img alt + JSON-LD all valid.')
