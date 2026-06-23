@@ -14,10 +14,13 @@ build, and embed rally roadbooks without installing the plugin — and shares on
 | | `track3d.html` | Real MX Bikes terrain in 3D (`.trh` heightmap + aerial). |
 | | `map3d.html` | A roadbook's route rendered in 3D. |
 | | `devices.html` | Gallery of the 23 rally-computer skins. |
-| **Learn** | `home.html` | Landing hub + the project's structured-data (JSON-LD). |
+| **Learn** | `home.html` | Landing hub — greets returning visitors with their live Academy + Daily progress; carries the JSON-LD. |
 | | `guide.html` | Roadbook 101 — how to read tulips, CAP, distances. |
-| | `academy.html` · `compass.html` · `navigate.html` | Interactive drills (tulip, CAP, the *eclipse* navigate challenge). |
+| | `course.html` | **Academy** — a sequenced 6-lesson course (+ a bonus lesson) → final exam → downloadable PNG certificate. |
+| | `academy.html` · `compass.html` · `navigate.html` | Quick drills (tulip, CAP, the *eclipse* navigate challenge). |
 | | `progress.html` | Local progress / best scores (localStorage). |
+| **Play** | `daily.html` | A date-seeded daily stage (same for everyone each UTC day) + streak, stats and a shareable grid. |
+| | `stage.html` | Practice a real library roadbook box-by-box — its actual recorded tulip geometry, distances, CAP and signs. |
 | **Create** | `builder.html` · `editor.html` | Route builder + roadbook editor. |
 | | `generate.html` | Generate a roadbook from a drawn route. |
 | **Reference** | `format.html` | The open format — spec + live validator. |

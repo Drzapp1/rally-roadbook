@@ -379,6 +379,10 @@ mentor matching.
   `roadbook.js`. Browser-testing caught that flat GPX stages have no classified
   turns, so `make_manifest.mjs` now emits a per-stage `turns` count and the picker
   only offers stages with ≥4 turns (19 of 28). Verified end to end.
+- **Wave 36 · Docs checkpoint** *(Docs)* — refreshed web/README.md with the
+  Academy course, Daily challenge, Stage practice and the personalized hub (a new
+  ‘Play’ area), and updated the project memory with the platform’s growth, the
+  browser-verify workflow, and the python surrogate/truncation gotcha.
 
 ---
 
