@@ -84,16 +84,44 @@
   "name": "Patagonia - Torres"
  },
  {
+  "id": "proc_altiplano",
+  "name": "Altiplano (procedural)"
+ },
+ {
+  "id": "proc_andes_pass",
+  "name": "Andes Pass (procedural)"
+ },
+ {
+  "id": "proc_caucasus_ridge",
+  "name": "Caucasus Ridge (procedural)"
+ },
+ {
   "id": "proc_erg_dunes",
   "name": "Erg Dunes (procedural)"
+ },
+ {
+  "id": "proc_gobi_waste",
+  "name": "Gobi Waste (procedural)"
  },
  {
   "id": "proc_high_atlas",
   "name": "High Atlas (procedural)"
  },
  {
+  "id": "proc_karoo_flats",
+  "name": "Karoo Flats (procedural)"
+ },
+ {
+  "id": "proc_outback_run",
+  "name": "Outback Run (procedural)"
+ },
+ {
   "id": "proc_rift_valley",
   "name": "Rift Valley (procedural)"
+ },
+ {
+  "id": "proc_sahara_sea",
+  "name": "Sahara Sea (procedural)"
  },
  {
   "id": "pyrenees",

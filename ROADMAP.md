@@ -460,6 +460,11 @@ mentor matching.
   boxes ("slight left, into … hard right"), calls long straights ("long straight" / "flat
   out"), speaks the new elevation signs it was missing (hill → "climb"), and lets you pick
   the speaking voice (English voices, en-GB preferred). Leverages the Wave-53 signs.
+- **Wave 55 · Procedural pack** *(Content)* — expanded the procedural-stage set from 3
+  to 10 generated worlds (Sahara Sea, Gobi Waste, Andes Pass, Caucasus Ridge, Outback
+  Run, Karoo Flats, Altiplano) across dunes/mountains/mixed styles — each a 3D-viewable
+  track + terrain-following roadbook with elevation signs (7–35 turns). Gives the
+  "endless fresh stages" feature real substance.
 
 ---
 

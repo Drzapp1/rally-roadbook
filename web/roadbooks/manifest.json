@@ -40,6 +40,26 @@
   "difficulty": "Easy"
  },
  {
+  "id": "proc_altiplano",
+  "file": "roadbooks/roadbook_proc_altiplano.json",
+  "name": "Altiplano (procedural)",
+  "group": "Procedural stages",
+  "km": 9.39,
+  "boxes": 43,
+  "turns": 18,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "proc_andes_pass",
+  "file": "roadbooks/roadbook_proc_andes_pass.json",
+  "name": "Andes Pass (procedural)",
+  "group": "Procedural stages",
+  "km": 7.35,
+  "boxes": 36,
+  "turns": 18,
+  "difficulty": "Easy"
+ },
+ {
   "id": "terrain_atacama",
   "file": "roadbooks/roadbook_terrain_atacama.json",
   "name": "Atacama Desert — terrain stage",
@@ -67,6 +87,16 @@
   "km": 7.42,
   "boxes": 32,
   "turns": 12,
+  "difficulty": "Easy"
+ },
+ {
+  "id": "proc_caucasus_ridge",
+  "file": "roadbooks/roadbook_proc_caucasus_ridge.json",
+  "name": "Caucasus Ridge (procedural)",
+  "group": "Procedural stages",
+  "km": 8.6,
+  "boxes": 52,
+  "turns": 35,
   "difficulty": "Easy"
  },
  {
@@ -140,6 +170,16 @@
   "difficulty": "Easy"
  },
  {
+  "id": "proc_gobi_waste",
+  "file": "roadbooks/roadbook_proc_gobi_waste.json",
+  "name": "Gobi Waste (procedural)",
+  "group": "Procedural stages",
+  "km": 6.65,
+  "boxes": 29,
+  "turns": 13,
+  "difficulty": "Easy"
+ },
+ {
   "id": "terrain_grand_canyon",
   "file": "roadbooks/roadbook_terrain_grand_canyon.json",
   "name": "Grand Canyon Rim — terrain stage",
@@ -178,6 +218,16 @@
   "boxes": 67,
   "turns": 34,
   "difficulty": "Hard"
+ },
+ {
+  "id": "proc_karoo_flats",
+  "file": "roadbooks/roadbook_proc_karoo_flats.json",
+  "name": "Karoo Flats (procedural)",
+  "group": "Procedural stages",
+  "km": 6.82,
+  "boxes": 34,
+  "turns": 15,
+  "difficulty": "Easy"
  },
  {
   "id": "terrain_mojave",
@@ -220,6 +270,16 @@
   "difficulty": "Easy"
  },
  {
+  "id": "proc_outback_run",
+  "file": "roadbooks/roadbook_proc_outback_run.json",
+  "name": "Outback Run (procedural)",
+  "group": "Procedural stages",
+  "km": 7.08,
+  "boxes": 29,
+  "turns": 7,
+  "difficulty": "Easy"
+ },
+ {
   "id": "terrain_patagonia",
   "file": "roadbooks/roadbook_terrain_patagonia.json",
   "name": "Patagonia - Torres — terrain stage",
@@ -258,6 +318,16 @@
   "boxes": 47,
   "turns": 27,
   "difficulty": "Moderate"
+ },
+ {
+  "id": "proc_sahara_sea",
+  "file": "roadbooks/roadbook_proc_sahara_sea.json",
+  "name": "Sahara Sea (procedural)",
+  "group": "Procedural stages",
+  "km": 6.73,
+  "boxes": 29,
+  "turns": 9,
+  "difficulty": "Easy"
  },
  {
   "id": "terrain_stage01",
