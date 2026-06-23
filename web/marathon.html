@@ -58,7 +58,7 @@
     <p class="lead">A multi-stage rally-raid. Read each stage's roadbook and call the notes — your accuracy sets your stage time, and you chase the overall <b>general classification</b> across the bivouac field. Progress is saved on this device.</p>
     <div id="rallyName" class="rname"></div>
     <div id="stageList" class="stagelist"></div>
-    <div class="row"><button class="btn primary" id="startRally">Start rally</button><button class="btn" id="newRally">New rally</button></div>
+    <div class="row"><button class="btn primary" id="startRally">Start rally</button><button class="btn" id="weekRally">Rally of the week</button><button class="btn" id="newRally">New random rally</button></div>
   </section>
 
   <section id="stageScreen" hidden>
@@ -95,21 +95,26 @@ const save = () => localStorage.setItem('rrMarathon', JSON.stringify(RALLY));
 function boxAnswer(b){ return b.type === 'hairpin' ? 'Hairpin' : b.type === 'straight' ? 'Straight' : (b.turnDir === 'right' ? 'Right' : 'Left'); }
 const stageBase = s => (s.km * 6) + (s.turns * 55);              // notional driving time (s)
 
-function buildRally(){
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function isoWeek(d){ d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - day + 3); const first = new Date(Date.UTC(d.getUTCFullYear(), 0, 4)); return 1 + Math.round(((d - first) / 86400000 - 3 + ((first.getUTCDay() + 6) % 7)) / 7); }
+function weekId(){ const n = new Date(); return n.getUTCFullYear() + '-W' + String(isoWeek(n)).padStart(2, '0'); }
+function buildRally(weekly){
   const pool = MAN.filter(m => (m.turns || 0) >= 6);
   if (pool.length < 5){ $('rallyName').textContent = 'Not enough stages yet.'; return; }
-  const sh = [...pool].sort(() => Math.random() - 0.5).slice(0, 5)
-    .map(s => ({ file: s.file, name: s.name, km: s.km, turns: s.turns }));
-  const name = NAMES[Math.floor(Math.random() * NAMES.length)];
-  const rivals = RIVALS.map(([nm, sk]) => ({
-    nm, times: sh.map(s => Math.round(stageBase(s) * sk * (0.9 + Math.random() * 0.2)))
-  }));
-  RALLY = { name, stages: sh, results: [], rivals, idx: 0 };
+  // weekly: seed from the ISO week so everyone gets the same five stages + rival field that week
+  const rnd = weekly ? mulberry32([...weekId()].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7) >>> 0)
+                     : mulberry32((Math.random() * 4294967296) >>> 0);
+  const sh = [...pool].map(s => [rnd(), s]).sort((a, b) => a[0] - b[0]).slice(0, 5)
+    .map(([, s]) => ({ file: s.file, name: s.name, km: s.km, turns: s.turns }));
+  const name = NAMES[Math.floor(rnd() * NAMES.length)];
+  const rivals = RIVALS.map(([nm, sk]) => ({ nm, times: sh.map(s => Math.round(stageBase(s) * sk * (0.9 + rnd() * 0.2))) }));
+  RALLY = { name, stages: sh, results: [], rivals, idx: 0, weekly: !!weekly, id: weekly ? weekId() : 'r' + Date.now() };
   save(); renderOverview();
 }
 function renderOverview(){
   show('overview');
-  $('rallyName').innerHTML = RALLY.name + ' <span>· 5 stages</span>';
+  $('rallyName').innerHTML = RALLY.name + ' <span>· 5 stages</span>'
+    + (RALLY.weekly ? `<div class="sub" style="font-size:13px;margin-top:3px">🏆 Rally of the Week · ${RALLY.id} — the same five stages for everyone this week</div>` : '');
   const totKm = RALLY.stages.reduce((a, s) => a + s.km, 0), totT = RALLY.stages.reduce((a, s) => a + s.turns, 0);
   $('stageList').innerHTML = RALLY.stages.map((s, i) => {
     const done = RALLY.results[i];
@@ -189,8 +194,9 @@ function finishRally(){
   show('finalScreen');
 }
 $('startRally').onclick = () => { const n = RALLY.results.length; n >= 5 ? finishRally() : startStage(n); };
-$('newRally').onclick = () => buildRally();
-$('restart').onclick = () => buildRally();
+$('weekRally').onclick = () => buildRally(true);
+$('newRally').onclick = () => buildRally(false);
+$('restart').onclick = () => buildRally(false);
 $('nextStage').onclick = () => { RALLY.idx >= 4 ? finishRally() : (RALLY.results.length >= 5 ? finishRally() : startStage(RALLY.results.length)); };
 $('shareR').onclick = () => {
   const gc = standings(4), you = gc.find(r => r.you);
@@ -208,7 +214,8 @@ fetch('roadbooks/manifest.json').then(r => r.json()).then(list => {
   MAN = list;
   const saved = localStorage.getItem('rrMarathon');
   if (saved){ try { RALLY = JSON.parse(saved); } catch (e){ RALLY = null; } }
-  if (RALLY && RALLY.stages && RALLY.stages.length === 5) renderOverview(); else buildRally();
+  const stale = RALLY && RALLY.weekly && RALLY.id !== weekId();   // last week's rally -> refresh to this week
+  if (RALLY && RALLY.stages && RALLY.stages.length === 5 && !stale) renderOverview(); else buildRally(true);
 }).catch(() => { $('rallyName').textContent = 'Could not load the library.'; });
 </script>
 </body>

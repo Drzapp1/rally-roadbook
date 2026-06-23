@@ -480,6 +480,11 @@ mentor matching.
   a billboard showing its tulip + first sign (danger-coloured), connected to the route,
   so a generated stage can be "flown" in 3D with its notes in place. A "Roadbook notes"
   toggle declutters. Ties the generated terrain + route + roadbook together in one view.
+- **Wave 59 · Rally of the week** *(Gameplay)* — the marathon now defaults to an
+  ISO-week-seeded shared event: a mulberry32 RNG seeded from the week id picks the same
+  five stages + rival field for everyone that week (verified deterministic), mirroring
+  the daily-challenge hook. A "Rally of the week" button + "New random rally" option;
+  the overview shows the week id; last week’s rally auto-refreshes on load.
 
 ---
 
