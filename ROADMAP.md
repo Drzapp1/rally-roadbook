@@ -306,6 +306,9 @@ mentor matching.
 - **Wave 18 · SEO & perf completeness** *(Reach)* — a `rel="canonical"` on every
   page, meta descriptions filled in where missing, and `loading="lazy"`/`decoding="async"`
   on remaining images. The page-basics gate now also requires a meta description.
+- **Wave 19 · Auto sitemap** *(Reach)* — `make_sitemap.mjs` regenerates `sitemap.xml`
+  from the actual `web/*.html` set and is wired into the Pages workflow, so the
+  sitemap can never go stale again (it was missing `embed.html`).
 
 ---
 

@@ -30,6 +30,8 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Generate roadbook manifest
         run: node tools/make_manifest.mjs
+      - name: Generate sitemap
+        run: node tools/make_sitemap.mjs
       - name: QA — verify internal links resolve
         run: python3 tools/check_web_links.py
       - name: QA — accessibility basics
