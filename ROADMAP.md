@@ -323,6 +323,11 @@ mentor matching.
   passes). Lesson 1 *Reading tulips* is fully playable — teach → endless practice →
   a 5-question mastery check that unlocks the next. Lessons 2–6 scaffolded; the loop
   now builds the ROADMAP Academy pillar one lesson per wave.
+- **Wave 23 · Academy Lesson 2 + lesson engine** *(Academy)* — generalized the
+  course to a type-driven question factory (`genQ`), then authored Lesson 2 *Distances
+  & the ICO*: teach total-vs-partial, then distance-arithmetic practice + check
+  (next TOTAL = this TOTAL + PARTIAL). Factory unit-tested over 8000 questions
+  (always 4 unique options incl. the answer).
 
 ---
 

@@ -41,9 +41,12 @@
   .stage{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center; margin-top:16px; }
   .tulipbox{ width:200px; height:200px; margin:6px auto 14px; background:#0f1218; border:1px solid var(--line); border-radius:12px; display:grid; place-items:center; }
   .tulipbox img{ width:84%; height:84%; object-fit:contain; }
+  .dpanel{ display:inline-block; text-align:left; background:#0f1218; border:1px solid var(--line); border-radius:10px; padding:14px 20px; margin:4px auto 16px; font-size:15px; }
+  .dline{ padding:4px 0; } .dline b{ color:var(--accent); font-family:ui-monospace,monospace; font-size:18px; }
   .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:0 auto; }
   .opt{ padding:13px; font-size:15px; font-weight:600; background:#23272f; border:1px solid var(--line); border-radius:10px; color:var(--ink); cursor:pointer; }
-  .opt:hover{ border-color:var(--accent); } .opt.right{ background:var(--good); color:#06270f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a07; border-color:var(--bad); }
+  .opt:hover:not(:disabled){ border-color:var(--accent); } .opt:disabled{ cursor:default; }
+  .opt.right{ background:var(--good); color:#06270f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a07; border-color:var(--bad); }
   .fb{ min-height:24px; margin:14px 0 4px; font-size:14px; font-weight:600; } .fb.ok{ color:var(--good); } .fb.no{ color:var(--bad); }
   .pips{ display:flex; gap:6px; justify-content:center; margin-bottom:10px; } .pip{ width:11px; height:11px; border-radius:50%; background:#23272f; border:1px solid var(--line); } .pip.ok{ background:var(--good); border-color:var(--good); } .pip.no{ background:var(--bad); border-color:var(--bad); }
   .cert{ text-align:center; border:2px solid var(--accent); border-radius:16px; padding:34px; background:linear-gradient(180deg,#1c1f26,#141821); }
@@ -72,8 +75,8 @@
     <p class="lead" id="L-sum"></p>
     <h3>Learn</h3>
     <div class="teach" id="L-teach"></div>
-    <div id="L-practiceWrap"><h3>Practise</h3><div class="stage" id="L-practice"></div></div>
-    <div id="L-checkWrap"><h3>Check</h3><div class="stage" id="L-check"></div></div>
+    <h3>Practise</h3><div class="stage" id="L-practice"></div>
+    <h3>Check</h3><div class="stage" id="L-check"></div>
   </div>
 
   <div id="cert" hidden>
@@ -98,8 +101,11 @@ const LESSONS = [
   { id:'tulips', num:1, title:'Reading tulips', sum:'The shape of a junction, at a glance.', ready:true,
     teach:`A <b>tulip</b> is a simplified top-down sketch of one junction. The <span class="hl">ball (dot)</span> is where you <b>enter</b>; the line is the road; the <span class="hl">arrow</span> is the way <b>out</b> — the direction to take. Travel is always drawn <b>bottom-to-top</b>.<br><br>The shape tells you the turn: a gentle bend is a <b>slight</b> turn, a right-angle is a <b>normal</b> turn, a tight U is a <b>hairpin</b>, and a straight line means <b>keep ahead</b>. Right now, just read the <span class="hl">way out</span>: Left, Straight, Right, or Hairpin.`,
     practice:{ type:'tulip-id' },
-    check:{ type:'tulip-id', items:['left','straight','hairpinR','sharpR','slightL'], pass:4 } },
-  { id:'distance', num:2, title:'Distances & the ICO', sum:'Total vs partial — how riders find the next box.', ready:false },
+    check:{ type:'tulip-id', count:5, pass:4 } },
+  { id:'distance', num:2, title:'Distances & the ICO', sum:'Total vs partial — how riders find the next box.', ready:true,
+    teach:`Every roadbook box carries two distances. <span class="hl">TOTAL</span> is how far you've ridden from the start — it only ever grows. <span class="hl">PARTIAL</span> is the distance since the <b>previous</b> box, and it resets to zero at every box.<br><br>On the bike you read both on the <b>ICO</b> (the trip meter / rally computer). To reach the next junction you watch PARTIAL count up to the box's partial figure — or watch TOTAL climb to the box's total. They agree, because <b>next&nbsp;TOTAL&nbsp;=&nbsp;this&nbsp;TOTAL&nbsp;+&nbsp;PARTIAL-to-next</b>. Get fluent with that one sum and you'll always know how far the next box is.`,
+    practice:{ type:'distance' },
+    check:{ type:'distance', count:5, pass:4 } },
   { id:'cap', num:3, title:'CAP & the compass', sum:'Heading in degrees, and steering to it.', ready:false },
   { id:'signs', num:4, title:'Danger & info signs', sum:'!, !!, !!! and the common pictograms.', ready:false },
   { id:'together', num:5, title:'Putting it together', sum:'Follow a short roadbook box by box.', ready:false },
@@ -110,7 +116,7 @@ const KEY='rrAcademyProgress';
 const prog = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
 const setDone = id => { const p=prog(); p[id]=true; localStorage.setItem(KEY, JSON.stringify(p)); };
 const readyLessons = () => LESSONS.filter(l=>l.ready);
-const isUnlocked = i => { if(LESSONS[i].num===1) return true; const prev=LESSONS[i-1]; return prev && prog()[prev.id]; };
+const isUnlocked = i => { if(LESSONS[i].num===1) return true; const prev=LESSONS[i-1]; return !!(prev && prog()[prev.id]); };
 const $ = id => document.getElementById(id);
 const show = which => { for(const k of ['overview','lesson','cert']) $(k).hidden = (k!==which); window.scrollTo(0,0); };
 
@@ -129,81 +135,94 @@ function renderOverview(){
     if(unlocked) b.onclick = ()=>openLesson(i);
     wrap.appendChild(b);
   });
-  // certificate row when everything available is complete
-  if(readyLessons().length && readyLessons().every(l=>p[l.id]) && readyLessons().length===LESSONS.length){
+  if(readyLessons().length===LESSONS.length && readyLessons().every(l=>p[l.id])){
     const b=document.createElement('button'); b.className='btn primary'; b.style.marginTop='8px'; b.textContent='🏅 View your certificate'; b.onclick=openCert; wrap.appendChild(b);
   }
 }
 
-let L, score, qIdx;
+// ---- question factory: one generator per practice/check type ----
+const rand = n => Math.floor(Math.random()*n);
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=rand(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const opts4 = (answer, ds) => { const set=[answer]; for(const d of ds){ if(set.length>=4) break; if(!set.includes(d)) set.push(d); } return shuffle(set); };
+
+function genQ(type){
+  if(type==='distance') return distanceQ();
+  const c = TUL[rand(TUL.length)];
+  return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
+}
+function distanceQ(){
+  const a = Math.round((Math.random()*7+1)*100)/100;     // this-box TOTAL, 1.00–8.00 km
+  const partM = (rand(81)+12)*10;                         // 120–920 m, multiples of 10
+  const b = Math.round((a + partM/1000)*100)/100;         // next-box TOTAL
+  if(Math.random()<0.5){
+    const ans = `${partM} m`;
+    return { media:`<div class="dpanel"><div class="dline">TOTAL at this box <b>${a.toFixed(2)} km</b></div><div class="dline">TOTAL at next box <b>${b.toFixed(2)} km</b></div></div>`,
+             prompt:'What PARTIAL distance will the ICO show when you reach the next box?',
+             options:opts4(ans, [`${partM+100} m`, `${Math.max(20,partM-100)} m`, `${Math.round(b*1000)} m`]), answer:ans };
+  }
+  const ans = `${b.toFixed(2)} km`;
+  return { media:`<div class="dpanel"><div class="dline">TOTAL at this box <b>${a.toFixed(2)} km</b></div><div class="dline">Next box is <b>${partM} m</b> ahead</div></div>`,
+           prompt:'What TOTAL will the next box read?',
+           options:opts4(ans, [`${a.toFixed(2)} km`, `${(a+2*partM/1000).toFixed(2)} km`, `${(b+0.1).toFixed(2)} km`]), answer:ans };
+}
+
+let L, score, qIdx, chkQs, marks;
 function openLesson(i){
   L = LESSONS[i]; show('lesson');
   $('L-title').textContent = `Lesson ${L.num} · ${L.title}`;
   $('L-sum').textContent = L.sum;
   $('L-teach').innerHTML = L.teach;
-  startPractice(); resetCheck();
+  nextPractice(); resetCheck();
 }
 function toOverview(){ renderOverview(); show('overview'); }
 
-// ---- practice: endless tulip identification with instant feedback ----
-function startPractice(){ nextPractice(); }
+// practice — endless, instant feedback
 function nextPractice(){
-  const code = TUL[Math.floor(Math.random()*TUL.length)];
-  const ans = DIR[code];
-  $('L-practice').innerHTML =
-    `<div class="tulipbox"><img src="tulips/${code}.png" alt="tulip"></div>`+
-    `<div class="opts">${OPTS.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`+
-    `<div class="fb" id="pfb">Which way is the exit?</div>`;
+  const q = genQ(L.practice.type);
+  $('L-practice').innerHTML = q.media +
+    `<div class="opts">${q.options.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>` +
+    `<div class="fb" id="pfb">${q.prompt}</div>`;
   $('L-practice').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
-    const ok = btn.dataset.o===ans;
-    btn.classList.add(ok?'right':'wrong');
-    const fb=$('pfb'); fb.className='fb '+(ok?'ok':'no'); fb.textContent = ok?`✓ Yes — that's a ${ans}.`:`✗ That one is a ${ans}.`;
-    $('L-practice').querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    const ok = btn.dataset.o===q.answer;
+    $('L-practice').querySelectorAll('.opt').forEach(b=>{ b.disabled=true; if(b.dataset.o===q.answer) b.classList.add('right'); });
+    if(!ok) btn.classList.add('wrong');
+    const fb=$('pfb'); fb.className='fb '+(ok?'ok':'no'); fb.textContent = ok?'✓ Correct.':`✗ The answer is ${q.answer}.`;
     const nx=document.createElement('button'); nx.className='btn'; nx.textContent='Next ▸'; nx.style.marginTop='12px'; nx.onclick=nextPractice;
     $('L-practice').appendChild(nx);
   });
 }
 
-// ---- check: fixed quiz, pass threshold unlocks the next lesson ----
+// check — fixed-count quiz; pass threshold unlocks the next lesson
 function resetCheck(){
-  score=0; qIdx=0;
-  $('L-check').innerHTML = `<p class="lead">Answer ${L.check.items.length} in a row. ${L.check.pass}/${L.check.items.length} to pass and unlock the next lesson.</p><button class="btn primary" id="startChk">Start the check</button>`;
-  $('startChk').onclick = askCheck;
+  score=0; qIdx=0; marks=[];
+  $('L-check').innerHTML = `<p class="lead">Answer ${L.check.count} in a row. ${L.check.pass}/${L.check.count} to pass and unlock the next lesson.</p><button class="btn primary" id="startChk">Start the check</button>`;
+  $('startChk').onclick = ()=>{ chkQs = Array.from({length:L.check.count}, ()=>genQ(L.check.type)); askCheck(); };
 }
 function askCheck(){
-  if(qIdx >= L.check.items.length) return finishCheck();
-  const code = L.check.items[qIdx]; const ans = DIR[code];
-  const pips = L.check.items.map((_,k)=>`<span class="pip ${k<qIdx?(window._marks[k]?'ok':'no'):''}" ></span>`).join('');
-  window._marks = window._marks || [];
-  $('L-check').innerHTML =
-    `<div class="pips">${pips}</div>`+
-    `<div class="tulipbox"><img src="tulips/${code}.png" alt="tulip"></div>`+
-    `<div class="opts">${OPTS.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`+
-    `<div class="fb" id="cfb">Question ${qIdx+1} of ${L.check.items.length}</div>`;
+  if(qIdx >= chkQs.length) return finishCheck();
+  const q = chkQs[qIdx];
+  const pips = chkQs.map((_,k)=>`<span class="pip ${k<qIdx?(marks[k]?'ok':'no'):''}"></span>`).join('');
+  $('L-check').innerHTML = `<div class="pips">${pips}</div>` + q.media +
+    `<div class="opts">${q.options.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>` +
+    `<div class="fb" id="cfb">Question ${qIdx+1} of ${chkQs.length}</div>`;
   $('L-check').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
-    const ok = btn.dataset.o===ans; window._marks[qIdx]=ok; if(ok) score++;
+    const ok = btn.dataset.o===q.answer; marks[qIdx]=ok; if(ok) score++;
     btn.classList.add(ok?'right':'wrong');
     $('L-check').querySelectorAll('.opt').forEach(b=>b.disabled=true);
-    qIdx++;
-    setTimeout(askCheck, 600);
+    qIdx++; setTimeout(askCheck, 550);
   });
 }
 function finishCheck(){
   const pass = score >= L.check.pass;
-  window._marks = [];
   if(pass) setDone(L.id);
   $('L-check').innerHTML =
     `<div class="seal" style="font-size:40px">${pass?'✅':'🔁'}</div>`+
-    `<h3 style="margin:6px 0">${score} / ${L.check.items.length}</h3>`+
-    `<p class="lead">${pass?'Passed — next lesson unlocked.':'Not yet — review the tulip shapes and try again.'}</p>`+
+    `<h3 style="margin:6px 0">${score} / ${L.check.count}</h3>`+
+    `<p class="lead">${pass?'Passed — next lesson unlocked.':'Not yet — review the lesson and try again.'}</p>`+
     `<div class="row">${pass?'<button class="btn primary" onclick="toOverview()">Continue ▸</button>':'<button class="btn primary" onclick="resetCheck()">Try again</button>'} <button class="btn" onclick="toOverview()">All lessons</button></div>`;
 }
 
-function openCert(){
-  show('cert');
-  const n = readyLessons().length;
-  $('certMeta').textContent = `${n} of ${n} lessons · Rally Roadbook Academy`;
-}
+function openCert(){ show('cert'); const n=readyLessons().length; $('certMeta').textContent = `${n} of ${n} lessons · Rally Roadbook Academy`; }
 
 renderOverview();
 </script>
