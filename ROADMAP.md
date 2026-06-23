@@ -255,6 +255,11 @@ mentor matching.
   draft-07 **JSON Schema** (`web/roadbook.schema.json`) + `format.html`: a field
   reference and an **interactive validator** (mirrors `rbtool validate`) so any
   tool, sim or app can read/write the same roadbook. Live as **Format** in the nav.
+- **Wave 4 · Eclipse-navigation demo** *(H1 · Nav Engine)* — `navigate.html`: an
+  interactive canvas demo of the real rally-raid challenge — **no route line**,
+  steer by the roadbook + trip meter, with the CAP bearing arrow unlocking only
+  within range (ERTF/Unik-style). Procedural stage + derived roadbook + on-route
+  scoring. Live as **Navigate**.
 
 ---
 
