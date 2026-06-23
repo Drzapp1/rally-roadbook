@@ -87,6 +87,13 @@
     <h3>Check</h3><div class="stage" id="L-check"></div>
   </div>
 
+  <div id="exam" hidden>
+    <a class="back" onclick="toOverview()">← All lessons</a>
+    <h2>Final Exam</h2>
+    <p class="lead">Twelve questions across every skill — no hints. 10 / 12 earns your certificate.</p>
+    <div class="stage" id="examBody"></div>
+  </div>
+
   <div id="cert" hidden>
     <a class="back" onclick="toOverview()">← All lessons</a>
     <div class="cert">
@@ -138,7 +145,7 @@ const setDone = id => { const p=prog(); p[id]=true; localStorage.setItem(KEY, JS
 const readyLessons = () => LESSONS.filter(l=>l.ready);
 const isUnlocked = i => { if(LESSONS[i].num===1) return true; const prev=LESSONS[i-1]; return !!(prev && prog()[prev.id]); };
 const $ = id => document.getElementById(id);
-const show = which => { for(const k of ['overview','lesson','cert']) $(k).hidden = (k!==which); window.scrollTo(0,0); };
+const show = which => { for(const k of ['overview','lesson','exam','cert']) $(k).hidden = (k!==which); window.scrollTo(0,0); };
 
 function renderOverview(){
   const p = prog();
@@ -156,7 +163,10 @@ function renderOverview(){
     wrap.appendChild(b);
   });
   if(readyLessons().length===LESSONS.length && readyLessons().every(l=>p[l.id])){
-    const b=document.createElement('button'); b.className='btn primary'; b.style.marginTop='8px'; b.textContent='🏅 View your certificate'; b.onclick=openCert; wrap.appendChild(b);
+    const b=document.createElement('button'); b.className='btn primary'; b.style.marginTop='8px';
+    if(p.exam){ b.textContent='🏅 View your certificate'; b.onclick=openCert; }
+    else { b.textContent='🎯 Take the Final Exam'; b.onclick=openExam; }
+    wrap.appendChild(b);
   }
 }
 
@@ -311,7 +321,31 @@ function finishCheck(){
     `<div class="row">${pass?'<button class="btn primary" onclick="toOverview()">Continue ▸</button>':'<button class="btn primary" onclick="resetCheck()">Try again</button>'} <button class="btn" onclick="toOverview()">All lessons</button></div>`;
 }
 
-function openCert(){ show('cert'); const n=readyLessons().length; $('certMeta').textContent = `${n} of ${n} lessons · Rally Roadbook Academy`; }
+const EXAM_TYPES = ['tulip-id','distance','cap','signs','follow'];
+let exQs, exIdx, exScore, exMarks;
+function openExam(){
+  show('exam'); exScore=0; exIdx=0; exMarks=[];
+  $('examBody').innerHTML = `<p class="lead">12 questions, mixed skills, no hints. 10/12 to pass.</p><button class="btn primary" id="exStart">Start the exam</button>`;
+  $('exStart').onclick = ()=>{ exQs = Array.from({length:12}, ()=>genQ(EXAM_TYPES[rand(EXAM_TYPES.length)])); askExam(); };
+}
+function askExam(){
+  if(exIdx >= exQs.length) return finishExam();
+  const q = exQs[exIdx];
+  const pips = exQs.map((_,k)=>`<span class="pip ${k<exIdx?(exMarks[k]?'ok':'no'):''}"></span>`).join('');
+  $('examBody').innerHTML = `<div class="pips">${pips}</div>` + q.media + `<div class="opts">${q.options.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div><div class="fb">Question ${exIdx+1} of ${exQs.length}</div>`;
+  $('examBody').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    const ok = btn.dataset.o===q.answer; exMarks[exIdx]=ok; if(ok) exScore++;
+    btn.classList.add(ok?'right':'wrong');
+    $('examBody').querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    exIdx++; setTimeout(askExam, 480);
+  });
+}
+function finishExam(){
+  const pass = exScore>=10;
+  if(pass){ const p=prog(); p.exam=true; localStorage.setItem(KEY, JSON.stringify(p)); }
+  $('examBody').innerHTML = `<div class="seal" style="font-size:40px">${pass?'🏅':'🔁'}</div><h3 style="margin:6px 0">${exScore} / 12</h3><p class="lead">${pass?"Outstanding — you've earned your certificate.":'So close — review any shaky skill and retake it.'}</p><div class="row">${pass?'<button class="btn primary" onclick="openCert()">View certificate ▸</button>':'<button class="btn primary" onclick="openExam()">Retake</button>'} <button class="btn" onclick="toOverview()">All lessons</button></div>`;
+}
+function openCert(){ show('cert'); const n=readyLessons().length; $('certMeta').textContent = `${n} lessons + final exam · Rally Roadbook Academy`; }
 
 renderOverview();
 </script>

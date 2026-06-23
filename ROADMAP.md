@@ -345,6 +345,10 @@ mentor matching.
   safe; options locked until it hides) so you answer from memory. All 6 lessons
   now live → the completion certificate unlocks. The Academy pillar’s first full
   curriculum is shipped.
+- **Wave 28 · Academy Final Exam** *(Academy)* — once all 6 lessons pass, a
+  12-question mixed exam (a random skill each question) gates the certificate: 10/12
+  to earn it. Reuses the five tested widget types; 24000 generated exam questions
+  verified valid.
 
 ---
 
