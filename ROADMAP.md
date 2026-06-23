@@ -437,6 +437,12 @@ mentor matching.
   roadbooks for all 26 real MXB track heightmaps in `web/tracks/` (18 new this wave),
   each a valid open-terrain rally stage over real elevation. The library is now
   genuinely real tracks (the "Terrain stages" group). Delivers feature #4.
+- **Wave 51 · LLM co-driver** *(AI)* — `codriver.html` reads any stage aloud as
+  natural spoken pace notes ("in 320, caution, hard right, over crest"). A phrasing
+  grammar composes distance + danger + turn severity (from the tulip) + terrain signs
+  from each box; the Web Speech API voices them in sequence with a synced tulip/CAP
+  display, pace control and play/stop. Delivers feature #3 — completes the four
+  autonomous features (roadbook-from-track, procedural, real-track library, co-driver).
 
 ---
 

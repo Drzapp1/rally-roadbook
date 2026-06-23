@@ -3,7 +3,11 @@
   <url><loc>https://drzapp1.github.io/rally-roadbook/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/academy.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/builder.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://drzapp1.github.io/rally-roadbook/cheatsheet.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://drzapp1.github.io/rally-roadbook/codriver.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/compass.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://drzapp1.github.io/rally-roadbook/course.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://drzapp1.github.io/rally-roadbook/daily.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/devices.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/editor.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/embed.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -15,5 +19,6 @@
   <url><loc>https://drzapp1.github.io/rally-roadbook/navigate.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/progress.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/rally.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://drzapp1.github.io/rally-roadbook/stage.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://drzapp1.github.io/rally-roadbook/track3d.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
