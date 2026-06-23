@@ -404,6 +404,10 @@ mentor matching.
 - **Wave 42 · Onboarding path** *(UX)* — the home hub now greets first-time
   visitors with a "New here? Start with the Guide → Cheat-sheet → Academy" path
   (returning visitors still get their progress strip). Browser-verified both states.
+- **Wave 43 · 3D page preload** *(Performance)* — track3d/map3d load Three.js
+  from the jsdelivr CDN via an import map; added `preconnect` + `modulepreload` so
+  the connection and main-module download start at parse time, not when the module
+  graph resolves. (The Wave-18 audit missed this CDN — it lives in importmap JSON.)
 
 ---
 
