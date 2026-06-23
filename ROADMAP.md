@@ -417,6 +417,10 @@ mentor matching.
   external runtime deps (scripts/styles/fonts/importmaps/module imports): zero remain
   after vendoring Three.js. Added `check_selfcontained.py` as a 3rd CI gate
   (negative-tested) so an external dependency can never slip in again.
+- **Wave 47 · PWA offline precache** *(Mobile)* — the installable reader now
+  precaches the library manifest + all 14 tulips (cache bumped to rally-v2) on top
+  of the shell, so it lists the library and renders roadbook turns offline from
+  first install. Browser-verified: SW installs, 19 assets cached, old cache cleaned.
 
 ---
 
