@@ -279,6 +279,10 @@ mentor matching.
   spin up endless **schema-valid** practice roadbooks (turns, distances, CAP,
   signs, danger), rendered as a roadbook sheet, with one-click JSON download.
   Carded under **Create**.
+- **Wave 10 · Progress dashboard** *(H4 · Academy)* — `progress.html`: your personal
+  bests across the drills (tulip + CAP streaks, Navigate times per difficulty) as
+  stat cards + 8 earnable **badges**, all from localStorage. Completes the gamified
+  learn loop. Carded under **Learn**.
 
 ---
 

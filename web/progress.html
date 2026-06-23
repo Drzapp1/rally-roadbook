@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook — Your Progress</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --good:#46c37b; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:880px; margin:0 auto; padding:24px 18px 56px; }
+  h2{ font-size:14px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin:28px 0 12px; }
+  .lead{ color:var(--dim); font-size:14px; }
+  .stats{ display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .stat .ic{ font-size:20px; } .stat .v{ font-size:30px; font-weight:700; font-variant-numeric:tabular-nums; margin:4px 0 2px; }
+  .stat .v.none{ color:var(--dim); font-weight:400; font-size:18px; }
+  .stat .lab{ color:var(--dim); font-size:12.5px; } .stat a{ color:var(--cyan); text-decoration:none; font-size:12px; }
+  .badges{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+  .badge{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; text-align:center; opacity:.45; }
+  .badge.on{ opacity:1; border-color:var(--accent); }
+  .badge .ic{ font-size:30px; } .badge h3{ margin:6px 0 2px; font-size:14px; } .badge p{ margin:0; color:var(--dim); font-size:11.5px; }
+  .badge .got{ color:var(--good); font-size:11px; font-weight:700; margin-top:4px; }
+  .reset{ margin-top:22px; background:#23272f; color:var(--dim); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · PROGRESS</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="guide.html">Guide</a><a href="academy.html">Academy</a><a href="compass.html">CAP</a><a href="navigate.html">Navigate</a><a href="progress.html" class="on">Progress</a></nav>
+</header>
+<main>
+  <p class="lead">Your personal bests across the drills (saved in this browser). Practice to raise them and earn badges.</p>
+
+  <h2>Your bests</h2>
+  <div class="stats" id="stats"></div>
+
+  <h2>Badges</h2>
+  <div class="badges" id="badges"></div>
+
+  <button class="reset" id="reset">Reset my progress</button>
+</main>
+<footer>Stats live only in your browser (localStorage) — nothing is uploaded.</footer>
+<script>
+const g=k=>+(localStorage[k]||0);
+const tulip=g('tulipBest'), cap=g('capBest');
+const navE=g('navBest_easy'), navM=g('navBest_medium'), navH=g('navBest_hard');
+const navDone=[navE,navM,navH].filter(x=>x>0).length;
+function secTxt(v){ return v>0 ? v.toFixed(1)+'s' : '—'; }
+const STATS=[
+  {ic:'🎓', v:tulip||0, none:!tulip, lab:'Best tulip streak', link:'academy.html', linkt:'Drill tulips →'},
+  {ic:'🎯', v:cap||0, none:!cap, lab:'Best CAP streak', link:'compass.html', linkt:'Drill CAP →'},
+  {ic:'🧭', v:secTxt(navE), none:!navE, lab:'Navigate — Easy best', link:'navigate.html', linkt:'Run a stage →'},
+  {ic:'🧭', v:secTxt(navM), none:!navM, lab:'Navigate — Medium best', link:'navigate.html', linkt:'Run a stage →'},
+  {ic:'🧭', v:secTxt(navH), none:!navH, lab:'Navigate — Hard best', link:'navigate.html', linkt:'Run a stage →'},
+];
+document.getElementById('stats').innerHTML=STATS.map(s=>
+  `<div class="stat"><div class="ic">${s.ic}</div><div class="v${s.none?' none':''}">${s.none&&typeof s.v==='number'?'—':s.v}</div><div class="lab">${s.lab}</div><div style="margin-top:8px"><a href="${s.link}">${s.linkt}</a></div></div>`).join('');
+
+const BADGES=[
+  {ic:'📖', name:'Apprentice', desc:'Tulip streak 5+', on:tulip>=5},
+  {ic:'🎓', name:'Tulip Reader', desc:'Tulip streak 10+', on:tulip>=10},
+  {ic:'🏅', name:'Tulip Master', desc:'Tulip streak 25+', on:tulip>=25},
+  {ic:'🎯', name:'Compass', desc:'CAP streak 10+', on:cap>=10},
+  {ic:'🧭', name:'Pathfinder', desc:'Finish any stage', on:navDone>=1},
+  {ic:'🏁', name:'All-rounder', desc:'Finish all 3 difficulties', on:navDone>=3},
+  {ic:'⚡', name:'Speed Runner', desc:'Hard stage under 75s', on:navH>0&&navH<=75},
+  {ic:'🌟', name:'Navigator', desc:'All badges + tulip 25', on:(tulip>=25&&cap>=10&&navDone>=3)},
+];
+document.getElementById('badges').innerHTML=BADGES.map(b=>
+  `<div class="badge${b.on?' on':''}"><div class="ic">${b.ic}</div><h3>${b.name}</h3><p>${b.desc}</p>${b.on?'<div class="got">✓ EARNED</div>':''}</div>`).join('');
+
+document.getElementById('reset').onclick=()=>{ if(confirm('Reset all your saved bests?')){ ['tulipBest','capBest','navBest_easy','navBest_medium','navBest_hard'].forEach(k=>localStorage.removeItem(k)); location.reload(); } };
+</script>
+</body>
+</html>
