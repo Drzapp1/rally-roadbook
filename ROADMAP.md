@@ -275,6 +275,10 @@ mentor matching.
 - **Wave 8 · Navigate polish** *(H1 · Nav Engine)* — added a **breadcrumb trail**,
   a per-difficulty **best-time** (localStorage), and an **Easy / Medium / Hard**
   selector (waypoint count + unlock range + speed) to the eclipse demo.
+- **Wave 9 · Stage generator** *(H2 · Content)* — `generate.html`: procedurally
+  spin up endless **schema-valid** practice roadbooks (turns, distances, CAP,
+  signs, danger), rendered as a roadbook sheet, with one-click JSON download.
+  Carded under **Create**.
 
 ---
 

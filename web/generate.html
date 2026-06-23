@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<title>Rally Roadbook — Stage Generator</title>
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --cell:#14171e; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --pink:#ff5a4d; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:1040px; margin:0 auto; padding:18px; }
+  .lead{ color:var(--dim); font-size:13.5px; margin:0 0 14px; }
+  .bar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  button,select,a.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; text-decoration:none; }
+  button.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  .meta{ color:var(--dim); font-size:13px; margin-left:auto; } .meta b{ color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; }
+  .cell{ display:flex; background:var(--cell); border:1px solid var(--line); border-radius:9px; overflow:hidden; min-height:96px; }
+  .cell .l{ flex:0 0 32%; border-right:1px solid var(--line); padding:8px; }
+  .cell .tot{ font-size:23px; font-weight:700; font-family:'Roboto Mono',monospace; } .cell .part{ margin-top:6px; font-size:12px; color:var(--dim); }
+  .cell .c{ flex:0 0 40%; border-right:1px solid var(--line); display:flex; align-items:center; justify-content:center; padding:4px; } .cell .c img{ width:100%; max-height:80px; object-fit:contain; }
+  .cell .r{ flex:1; text-align:center; padding:8px 4px; } .cell .cap{ font-size:20px; font-weight:700; } .cell .deg{ font-size:11px; color:var(--dim); }
+  .cell .dl{ color:var(--pink); font-weight:700; font-size:14px; } .cell .sg{ display:flex; gap:3px; justify-content:center; margin-top:4px; } .cell .sg img{ width:20px; height:20px; background:#f6f4ee; border-radius:4px; }
+  .idx{ font-size:10px; color:var(--dim); }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · STAGE GENERATOR</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="guide.html">Guide</a><a href="navigate.html">Navigate</a><a href="format.html">Format</a><a href="generate.html" class="on">Generate</a></nav>
+</header>
+<main>
+  <p class="lead">Procedurally generate an endless supply of practice roadbooks — schema-valid, ready to download,
+  validate, or load into the viewer (drag the .json onto <a href="index.html" style="color:var(--cyan)">Explore</a>).</p>
+  <div class="bar">
+    <button class="primary" id="gen">↻ New stage</button>
+    <label class="meta" style="margin-left:0;color:var(--dim)">Length
+      <select id="len"><option value="8">Short</option><option value="14" selected>Medium</option><option value="22">Long</option></select>
+    </label>
+    <button id="dl">⬇ Download .json</button>
+    <a class="btn" href="format.html">Validate →</a>
+    <span class="meta" id="info"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>Generated roadbooks follow the open format v1. Tulips + signs from the open-source lexicon (GPLv2+).</footer>
+<script>
+const D2R=Math.PI/180, dir=h=>[Math.sin(h*D2R),-Math.cos(h*D2R)];
+const STOCK={
+ straight:[[.5,.90],[.5,.12]], slightL:[[.5,.90],[.5,.46],[.34,.13]], slightR:[[.5,.90],[.5,.46],[.66,.13]],
+ left:[[.5,.90],[.5,.44],[.12,.44]], right:[[.5,.90],[.5,.44],[.88,.44]],
+ sharpL:[[.5,.90],[.5,.40],[.24,.62]], sharpR:[[.5,.90],[.5,.40],[.76,.62]],
+ hairpinL:[[.5,.90],[.5,.30],[.30,.30],[.30,.66]], hairpinR:[[.5,.90],[.5,.30],[.70,.30],[.70,.66]],
+ start:[[.5,.90],[.5,.20]], finish:[[.5,.90],[.5,.22]]};
+const SIGNS=['dune','dunes','water','rocks','jump','bridge','narrow','gate'];
+function classify(a){ const m=Math.abs(a); if(m<18)return['straight','none']; const R=a>0;
+ if(m<40)return[R?'slightR':'slightL','turn']; if(m<100)return[R?'right':'left','turn']; if(m<150)return[R?'sharpR':'sharpL','turn']; return[R?'hairpinR':'hairpinL','hairpin']; }
+let RB=null;
+function generate(n){
+  const boxes=[]; let h=Math.floor(Math.random()*360), dist=0;
+  boxes.push({index:0,distTotalKm:0,distPartialM:0,capDeg:((h%360)+360)%360,type:'start',turnDir:'none',dangerLevel:0,pictograms:[],note:'',tulip:{points:STOCK.start}});
+  for(let i=0;i<n;i++){
+    const len=Math.round(120+Math.random()*240); dist+=len;
+    const ang=(Math.random()*2-1)*150, code=classify(ang), nh=h+ang; h=nh;
+    const last=i===n-1;
+    const type=last?'finish':code[1], turn=code[1]==='straight'?'none':(ang>0?'right':'left');
+    const tcode=last?'finish':code[0];
+    let dl=0; if(code[0].startsWith('hairpin'))dl=1; if(Math.random()<0.16)dl=Math.min(3,dl+1+(Math.random()<0.3?1:0));
+    const pics=[]; if(!last&&Math.random()<0.32)pics.push(SIGNS[Math.floor(Math.random()*SIGNS.length)]);
+    boxes.push({index:i+1,distTotalKm:+(dist/1000).toFixed(3),distPartialM:len,capDeg:Math.round(((nh%360)+360)%360),
+      type,turnDir:type==='finish'?'none':turn,dangerLevel:dl,pictograms:pics,note:'',tulip:{points:STOCK[tcode]||STOCK.straight}});
+  }
+  RB={schemaVersion:1,trackName:'Generated stage '+Math.random().toString(36).slice(2,7).toUpperCase(),
+      meta:{generatedBy:'web-generator',totalDistanceKm:+(dist/1000).toFixed(3)},boxes};
+  render();
+}
+const ab=b=>b.type==='start'?'S':b.type==='finish'?'F':b.type==='straight'?'kpS':(b.turnDir==='right'?'R':'L');
+const tc=b=>{ const t=b.type,R=b.turnDir==='right'; if(t==='start')return'start'; if(t==='finish')return'finish'; if(t==='hairpin')return R?'hairpinR':'hairpinL';
+  if(t==='turn'){ const p=b.tulip.points,a=p[0],c=p[1],d=p[p.length-2],e=p[p.length-1]; const v1=[c[0]-a[0],c[1]-a[1]],v2=[e[0]-d[0],e[1]-d[1]];
+    const m=Math.acos(Math.max(-1,Math.min(1,(v1[0]*v2[0]+v1[1]*v2[1])/((Math.hypot(...v1)||1)*(Math.hypot(...v2)||1)))))*180/Math.PI;
+    if(m<32)return R?'slightR':'slightL'; if(m>=100)return R?'sharpR':'sharpL'; return R?'right':'left'; } return'straight'; };
+const comma=v=>(v||0).toFixed(2).replace('.',',');
+function render(){
+  const g=document.getElementById('grid'); g.innerHTML='';
+  RB.boxes.forEach(b=>{
+    const part=b.type==='start'?'0,00':(b.type==='finish'?'END':b.distPartialM+' m');
+    const sg=(b.pictograms||[]).map(c=>`<img src="signs/${c}.png" onerror="this.remove()" alt="${c}">`).join('');
+    const dl=b.dangerLevel?`<div class="dl">${'!'.repeat(b.dangerLevel)}</div>`:'';
+    const el=document.createElement('div'); el.className='cell';
+    el.innerHTML=`<div class="l"><span class="idx">${b.index}</span><div class="tot">${comma(b.distTotalKm)}</div><div class="part">${part}</div></div>`
+      +`<div class="c"><img src="tulips/${tc(b)}.png" alt=""></div>`
+      +`<div class="r"><div class="cap">${ab(b)}</div><div class="deg">${String(b.capDeg).padStart(3,'0')}</div>${dl}<div class="sg">${sg}</div></div>`;
+    g.appendChild(el);
+  });
+  document.getElementById('info').innerHTML=`<b>${RB.boxes.length}</b> boxes · <b>${RB.meta.totalDistanceKm}</b> km`;
+}
+document.getElementById('gen').onclick=()=>generate(+document.getElementById('len').value);
+document.getElementById('len').onchange=()=>generate(+document.getElementById('len').value);
+document.getElementById('dl').onclick=()=>{ const blob=new Blob([JSON.stringify(RB,null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=(RB.trackName.replace(/\s+/g,'_'))+'.json'; a.click(); URL.revokeObjectURL(a.href); };
+generate(14);
+</script>
+</body>
+</html>
