@@ -408,6 +408,11 @@ mentor matching.
   from the jsdelivr CDN via an import map; added `preconnect` + `modulepreload` so
   the connection and main-module download start at parse time, not when the module
   graph resolves. (The Wave-18 audit missed this CDN — it lives in importmap JSON.)
+- **Wave 44 · Vendor Three.js — self-contained 3D** *(Reliability)* — track3d/map3d
+  no longer depend on the jsdelivr CDN: three.module.js + OrbitControls + FlyControls
+  are vendored under `web/vendor/three/` and the import maps point at local paths.
+  The 3D viewers now work offline and behind CDN-blocking networks. Browser-verified
+  (1.2 MB module loads from /vendor, canvas inits, zero jsdelivr requests).
 
 ---
 
