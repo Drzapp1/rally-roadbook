@@ -52,6 +52,7 @@
   <div class="row">
     <label style="font-size:13px;color:var(--dim)">Pace <input type="range" id="rate" min="0.7" max="1.6" step="0.1" value="1.1"></label>
     <span class="count" id="rateval">1.1×</span>
+    <label style="font-size:13px;color:var(--dim)">Voice <select id="voice"></select></label>
   </div>
   <div class="stage">
     <div class="callout" id="callout">Ready when you are.</div>
@@ -66,13 +67,22 @@
 import { tulipCode, validate } from './roadbook.js';
 const $ = id => document.getElementById(id);
 const synth = window.speechSynthesis;
-let QUEUE = [], qi = 0, playing = false, RB = null;
+let QUEUE = [], qi = 0, playing = false, RB = null, VOICES = [];
+function loadVoices(){
+  const all = synth ? synth.getVoices() : [];
+  VOICES = all.filter(v => /^en[-_]?/i.test(v.lang));
+  if (!VOICES.length) VOICES = all;
+  const sel = $('voice'); if (!sel) return;
+  sel.innerHTML = VOICES.map((v, i) => `<option value="${i}">${v.name.replace(/Microsoft |Google /, '')} (${v.lang})</option>`).join('')
+    || '<option>device default</option>';
+  const gb = VOICES.findIndex(v => /en[-_]GB/i.test(v.lang)); if (gb >= 0) sel.value = gb;
+}
 
 const SIGN = { crestL:'over crest', crestR:'over crest', crest:'over crest', dip:'into dip', jump:'jump', compression:'compression',
   bump:'bump', bumpy:'bumpy', downhill:'steep down', inclineL:'off-camber', inclineR:'off-camber', water:'water', river:'river',
   wadi:'wadi', dryriver:'dry river', rough:'rough', ruts:'ruts', rocky:'rocks', dune:'dune', dunes:'dunes', narrow:'narrows',
   stop:'stop', deadend:'dead end', cattleguard:'cattle grid', gate:'gate', gatebar:'barrier', bridge:'bridge', fence:'fence',
-  cutL:'cut left', cutR:'cut right', slowdown:'slow' };
+  cutL:'cut left', cutR:'cut right', slowdown:'slow', hill:'climb', hole:'hole', ditch:'ditch', sand:'sand' };
 
 function dirWord(b){ return b.turnDir === 'right' ? 'right' : 'left'; }
 function turnPhrase(b){
@@ -90,23 +100,33 @@ function distWord(m){
   m = Math.round(m / 10) * 10;
   return m >= 2000 ? (m / 1000).toFixed(1).replace('.0','') + ' k' : String(m);
 }
-function paceNote(b, prevKm){
-  if (b.type === 'start') return { say: 'Stage start.', dist: '' };
+function paceNote(b, prevKm, opts){
+  opts = opts || {};
+  if (b.type === 'start') return { say: 'Stage start.' };
   const dm = Math.max(0, Math.round((b.distTotalKm - prevKm) * 1000));
   const parts = [];
-  if (dm > 0) parts.push('in ' + distWord(dm));
+  if (!opts.suppressDist && dm > 0) parts.push('in ' + distWord(dm));   // suppressed when chained off "into"
   const dl = b.dangerLevel || 0;
   if (dl >= 3) parts.push('danger danger'); else if (dl === 2) parts.push('caution'); else if (dl === 1) parts.push('care');
-  if (b.type !== 'finish') parts.push(turnPhrase(b)); else parts.push('finish');
+  if (b.type === 'finish') parts.push('finish');
+  else if (b.type === 'straight') parts.push(dm >= 800 ? 'flat out' : dm >= 400 ? 'long straight' : 'keep straight');
+  else parts.push(turnPhrase(b));
   const terr = [...new Set((b.pictograms || []).map(c => SIGN[c]).filter(Boolean))];
   if (terr.length) parts.push(terr.join(', '));
-  let s = parts.join(', '); s = s.charAt(0).toUpperCase() + s.slice(1) + '.';
-  return { say: s, dist: dm ? distWord(dm) : '' };
+  let s = parts.join(', ');
+  s += opts.linkNext ? ', into' : '.';                                  // chain a near box: "left, into" -> "right."
+  return { say: s.charAt(0).toUpperCase() + s.slice(1) };
 }
 
 function build(rb){
-  let prev = 0; QUEUE = [];
-  for (const b of rb.boxes){ QUEUE.push({ b, ...paceNote(b, prev) }); prev = b.distTotalKm; }
+  QUEUE = []; const bx = rb.boxes; let prev = 0, prevLinked = false;
+  for (let i = 0; i < bx.length; i++){
+    const b = bx[i], nb = bx[i + 1];
+    const gapM = nb ? (nb.distTotalKm - b.distTotalKm) * 1000 : Infinity;
+    const linkNext = !!nb && gapM < 75 && (nb.type === 'turn' || nb.type === 'hairpin') && b.type !== 'start';
+    QUEUE.push({ b, ...paceNote(b, prev, { linkNext, suppressDist: prevLinked }) });
+    prev = b.distTotalKm; prevLinked = linkNext;
+  }
 }
 function showItem(i){
   const it = QUEUE[i]; if (!it) return;
@@ -123,6 +143,7 @@ function speakNext(){
   showItem(qi);
   const u = new SpeechSynthesisUtterance(QUEUE[qi].say.replace(/\bk\b/g, 'kay'));
   u.rate = parseFloat($('rate').value); u.pitch = 1.0;
+  const v = VOICES[parseInt($('voice').value, 10)]; if (v) u.voice = v;
   u.onend = () => { qi++; setTimeout(speakNext, 220); };
   u.onerror = () => { qi++; setTimeout(speakNext, 220); };
   synth.cancel(); synth.speak(u);
@@ -139,6 +160,7 @@ $('rate').oninput = () => { $('rateval').textContent = parseFloat($('rate').valu
 $('play').onclick = start;
 $('stop').onclick = () => { stop(); $('callout').textContent = 'Stopped.'; };
 if (!('speechSynthesis' in window)) $('warn').textContent = 'Your browser has no speech synthesis — the notes will still display.';
+loadVoices(); if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
 
 fetch('roadbooks/manifest.json').then(r => r.json()).then(list => {
   const sel = $('pick');

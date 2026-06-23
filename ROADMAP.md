@@ -456,6 +456,10 @@ mentor matching.
   and climb — so "elevation → crest/dip/jump signs" is delivered from the landscape.
   All 29 generated stages now carry elevation signs (crestL on 25, dip 20, jump 6,
   compression 4); variety tracks the terrain (rich on Iceland, sparse on smooth Patagonia).
+- **Wave 54 · Co-driver enrichment** *(AI)* — the spoken co-driver now chains near
+  boxes ("slight left, into … hard right"), calls long straights ("long straight" / "flat
+  out"), speaks the new elevation signs it was missing (hill → "climb"), and lets you pick
+  the speaking voice (English voices, en-GB preferred). Leverages the Wave-53 signs.
 
 ---
 
