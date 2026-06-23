@@ -354,6 +354,10 @@ mentor matching.
   practice/feedback works, the blind-peek auto-hide times correctly (locked → hidden
   → unlocked), and the exam gate generates 12, passes, and unlocks the certificate.
   Zero console errors, no bugs.
+- **Wave 30 · Daily Challenge** *(Procedural + Community)* — `daily.html`: a
+  date-seeded (UTC) procedural stage everyone gets the same day — read 10 roadbook
+  boxes (turn/CAP/sign), score, and share a Wordle-style grid. Deterministic
+  generator unit-tested + browser-verified (play → result → share → once-per-day lock).
 
 ---
 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Daily Challenge</title>
+<meta name="description" content="One rally stage a day, the same for everyone — read 10 roadbook boxes, score yourself, and share your result.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/daily.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook — Daily Challenge"><meta property="og:description" content="One seeded rally stage a day — read 10 roadbook boxes, score, and share."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --cyan:#3ec6ff; --good:#46c37b; --bad:#ff5a4d; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.55; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:640px; margin:0 auto; padding:24px 18px 70px; text-align:center; }
+  h2{ font-size:23px; margin:6px 0 2px; } .sub{ color:var(--dim); font-size:14px; margin:0 0 18px; }
+  .tag{ display:inline-block; font-family:ui-monospace,monospace; color:var(--accent); font-size:13px; letter-spacing:1px; border:1px solid var(--line); border-radius:20px; padding:4px 12px; margin-bottom:8px; }
+  button.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:11px 20px; font-size:15px; cursor:pointer; }
+  button.btn.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:700; }
+  .rbbox{ display:flex; max-width:380px; margin:14px auto; background:#14171e; border:1px solid var(--line); border-radius:10px; overflow:hidden; text-align:left; }
+  .rbbox .l{ flex:0 0 34%; padding:12px 10px; border-right:1px solid var(--line); }
+  .rbtot{ font-size:22px; font-weight:700; font-family:ui-monospace,monospace; } .rbpart{ font-size:16px; margin-top:8px; font-family:ui-monospace,monospace; color:var(--cyan); } .rbsub{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+  .rbbox .m{ flex:0 0 36%; display:grid; place-items:center; border-right:1px solid var(--line); padding:8px; } .rbbox .m img{ width:90%; max-height:96px; object-fit:contain; }
+  .rbbox .r{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:8px; } .rbcap{ font-size:18px; font-weight:700; font-family:ui-monospace,monospace; } .rbsign{ width:34px; height:34px; object-fit:contain; filter:invert(.92); }
+  .opts{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:420px; margin:6px auto 0; }
+  .opt{ padding:13px; font-size:15px; font-weight:600; background:#23272f; border:1px solid var(--line); border-radius:10px; color:var(--ink); cursor:pointer; }
+  .opt:hover:not(:disabled){ border-color:var(--accent); } .opt:disabled{ cursor:default; }
+  .opt.right{ background:var(--good); color:#06270f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a07; border-color:var(--bad); }
+  .prompt{ font-size:15px; font-weight:600; margin:8px 0 4px; }
+  .pips{ display:flex; gap:6px; justify-content:center; margin:6px 0 12px; } .pip{ width:12px; height:12px; border-radius:50%; background:#23272f; border:1px solid var(--line); } .pip.ok{ background:var(--good); border-color:var(--good); } .pip.no{ background:var(--bad); border-color:var(--bad); }
+  .grid{ font-size:24px; letter-spacing:3px; margin:12px 0; }
+  .score{ font-size:40px; font-weight:800; font-family:ui-monospace,monospace; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:26px; }
+  .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+  .toast{ color:var(--good); font-size:13px; min-height:18px; margin-top:8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · DAILY</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="course.html">Academy</a><a href="navigate.html">Navigate</a><a href="daily.html" class="on">Daily</a></nav>
+</header>
+<main>
+  <div class="tag" id="tag">RALLY DAILY</div>
+  <div id="intro">
+    <h2>Today's stage</h2>
+    <p class="sub">Ten roadbook boxes, one attempt — and <b>everyone gets the same stage today</b>. Read each box, answer, and share your score. A fresh stage drops every day at 00:00 UTC.</p>
+    <button class="btn primary" id="start">Start today's run</button>
+    <div id="alreadyMsg"></div>
+  </div>
+  <div id="play" hidden>
+    <div class="pips" id="pips"></div>
+    <div id="qhost"></div>
+  </div>
+  <div id="result" hidden>
+    <h2 id="rTitle">Stage complete</h2>
+    <div class="score" id="rScore"></div>
+    <div class="grid" id="rGrid"></div>
+    <p class="sub" id="rMsg"></p>
+    <div class="row">
+      <button class="btn primary" id="share">Share result</button>
+      <a class="btn" href="course.html">Train in the Academy</a>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+</main>
+<footer>Same seed for everyone each UTC day. Progress stored in your browser only.</footer>
+<script>
+const DIR = { straight:'Straight', slightL:'Left', left:'Left', sharpL:'Left', slightR:'Right', right:'Right', sharpR:'Right', hairpinL:'Hairpin', hairpinR:'Hairpin' };
+const TUL = Object.keys(DIR);
+const OPTS = ['Left','Straight','Right','Hairpin'];
+const CARD8 = ['N','NE','E','SE','S','SW','W','NW'];
+const SIGNS = [['caution','Caution (!)'],['danger2','Danger !!'],['danger3','Danger !!!'],['deadend','Dead end'],['stop','Stop'],['jump','Jump'],['dip','Dip'],['hole','Hole'],['dune','Dune'],['water','Water'],['river','River'],['gate','Gate'],['bridge','Bridge'],['fuel','Fuel'],['checkpoint','Checkpoint'],['medical','Medical'],['north','North']];
+
+// deterministic PRNG so everyone gets the same stage on a given UTC day
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const now = new Date();
+const ymd = `${now.getUTCFullYear()}${String(now.getUTCMonth()+1).padStart(2,'0')}${String(now.getUTCDate()).padStart(2,'0')}`;
+const seed = parseInt(ymd,10);
+const KEY = 'rrDaily_'+ymd;
+const $ = id => document.getElementById(id);
+const pick = (rng,arr) => arr[Math.floor(rng()*arr.length)];
+const shuf = (rng,a)=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rng()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+function genStage(){
+  const rng = mulberry32(seed);
+  const qs = []; let total = +(rng()*2+0.6).toFixed(2);
+  for(let i=0;i<10;i++){
+    const code = pick(rng,TUL);
+    const partM = (Math.floor(rng()*70)+12)*10;
+    total = +(total + partM/1000 + rng()*0.25).toFixed(2);
+    const sign = rng()<0.5 ? pick(rng,SIGNS) : null;
+    const pool = ['dir','dir','cap']; if(sign) pool.push('sign');
+    const asp = pick(rng,pool);
+    const cap = (asp==='cap') ? Math.floor(rng()*8)*45 : Math.floor(rng()*72)*5;
+    const box = `<div class="rbbox"><div class="l"><div class="rbtot">${total.toFixed(2)}</div><div class="rbsub">km total</div><div class="rbpart">${partM} m</div><div class="rbsub">partial</div></div><div class="m"><img src="tulips/${code}.png" alt="tulip"></div><div class="r"><div class="rbcap">${String(cap).padStart(3,'0')}°</div>${sign?`<img class="rbsign" src="signs/${sign[0]}.png" alt="sign">`:''}</div></div>`;
+    let prompt, options, answer;
+    if(asp==='dir'){ prompt='Which way at this box?'; options=OPTS; answer=DIR[code]; }
+    else if(asp==='cap'){ answer=CARD8[cap/45]; prompt='Read the CAP — which heading?'; options=shuf(rng,[answer,...shuf(rng,CARD8.filter(c=>c!==answer)).slice(0,3)]); }
+    else { answer=sign[1]; prompt='What is the warning sign?'; options=shuf(rng,[answer,...shuf(rng,SIGNS.filter(s=>s[1]!==answer)).slice(0,3).map(s=>s[1])]); }
+    qs.push({ box, prompt, options, answer });
+  }
+  return qs;
+}
+
+let QS, idx, marks;
+function startRun(){
+  QS = genStage(); idx=0; marks=[];
+  $('intro').hidden=true; $('result').hidden=true; $('play').hidden=false;
+  ask();
+}
+function ask(){
+  if(idx>=QS.length) return finish();
+  const q = QS[idx];
+  $('pips').innerHTML = QS.map((_,k)=>`<span class="pip ${k<idx?(marks[k]?'ok':'no'):''}"></span>`).join('');
+  $('qhost').innerHTML = q.box + `<div class="prompt">${q.prompt}</div><div class="opts">${q.options.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`;
+  $('qhost').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const ok = b.dataset.o===q.answer; marks[idx]=ok;
+    b.classList.add(ok?'right':'wrong');
+    $('qhost').querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(x.dataset.o===q.answer) x.classList.add('right'); });
+    idx++; setTimeout(ask, 620);
+  });
+}
+function finish(){
+  const score = marks.filter(Boolean).length;
+  localStorage.setItem(KEY, JSON.stringify({score, marks}));
+  showResult(score, marks);
+}
+function showResult(score, m){
+  $('intro').hidden=true; $('play').hidden=true; $('result').hidden=false;
+  $('rScore').textContent = score+' / 10';
+  $('rGrid').textContent = m.map(x=>x?'🟩':'🟥').join('');
+  $('rMsg').textContent = score>=9 ? 'Outstanding navigation.' : score>=7 ? 'Solid run — back tomorrow for a new stage.' : 'Keep training — the Academy sharpens every skill.';
+}
+function shareText(){
+  const saved = JSON.parse(localStorage.getItem(KEY)); const m = saved.marks;
+  return `Rally Roadbook Daily #${ymd}\n${m.map(x=>x?'🟩':'🟥').join('')}  ${saved.score}/10\nhttps://drzapp1.github.io/rally-roadbook/daily.html`;
+}
+
+$('tag').textContent = 'RALLY DAILY · #'+ymd;
+$('start').onclick = startRun;
+$('share').onclick = ()=>{ navigator.clipboard.writeText(shareText()).then(()=>{ $('toast').textContent='Copied — paste it anywhere.'; setTimeout(()=>$('toast').textContent='',1800); }).catch(()=>{ $('toast').textContent=shareText(); }); };
+
+// already played today?
+const prev = localStorage.getItem(KEY);
+if(prev){ try{ const s=JSON.parse(prev); $('start').textContent='Replay (score won\'t change)'; $('alreadyMsg').innerHTML=`<p class="sub" style="margin-top:14px">You've ridden today's stage: <b>${s.score}/10</b>. <a href="#" id="seeRes" style="color:var(--cyan)">see result</a></p>`; setTimeout(()=>{ const sr=$('seeRes'); if(sr) sr.onclick=e=>{e.preventDefault(); showResult(s.score,s.marks);}; },0); }catch(e){} }
+</script>
+</body>
+</html>
