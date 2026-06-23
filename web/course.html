@@ -144,6 +144,10 @@ const LESSONS = [
     teach:`A bonus skill. At a <b>junction</b> the roadbook draws the whole shape — including the roads you <b>don't</b> take — and marks the one you do. A <span class="hl">fork</span> splits in two: follow the branch the arrow points down. A <span class="hl">crossroads</span> usually means straight through, unless the arrow turns. The un-taken spokes are there to confirm you're at the <b>right</b> junction — match the shape to the ground, then commit to the marked branch.`,
     practice:{ type:'fork' },
     check:{ type:'fork', count:5, pass:4 } },
+  { id:'terrain', num:8, title:'Reading the terrain', sum:'Crests, dips, jumps and surface — what is coming.', ready:true, bonus:true,
+    teach:`A bonus skill. The roadbook warns of the <b>ground</b>, not just the line. A <span class="hl">crest</span> is a blind brow — ease off, you can't see over it. A <span class="hl">dip</span> compresses the suspension; a <span class="hl">jump</span> can launch you. Surface marks (rough, ruts, sand) say grip is about to change. Read them early and you set up <b>before</b> the terrain hits, not during it.`,
+    practice:{ type:'terrain' },
+    check:{ type:'terrain', count:5, pass:4 } },
 ];
 
 const KEY='rrAcademyProgress';
@@ -191,6 +195,7 @@ function genQ(type){
   if(type==='follow') return followQ();
   if(type==='blind') return blindQ();
   if(type==='fork') return forkQ();
+  if(type==='terrain') return terrainQ();
   const c = TUL[rand(TUL.length)];
   return { media:`<div class="tulipbox"><img src="tulips/${c}.png" alt="tulip"></div>`, prompt:'Which way is the exit?', options:OPTS, answer:DIR[c] };
 }
@@ -277,6 +282,13 @@ function forkQ(){
   const code = ['forkL','forkR','cross'][rand(3)];
   const ans = code==='forkL' ? 'Left branch' : code==='forkR' ? 'Right branch' : 'Straight through';
   return { media:`<div class="tulipbox"><img src="tulips/${code}.png" alt="junction"></div>`, prompt:'At this junction, which way do you take?', options:shuffle(['Left branch','Right branch','Straight through']), answer:ans };
+}
+
+const TERRAIN = [['crestL','Crest / blind brow'],['dip','Dip'],['jump','Jump (kicker)'],['compression','Compression'],['bump','Bump'],['downhill','Steep descent'],['dune','Dune'],['rough','Rough ground'],['ditch','Ditch'],['hole','Hole'],['ruts','Ruts'],['rocky','Rocky']];
+function terrainQ(){
+  const [code,label] = TERRAIN[rand(TERRAIN.length)];
+  const others = shuffle(TERRAIN.filter(s=>s[1]!==label)).slice(0,3).map(s=>s[1]);
+  return { media:`<div class="signbox"><img src="signs/${code}.png" alt="terrain sign"></div>`, prompt:'What terrain does this warn of?', options:shuffle([label,...others]), answer:label };
 }
 
 let L, score, qIdx, chkQs, marks;

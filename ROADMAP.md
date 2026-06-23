@@ -393,6 +393,10 @@ mentor matching.
   lessons + final exam now accept keys 1–4 too, with a handler scoped to the active
   quiz area (exam, else check-over-practice). Keyboard answering now spans all
   three quiz surfaces. Browser-verified (exam + lesson).
+- **Wave 40 · Academy bonus 2: Reading the terrain** *(Academy)* — a 2nd bonus
+  lesson on anticipating crests/dips/jumps/surface from the signs (new ‘terrain’
+  widget over a 12-sign pool). Excluded from the certificate like the forks bonus;
+  terrainQ logic-tested over 6000 questions.
 
 ---
 
