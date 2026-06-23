@@ -500,6 +500,11 @@ mentor matching.
   as the heightmap. Regenerated the library: all 36 generated stages now carry surface
   signs matching their terrain. Delivers the backlog’s "surface/biome classification from
   imagery".
+- **Wave 63 · Call-your-notes drill** *(AI/Academy)* — `callnotes.html`: be the co-driver —
+  each real tulip flashes up and you CALL the note out loud; Web Speech *recognition*
+  transcribes + checks your call (direction from "hairpin left" / "caution crest"), with
+  a tap fallback so it works everywhere. Delivers the backlog’s "voice recognition
+  (call/confirm your own notes)" (Pillar 5 · AI).
 
 ---
 

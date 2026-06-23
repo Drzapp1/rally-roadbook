@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1016">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Rally Roadbook — Call Your Notes</title>
+<meta name="description" content="Train like a rally co-driver: read each tulip and CALL the note out loud — voice recognition checks you, with a tap fallback. Direction, severity and danger.">
+<link rel="canonical" href="https://drzapp1.github.io/rally-roadbook/callnotes.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Rally Roadbook — Call Your Notes"><meta property="og:description" content="Read each tulip and call the note out loud — voice recognition checks you."><meta property="og:image" content="https://drzapp1.github.io/rally-roadbook/og-card.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{ --bg:#0d1016; --panel:#1c1f26; --ink:#e6e8ec; --dim:#8b919c; --accent:#ffb028; --line:#2a2e37; --good:#46c37b; --bad:#e7574e; --cyan:#3ec6ff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.5; }
+  header{ display:flex; align-items:center; gap:14px; padding:11px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1{ font-size:16px; margin:0; letter-spacing:.5px; } header h1 b{ color:var(--accent); }
+  nav{ display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
+  nav a{ color:var(--ink); text-decoration:none; padding:6px 12px; border:1px solid var(--line); border-radius:7px; font-size:13px; }
+  nav a.on{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:600; }
+  main{ max-width:600px; margin:0 auto; padding:22px 18px 60px; }
+  p.lead{ color:var(--dim); font-size:14px; }
+  .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0; }
+  select,button.btn{ background:#23272f; color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 16px; font-size:14px; cursor:pointer; }
+  button.btn.primary{ background:var(--accent); color:#1a1205; border-color:var(--accent); font-weight:700; }
+  button.btn:disabled{ opacity:.5; cursor:default; }
+  .box{ display:flex; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; min-height:170px; margin:8px 0; }
+  .box img.tu{ width:170px; height:170px; object-fit:contain; background:#0f1218; border-right:1px solid var(--line); padding:6px; }
+  .box .r{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:10px; }
+  .cap{ font-size:20px; font-weight:700; font-family:ui-monospace,monospace; } .sg{ display:flex; gap:5px; flex-wrap:wrap; justify-content:center; } .sg img{ width:30px; height:30px; object-fit:contain; filter:invert(.92); }
+  .mic{ width:100%; padding:18px; border-radius:13px; border:1px solid var(--line); background:#23272f; color:var(--ink); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; user-select:none; }
+  .mic.live{ background:#3a1d1d; border-color:var(--bad); color:#ffd3cf; }
+  .mic .dot{ width:12px; height:12px; border-radius:50%; background:var(--bad); }
+  .mic.live .dot{ animation:pulse 1s infinite; } @keyframes pulse{ 50%{ opacity:.3; } }
+  .opts{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:9px; }
+  .opt{ background:#23272f; border:1px solid var(--line); border-radius:9px; padding:12px 6px; font-size:14px; font-weight:600; cursor:pointer; text-align:center; }
+  .opt.correct{ background:var(--good); color:#06210f; border-color:var(--good); } .opt.wrong{ background:var(--bad); color:#2a0a08; border-color:var(--bad); }
+  .heard{ min-height:20px; font-size:13px; color:var(--cyan); text-align:center; margin-top:6px; font-family:ui-monospace,monospace; }
+  .fb{ min-height:22px; font-size:15px; font-weight:600; text-align:center; margin-top:6px; } .fb.ok{ color:var(--good); } .fb.no{ color:var(--bad); }
+  .prog{ height:6px; background:#23272f; border-radius:5px; overflow:hidden; margin-top:14px; } .prog>i{ display:block; height:100%; background:var(--accent); width:0; transition:width .2s; }
+  .count{ font-size:12px; color:var(--dim); margin-top:5px; }
+  .score{ font-size:40px; font-weight:800; font-family:ui-monospace,monospace; text-align:center; }
+  .warn{ color:var(--dim); font-size:12px; margin-top:10px; text-align:center; }
+  footer{ color:#5b616c; font-size:12px; text-align:center; padding:24px; }
+  a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>RALLY <b>ROADBOOK</b> · CALL YOUR NOTES</h1>
+  <nav><a href="home.html">⌂ Home</a><a href="stage.html">Practice</a><a href="codriver.html">Co-driver</a><a href="callnotes.html" class="on">Call notes</a></nav>
+</header>
+<main>
+  <section id="setup">
+    <p class="lead">Be the co-driver. Each tulip flashes up — <b>call the note out loud</b> ("hairpin left!", "caution, crest") and the recogniser checks you. No mic? Tap the call. It's the real skill: read the diagram and say it before the corner.</p>
+    <div class="row">
+      <select id="pick"><option value="">— choose a stage —</option></select>
+      <button class="btn primary" id="start" disabled>Start</button>
+    </div>
+    <div class="warn" id="srWarn"></div>
+  </section>
+
+  <section id="drill" hidden>
+    <div id="head" class="count"></div>
+    <div class="box" id="box"></div>
+    <button class="mic" id="mic"><span class="dot"></span><span id="micLabel">Hold to call</span></button>
+    <div class="heard" id="heard"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <div class="prog"><i id="prog"></i></div>
+    <div class="count" id="count"></div>
+  </section>
+
+  <section id="result" hidden>
+    <div class="score" id="rScore"></div>
+    <div class="count" id="rSub" style="text-align:center"></div>
+    <div class="row" style="justify-content:center;margin-top:16px"><button class="btn primary" id="again">Another stage</button><a class="btn" href="codriver.html">Hear the co-driver</a></div>
+  </section>
+</main>
+<footer>Voice uses the Web Speech API (your browser/device); it works offline-permitting and falls back to tapping. Tulips are real library roadbook boxes.</footer>
+<script type="module">
+import { tulipCode } from './roadbook.js';
+const $ = id => document.getElementById(id);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+let QS = [], idx = 0, score = 0, answered = false;
+
+function callDir(t){
+  t = (t || '').toLowerCase();
+  if (/hairpin|acute|tight/.test(t)) return 'Hairpin';
+  if (/straight|ahead|flat|keep|on\b/.test(t)) return 'Straight';
+  if (/left/.test(t)) return 'Left';
+  if (/right/.test(t)) return 'Right';
+  return null;
+}
+function boxAnswer(b){ return b.type === 'hairpin' ? 'Hairpin' : b.type === 'straight' ? 'Straight' : (b.turnDir === 'right' ? 'Right' : 'Left'); }
+
+if (SR){
+  rec = new SR(); rec.lang = 'en-GB'; rec.interimResults = true; rec.maxAlternatives = 3; rec.continuous = false;
+  rec.onresult = e => {
+    let txt = ''; for (let i = e.resultIndex; i < e.results.length; i++) txt += e.results[i][0].transcript + ' ';
+    $('heard').textContent = '“' + txt.trim() + '”';
+    const d = callDir(txt); if (d && !answered) grade(d, true);
+  };
+  rec.onend = () => { listening = false; $('mic').classList.remove('live'); $('micLabel').textContent = 'Hold to call'; };
+  rec.onerror = () => { listening = false; $('mic').classList.remove('live'); };
+} else {
+  $('srWarn').textContent = 'Voice recognition isn’t available in this browser — tap the call instead (everything else works the same).';
+}
+
+function micDown(e){ e.preventDefault(); if (!rec || listening || answered) return; try { rec.start(); listening = true; $('mic').classList.add('live'); $('micLabel').textContent = 'Listening… release when done'; $('heard').textContent = ''; } catch (x){} }
+function micUp(){ if (rec && listening) try { rec.stop(); } catch (x){} }
+const mic = $('mic');
+mic.addEventListener('mousedown', micDown); mic.addEventListener('touchstart', micDown, { passive: false });
+mic.addEventListener('mouseup', micUp); mic.addEventListener('mouseleave', micUp); mic.addEventListener('touchend', micUp);
+
+function showBox(){
+  const b = QS[idx]; answered = false;
+  $('head').textContent = 'Note ' + (idx + 1) + ' / ' + QS.length;
+  const code = tulipCode(b);
+  const sg = (b.pictograms || []).map(p => `<img src="signs/${p}.png" alt="${p}" onerror="this.style.display='none'">`).join('');
+  $('box').innerHTML = `<img class="tu" src="tulips/${code}.png" alt="tulip">`
+    + `<div class="r"><div class="cap">CAP ${String(b.capDeg || 0).padStart(3, '0')}°</div><div class="sg">${sg}</div></div>`;
+  $('opts').innerHTML = ['Left', 'Right', 'Hairpin', 'Straight'].map(o => `<button class="opt" data-o="${o}">${o}</button>`).join('');
+  $('opts').querySelectorAll('.opt').forEach(btn => btn.onclick = () => grade(btn.dataset.o, false));
+  $('heard').textContent = ''; $('fb').textContent = ''; $('fb').className = 'fb';
+  $('prog').style.width = (100 * idx / QS.length) + '%';
+  if (rec) { $('micLabel').textContent = 'Hold to call'; }
+  else { mic.style.display = 'none'; }
+}
+function grade(call, byVoice){
+  if (answered) return; answered = true; micUp();
+  const b = QS[idx], ans = boxAnswer(b), ok = call === ans;
+  if (ok) score++;
+  $('opts').querySelectorAll('.opt').forEach(o => { o.classList.add('done'); if (o.dataset.o === ans) o.classList.add('correct'); else if (o.dataset.o === call && !ok) o.classList.add('wrong'); });
+  $('fb').textContent = (ok ? '✓ ' : '✗ ') + ans.toUpperCase() + (byVoice ? ' — heard you' : '') + (ok ? '' : ' (you called ' + call + ')');
+  $('fb').className = 'fb ' + (ok ? 'ok' : 'no');
+  setTimeout(() => { idx++; idx >= QS.length ? finish() : showBox(); }, 1100);
+}
+function finish(){
+  $('drill').hidden = true; $('result').hidden = false;
+  $('rScore').textContent = score + ' / ' + QS.length;
+  const pct = score / QS.length;
+  $('rSub').textContent = pct === 1 ? 'Clean roadbook — every note called.' : pct >= 0.7 ? 'Strong co-driving.' : 'Keep drilling — read the tulip, then call it.';
+}
+function startDrill(rb){
+  let turns = rb.boxes.filter(b => b.type === 'turn' || b.type === 'hairpin');
+  if (turns.length > 12){ const out = [], step = turns.length / 12; for (let i = 0; i < 12; i++) out.push(turns[Math.floor(i * step)]); turns = out; }
+  QS = turns; idx = 0; score = 0;
+  if (!QS.length){ $('srWarn').textContent = 'That stage has no turns to call.'; return; }
+  $('setup').hidden = true; $('result').hidden = true; $('drill').hidden = false; showBox();
+}
+$('start').onclick = () => { const f = $('pick').value; if (!f) return; fetch(f).then(r => r.json()).then(startDrill).catch(() => { $('srWarn').textContent = 'Could not load that stage.'; }); };
+$('again').onclick = () => { $('result').hidden = true; $('setup').hidden = false; };
+
+fetch('roadbooks/manifest.json').then(r => r.json()).then(list => {
+  const sel = $('pick'); list.filter(m => (m.turns || 0) >= 4).forEach(m => { const o = document.createElement('option'); o.value = m.file; o.textContent = `${m.name} · ${m.turns} turns`; sel.appendChild(o); });
+  sel.onchange = () => { $('start').disabled = !sel.value; };
+  const deep = new URLSearchParams(location.search).get('stage');
+  if (deep && [...sel.options].some(o => o.value === deep)){ sel.value = deep; $('start').disabled = false; }
+}).catch(() => { $('srWarn').textContent = 'Could not load the library.'; });
+</script>
+</body>
+</html>
