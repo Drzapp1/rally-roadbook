@@ -389,6 +389,10 @@ mentor matching.
 - **Wave 38 · Keyboard answering** *(Accessibility)* — the Daily and Stage
   quizzes now accept keys 1–4 to pick an option (Enter for next), with an on-screen
   hint. Browser-verified (key press marks the right option).
+- **Wave 39 · Keyboard answering on the course** *(Accessibility)* — the Academy
+  lessons + final exam now accept keys 1–4 too, with a handler scoped to the active
+  quiz area (exam, else check-over-practice). Keyboard answering now spans all
+  three quiz surfaces. Browser-verified (exam + lesson).
 
 ---
 

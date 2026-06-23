@@ -92,6 +92,7 @@
     <h2>Final Exam</h2>
     <p class="lead">Twelve questions across every skill — no hints. 10 / 12 earns your certificate.</p>
     <div class="stage" id="examBody"></div>
+    <div class="lead" style="font-size:11px;opacity:.7;margin-top:10px">Keys 1–4 to answer · Enter to continue</div>
   </div>
 
   <div id="cert" hidden>
@@ -385,6 +386,15 @@ $('dlCert').onclick = drawCert;
 $('shareCert').onclick = ()=>{ const t='I earned my Rally Roadbook Academy certificate — read and navigate a rally roadbook!\nhttps://drzapp1.github.io/rally-roadbook/course.html'; navigator.clipboard.writeText(t).then(()=>{ $('certToast').textContent='Share text copied.'; setTimeout(()=>$('certToast').textContent='',1900); }).catch(()=>{ $('certToast').textContent=t; }); };
 
 renderOverview();
+/* course-kbd */
+document.addEventListener('keydown', e=>{
+  let host=null;
+  if(!document.getElementById('exam').hidden) host=document.getElementById('examBody');
+  else if(!document.getElementById('lesson').hidden){ const c=document.getElementById('L-check'), pr=document.getElementById('L-practice'); host = c.querySelector('.opt:not([disabled])') ? c : (pr.querySelector('.opt:not([disabled])') ? pr : null); }
+  if(!host) return;
+  if(e.key>='1' && e.key<='4'){ const o=[...host.querySelectorAll('.opt:not([disabled])')][+e.key-1]; if(o){ o.click(); e.preventDefault(); } }
+  else if(e.key==='Enter'||e.key===' '){ const nx=[...host.querySelectorAll('button.btn')].find(b=>/Next|Continue|Start/.test(b.textContent)); if(nx){ nx.click(); e.preventDefault(); } }
+});
 </script>
 </body>
 </html>
