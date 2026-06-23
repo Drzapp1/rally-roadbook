@@ -62,7 +62,9 @@
     <h2>Stage read</h2>
     <div class="score" id="rScore"></div>
     <p class="sub" id="rMsg"></p>
-    <div class="row"><button class="btn primary" id="again">Another stage</button><a class="btn" href="index.html">Open in viewer</a></div>
+    <p class="sub" id="rBest"></p>
+    <div class="row"><button class="btn primary" id="again">Another stage</button><button class="btn" id="shareStage">Share result</button><a class="btn" href="index.html">Open in viewer</a></div>
+    <div class="fb" id="stageToast"></div>
   </div>
 </main>
 <footer>Real roadbooks from the library; validated with the open-format roadbook.js module.</footer>
@@ -120,8 +122,18 @@ function ask(){
 function finish(){
   $('play').hidden=true; $('result').hidden=false;
   $('rScore').textContent = score+' / '+QS.length;
+  const allBest=JSON.parse(localStorage.getItem('rrStageBest')||'{}'); const key=$('pick').value;
+  const prev = allBest[key] ? allBest[key].score : -1; const isBest = score > prev;
+  if(isBest){ allBest[key]={score, total:QS.length}; localStorage.setItem('rrStageBest', JSON.stringify(allBest)); }
+  $('rBest').textContent = isBest ? 'New best for this stage!' : `Your best here: ${Math.max(score,prev)}/${QS.length}`;
   const pct = score/QS.length;
   $('rMsg').textContent = pct>=0.9 ? 'Stage read clean — you could ride this one.' : pct>=0.7 ? 'Good reading — a few you would want to re-check at speed.' : 'Keep drilling in the Academy, then come back to this stage.';
+}
+function shareStage(){
+  const grid = marks.map(x=>x?'🟩':'🟥').join('');
+  const name = (RB && RB.trackName) || 'stage';
+  const t = `Rally Roadbook — ${name}\n${grid}  ${score}/${QS.length}\nhttps://drzapp1.github.io/rally-roadbook/stage.html`;
+  navigator.clipboard.writeText(t).then(()=>{ $('stageToast').className='fb ok'; $('stageToast').textContent='Copied — paste it anywhere.'; setTimeout(()=>{$('stageToast').textContent='';},1900); }).catch(()=>{ $('stageToast').textContent=t; });
 }
 function startStage(){
   const file = $('pick').value; if(!file) return;
@@ -145,6 +157,7 @@ fetch('roadbooks/manifest.json').then(r=>r.json()).then(list=>{
 }).catch(()=>{ $('meta').textContent='Could not load the library.'; });
 $('start').onclick = startStage;
 $('again').onclick = ()=>{ $('result').hidden=true; $('intro').hidden=false; };
+$('shareStage').onclick = shareStage;
 </script>
 </body>
 </html>

@@ -383,6 +383,9 @@ mentor matching.
   Academy course, Daily challenge, Stage practice and the personalized hub (a new
   ‘Play’ area), and updated the project memory with the platform’s growth, the
   browser-verify workflow, and the python surrogate/truncation gotcha.
+- **Wave 37 · Stage-practice best + share + hub** *(Community)* — Stage practice
+  now saves a per-stage best, shows it on the result, and offers a shareable
+  grid; the home hub gains a "N stages practised" pill. Browser-verified end to end.
 
 ---
 
