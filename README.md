@@ -6,6 +6,18 @@ track once; the plugin records your line, auto-generates a real-style roadbook
 **ERTF/F2R-style rally computer** so you can learn to navigate by it — tulips,
 CAP headings, trip meter, danger signs, the lot.
 
+## 🌐 Live web companion
+
+A full **browser companion** is live — no install needed — to explore, learn, build and try roadbook navigation:
+
+### ▶ https://drzapp1.github.io/rally-roadbook/
+
+| Explore | Learn & play | Create | Reference |
+|---|---|---|---|
+| roadbook viewer · 3D real terrain · route 3D | Roadbook 101 guide · tulip + CAP drills · the *eclipse* Navigate challenge | route builder · stage generator | 23 photo-real device skins · installable mobile reader · open JSON format + validator + embed module |
+
+The plugin and the site share one **open roadbook format** ([schema](https://drzapp1.github.io/rally-roadbook/roadbook.schema.json) · [validator](https://drzapp1.github.io/rally-roadbook/format.html) · [embed module](https://drzapp1.github.io/rally-roadbook/roadbook.js)). See the [20× roadmap](ROADMAP.md).
+
 ## How it works
 
 ```

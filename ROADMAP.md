@@ -294,6 +294,9 @@ mentor matching.
   renderer the site uses). `embed.html`: pick/paste a roadbook → live render + a
   **copyable embed snippet** so any site can drop in a roadbook via the hosted
   module + art. The format's real interop step.
+- **Wave 14 · README front page** *(Reach)* — a **🌐 Live web companion** section in
+  the repo README pointing visitors to the deployed site + the tool map + the open
+  format, so the GitHub front page leads to the live experience.
 
 ---
 
